@@ -18,7 +18,7 @@ app.use(bodyParser.json());
 const port = process.env.PORT || 3000;
 // 端口优先使用环境变量 `PORT`，否则默认 3000
 
-// 选择 LLM：如果有 OPENAI_API_KEY 则使用 OpenAIClient，否则用 Mock
+// 选择 LLM：优先使用 KimiClient，然后是 OpenAIClient，最后是 Mock
 let llmClient: any;
 if (process.env.KIMI_API_KEY) {
   llmClient = new KimiClient(process.env.KIMI_API_KEY);
