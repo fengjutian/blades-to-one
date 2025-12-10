@@ -3,28 +3,29 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.OpenAIClient = void 0;
+exports.KimiClient = void 0;
 const openai_1 = __importDefault(require("openai"));
 /**
- * OpenAI LLM client implementation
- * Uses the official OpenAI SDK to interact with OpenAI's models
+ * Kimi LLM client implementation
+ * Uses the OpenAI-compatible API provided by Moonshot AI
+ * Kimi is a large AI model developed by Moonshot AI
  */
-class OpenAIClient {
+class KimiClient {
     /**
-     * Creates a new OpenAI client
-     * @param apiKey The OpenAI API key
+     * Creates a new Kimi client
+     * @param apiKey The Kimi API key from Moonshot AI
      */
     constructor(apiKey) {
-        this.client = new openai_1.default({ apiKey });
+        this.client = new openai_1.default({ apiKey, baseURL: "https://api.moonshot.cn/v1/" });
     }
     /**
-     * Calls the OpenAI API with a prompt
+     * Calls the Kimi API with a prompt
      * @param prompt The prompt to send to the LLM
      * @param opts Optional parameters for the LLM call
      * @returns The LLM's response as a string
      */
     async call(prompt, opts) {
-        const model = opts?.model || "gpt-4o-mini";
+        const model = opts?.model || "kimi-k2-0905-preview";
         const resp = await this.client.chat.completions.create({
             model,
             messages: [{ role: "user", content: prompt }],
@@ -35,4 +36,4 @@ class OpenAIClient {
         return String(text);
     }
 }
-exports.OpenAIClient = OpenAIClient;
+exports.KimiClient = KimiClient;

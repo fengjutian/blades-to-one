@@ -36,7 +36,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Tools = void 0;
 const search = __importStar(require("./search"));
 const codeExec = __importStar(require("./codeExec"));
+const modelInference = __importStar(require("./modelInference"));
+const dbQuery = __importStar(require("./dbQuery"));
+const webRequest = __importStar(require("./webRequest"));
+/**
+ * Collection of available tools for the agent
+ * Maps tool names to their implementation functions
+ */
 exports.Tools = {
     search: search.webSearch,
-    code_exec: codeExec.runCode
+    code_exec: codeExec.runCode,
+    model_small: modelInference.modelSmall,
+    model_large: modelInference.modelLarge,
+    db_query: dbQuery.dbQuery,
+    web_request: webRequest.webRequest
 };
