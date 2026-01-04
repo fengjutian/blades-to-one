@@ -12,12 +12,14 @@ import { DeepSeekClient } from '../llm/deepseek-client';
 import { CozeClient } from '../llm/coze-client';
 import { CozeOrchestrator } from '../workflow/coze-orchestrator';
 import path from 'path';
+import pinoHttp from 'pino-http';
 
 dotenv.config();
 // 加载 `.env`，用于读取 `OPENAI_API_KEY`、`PORT` 等
 
 const app = express();
 app.use(bodyParser.json());
+app.use(pinoHttp());
 
 // 添加静态文件支持，用于提供Coze Studio编排页面
 app.use(express.static(path.join(__dirname, '../../public')));
@@ -81,12 +83,14 @@ const agent = new Agent(reasoner, 6, cozeOrchestrator);
 
 // 添加一个欢迎页面
 app.get('/', (req, res) => {
+  req.log.info('收到欢迎页面请求');
   res.send(
     '欢迎使用万剑归宗 (blades-to-one)! 使用 POST /react/run 进行查询。或访问 /coze-orchestration.html 使用Coze Studio服务编排页面。'
   );
 });
 
 app.post('/react/run', async (req, res) => {
+  req.log.info('收到查询请求');
   try {
     const q = req.body?.query; // 读取用户问题
     if (!q) return res.status(400).json({ error: 'missing query' }); // 参数校验
@@ -99,4 +103,4 @@ app.post('/react/run', async (req, res) => {
 
 app.listen(port, () =>
   console.log(`Server listening on http://localhost:${port}`)
-); // 启动服务并输出访问地址
+);
