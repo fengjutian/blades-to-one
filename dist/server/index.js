@@ -23,8 +23,8 @@ const app = (0, express_1.default)();
 app.use(body_parser_1.default.json());
 // 添加静态文件支持，用于提供Coze Studio编排页面
 app.use(express_1.default.static(path_1.default.join(__dirname, "../../public")));
-const port = process.env.PORT || 3000;
-// 端口优先使用环境变量 `PORT`，否则默认 3000
+// 端口优先使用环境变量 `PORT`，否则默认 3001
+const port = process.env.PORT || 3001;
 // 选择 LLM：优先使用 KimiClient，然后是 OpenAIClient，再是 QwenClient，接着是 DeepSeekClient，然后是 CozeClient，然后是 OllamaClient，最后是 Mock
 let llmClient;
 if (process.env.KIMI_API_KEY) {
