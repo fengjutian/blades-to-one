@@ -9,6 +9,8 @@ import { KimiClient } from "../llm/kimi-client";
 import { OllamaClient } from "../llm/ollama-client";
 import { QwenClient } from "../llm/qwen-client";
 import { DeepSeekClient } from "../llm/deepseek-client";
+import { CozeClient } from "../llm/coze-client";
+import { CozeOrchestrator } from "../workflow/coze-orchestrator";
 
 dotenv.config();
 // 加载 `.env`，用于读取 `OPENAI_API_KEY`、`PORT` 等
@@ -20,7 +22,7 @@ app.use(bodyParser.json());
 const port = process.env.PORT || 3000;
 // 端口优先使用环境变量 `PORT`，否则默认 3000
 
-// 选择 LLM：优先使用 KimiClient，然后是 OpenAIClient，再是 QwenClient，接着是 DeepSeekClient，然后是 OllamaClient，最后是 Mock
+// 选择 LLM：优先使用 KimiClient，然后是 OpenAIClient，再是 QwenClient，接着是 DeepSeekClient，然后是 CozeClient，然后是 OllamaClient，最后是 Mock
 let llmClient: any;
 if (process.env.KIMI_API_KEY) {
   llmClient = new KimiClient(process.env.KIMI_API_KEY);
@@ -34,6 +36,13 @@ if (process.env.KIMI_API_KEY) {
 } else if (process.env.DEEPSEEK_API_KEY) {
   llmClient = new DeepSeekClient(process.env.DEEPSEEK_API_KEY);
   console.log("Using DeepSeekClient (DeepSeek Inc.)");
+} else if (process.env.COZE_API_KEY) {
+  llmClient = new CozeClient(
+    process.env.COZE_API_KEY,
+    process.env.COZE_BASE_URL,
+    process.env.COZE_DEFAULT_WORKFLOW
+  );
+  console.log(`Using CozeClient (Coze Studio) with workflow: ${process.env.COZE_DEFAULT_WORKFLOW || "default"}`);
 } else if (process.env.USE_OLLAMA === "true") {
   llmClient = new OllamaClient({
     baseURL: process.env.OLLAMA_BASE_URL,
@@ -45,8 +54,22 @@ if (process.env.KIMI_API_KEY) {
   console.log("Using MockLLMClient (mock LLM)");
 }
 
+// 创建推理器实例
 const reasoner = new Reasoner(llmClient);
-const agent = new Agent(reasoner, 6);
+
+// 创建Coze Studio服务编排器实例（如果配置了相关环境变量）
+let cozeOrchestrator: CozeOrchestrator | undefined;
+if (process.env.COZE_API_KEY) {
+  cozeOrchestrator = new CozeOrchestrator(
+    process.env.COZE_API_KEY,
+    process.env.COZE_BASE_URL,
+    process.env.COZE_DEFAULT_WORKFLOW
+  );
+  console.log("Coze Studio服务编排器已初始化");
+}
+
+// 组装推理器与代理；第二参数为最大思考步数，第三参数为Coze Studio服务编排器
+const agent = new Agent(reasoner, 6, cozeOrchestrator);
 // 组装推理器与代理；第二参数为最大思考步数
 
 // 添加一个欢迎页面
