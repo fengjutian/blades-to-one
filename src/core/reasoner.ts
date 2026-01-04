@@ -1,4 +1,4 @@
-import { LLMClient } from "./types";
+import { LLMClient } from './types';
 
 /**
  * Reasoner class responsible for building prompts and generating thoughts
@@ -18,7 +18,7 @@ export class Reasoner {
    * @returns Formatted prompt string for the LLM
    */
   buildPrompt(userQuery: string, history: string[]): string {
-    const historyText = history.map(h => `- ${h}`).join("\n");
+    const historyText = history.map((h) => `- ${h}`).join('\n');
     return `你是一个遵循 ReAct 框架的智能体。
       历史:
       ${historyText}
@@ -28,7 +28,7 @@ export class Reasoner {
       Action: <action name 或 none>
       Action Input: JSON
       Final Answer: 只有在完成时输出。`;
-    }
+  }
 
   /**
    * Generates a thought/response from the LLM based on the user query and history

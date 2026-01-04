@@ -1,4 +1,4 @@
-import { LLMClient } from "../core/types";
+import { LLMClient } from '../core/types';
 /**
  * Qwen LLM client implementation
  * Uses the OpenAI-compatible API provided by Alibaba Cloud

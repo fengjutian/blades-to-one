@@ -1,7 +1,7 @@
 /**
  * Available tool names that can be used by the agent
  */
-export type ToolName = "search" | "code_exec" | "model_small" | "model_large" | "db_query" | "web_request" | "none";
+export type ToolName = 'search' | 'code_exec' | 'model_small' | 'model_large' | 'db_query' | 'web_request' | 'none';
 /**
  * Interface for parsed ReAct framework responses
  */
@@ -20,7 +20,7 @@ export interface ReActParsed {
  */
 export interface HistoryItem {
     /** Role of the participant (agent, tool, or system) */
-    role: "agent" | "tool" | "system";
+    role: 'agent' | 'tool' | 'system';
     /** Content of the message */
     content: string;
     /** Additional metadata */

@@ -13,9 +13,9 @@ class CozeOrchestrator {
      * @param baseURL Coze Studio API基础URL
      * @param defaultWorkflowId 默认工作流ID
      */
-    constructor(apiKey, baseURL = "https://api.coze.com/v1", defaultWorkflowId) {
+    constructor(apiKey, baseURL = 'https://api.coze.com/v1', defaultWorkflowId) {
         this.cozeClient = new coze_client_1.CozeClient(apiKey, baseURL, defaultWorkflowId);
-        this.defaultWorkflowId = defaultWorkflowId || "";
+        this.defaultWorkflowId = defaultWorkflowId || '';
     }
     /**
      * 使用Coze Studio工作流执行任务
@@ -30,12 +30,12 @@ class CozeOrchestrator {
             const fullInput = this.buildTaskInput(task, history);
             // 执行Coze Studio工作流
             const result = await this.cozeClient.call(fullInput, {
-                workflowId: workflowId || this.defaultWorkflowId
+                workflowId: workflowId || this.defaultWorkflowId,
             });
             return result;
         }
         catch (error) {
-            console.error("Failed to execute Coze Studio workflow:", error);
+            console.error('Failed to execute Coze Studio workflow:', error);
             throw error;
         }
     }
@@ -48,7 +48,7 @@ class CozeOrchestrator {
     buildTaskInput(task, history) {
         let input = `Task: ${task}`;
         if (history && history.length > 0) {
-            input += "\n\nHistory:";
+            input += '\n\nHistory:';
             history.forEach((item, index) => {
                 input += `\n${index + 1}. ${item.role}: ${item.content}`;
             });
@@ -64,7 +64,7 @@ class CozeOrchestrator {
             return await this.cozeClient.getWorkflows();
         }
         catch (error) {
-            console.error("Failed to get available workflows:", error);
+            console.error('Failed to get available workflows:', error);
             return [];
         }
     }

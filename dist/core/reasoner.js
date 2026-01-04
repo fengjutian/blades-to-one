@@ -20,7 +20,7 @@ class Reasoner {
      * @returns Formatted prompt string for the LLM
      */
     buildPrompt(userQuery, history) {
-        const historyText = history.map(h => `- ${h}`).join("\n");
+        const historyText = history.map((h) => `- ${h}`).join('\n');
         return `你是一个遵循 ReAct 框架的智能体。
       历史:
       ${historyText}

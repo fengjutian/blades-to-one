@@ -16,7 +16,10 @@ class KimiClient {
      * @param apiKey The Kimi API key from Moonshot AI
      */
     constructor(apiKey) {
-        this.client = new openai_1.default({ apiKey, baseURL: "https://api.moonshot.cn/v1/" });
+        this.client = new openai_1.default({
+            apiKey,
+            baseURL: 'https://api.moonshot.cn/v1/',
+        });
     }
     /**
      * Calls the Kimi API with a prompt
@@ -25,12 +28,12 @@ class KimiClient {
      * @returns The LLM's response as a string
      */
     async call(prompt, opts) {
-        const model = opts?.model || "kimi-k2-0905-preview";
+        const model = opts?.model || 'kimi-k2-0905-preview';
         const resp = await this.client.chat.completions.create({
             model,
-            messages: [{ role: "user", content: prompt }],
+            messages: [{ role: 'user', content: prompt }],
             temperature: opts?.temperature ?? 0.2,
-            max_tokens: 800
+            max_tokens: 800,
         });
         const text = resp.choices?.[0]?.message?.content ?? JSON.stringify(resp);
         return String(text);

@@ -1,4 +1,4 @@
-import { ReActParsed } from "./types";
+import { ReActParsed } from './types';
 /**
  * 解析LLM的ReAct框架响应为结构化数据
  * @param text LLM的原始文本响应

@@ -1,4 +1,4 @@
-import { ReActParsed } from "./types";
+import { ReActParsed } from './types';
 
 /**
  * 解析LLM的ReAct框架响应为结构化数据
@@ -13,7 +13,9 @@ export function parseReAct(text: string): ReActParsed {
   if (finalMatch) res.finalAnswer = finalMatch[1].trim();
 
   // 提取思考内容（如果存在）
-  const thoughtMatch = text.match(/Thought\s*:\s*([\s\S]*?)(?:\nAction\s*:|$)/i);
+  const thoughtMatch = text.match(
+    /Thought\s*:\s*([\s\S]*?)(?:\nAction\s*:|$)/i
+  );
   if (thoughtMatch) res.thought = thoughtMatch[1].trim();
 
   // 提取动作（如果存在）
@@ -21,7 +23,9 @@ export function parseReAct(text: string): ReActParsed {
   if (actionMatch) res.action = actionMatch[1] as any;
 
   // 提取动作输入（如果存在）
-  const inputMatch = text.match(/Action Input\s*:\s*([\s\S]*?)(?:\nObservation\s*:|\nThought\s*:|\nFinal Answer\s*:|$)/i);
+  const inputMatch = text.match(
+    /Action Input\s*:\s*([\s\S]*?)(?:\nObservation\s*:|\nThought\s*:|\nFinal Answer\s*:|$)/i
+  );
   if (inputMatch) {
     const raw = inputMatch[1].trim();
     try {

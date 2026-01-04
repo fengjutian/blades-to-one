@@ -24,12 +24,12 @@ class OpenAIClient {
      * @returns The LLM's response as a string
      */
     async call(prompt, opts) {
-        const model = opts?.model || "gpt-4o-mini";
+        const model = opts?.model || 'gpt-4o-mini';
         const resp = await this.client.chat.completions.create({
             model,
-            messages: [{ role: "user", content: prompt }],
+            messages: [{ role: 'user', content: prompt }],
             temperature: opts?.temperature ?? 0.2,
-            max_tokens: 800
+            max_tokens: 800,
         });
         const text = resp.choices?.[0]?.message?.content ?? JSON.stringify(resp);
         return String(text);

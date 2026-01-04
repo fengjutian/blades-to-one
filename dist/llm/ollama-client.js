@@ -15,8 +15,8 @@ class OllamaClient {
      * @param opts Optional configuration for the Ollama client
      */
     constructor(opts) {
-        this.baseURL = opts?.baseURL || "http://localhost:11434";
-        this.defaultModel = opts?.defaultModel || "llama3";
+        this.baseURL = opts?.baseURL || 'http://localhost:11434';
+        this.defaultModel = opts?.defaultModel || 'llama3';
     }
     /**
      * Calls the Ollama API with a prompt
@@ -29,9 +29,9 @@ class OllamaClient {
         const temperature = opts?.temperature ?? 0.2;
         try {
             const response = await (0, node_fetch_1.default)(`${this.baseURL}/api/generate`, {
-                method: "POST",
+                method: 'POST',
                 headers: {
-                    "Content-Type": "application/json",
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
                     model,
@@ -46,10 +46,10 @@ class OllamaClient {
             }
             const data = await response.json();
             // 使用类型断言确保TypeScript不会报错
-            return data.response || "";
+            return data.response || '';
         }
         catch (error) {
-            console.error("Ollama client error:", error);
+            console.error('Ollama client error:', error);
             throw new Error(`Failed to call Ollama: ${error.message}`);
         }
     }

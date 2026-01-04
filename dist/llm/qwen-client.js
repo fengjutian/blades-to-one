@@ -18,7 +18,7 @@ class QwenClient {
     constructor(apiKey) {
         this.client = new openai_1.default({
             apiKey,
-            baseURL: "https://dashscope.aliyuncs.com/compatible-mode/v1"
+            baseURL: 'https://dashscope.aliyuncs.com/compatible-mode/v1',
         });
     }
     /**
@@ -28,12 +28,12 @@ class QwenClient {
      * @returns The LLM's response as a string
      */
     async call(prompt, opts) {
-        const model = opts?.model || "qwen-plus";
+        const model = opts?.model || 'qwen-plus';
         const resp = await this.client.chat.completions.create({
             model,
-            messages: [{ role: "user", content: prompt }],
+            messages: [{ role: 'user', content: prompt }],
             temperature: opts?.temperature ?? 0.2,
-            max_tokens: 800
+            max_tokens: 800,
         });
         const text = resp.choices?.[0]?.message?.content ?? JSON.stringify(resp);
         return String(text);

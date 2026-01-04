@@ -1,4 +1,4 @@
-import { LLMClient } from "../core/types";
+import { LLMClient } from '../core/types';
 /**
  * Mock LLM client implementation for testing and development
  * Simulates LLM responses without making actual API calls

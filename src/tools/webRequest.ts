@@ -3,18 +3,27 @@
  * @param input 请求参数，可以是URL字符串或包含详细请求信息的对象
  * @returns 请求结果
  */
-export async function webRequest(input: string | { url: string; method?: string; headers?: Record<string, string>; body?: any }): Promise<string> {
+export async function webRequest(
+  input:
+    | string
+    | {
+        url: string;
+        method?: string;
+        headers?: Record<string, string>;
+        body?: any;
+      }
+): Promise<string> {
   // 解析请求参数
   let url: string;
-  let method: string = "GET";
+  let method: string = 'GET';
   let headers: Record<string, string> = {};
   let body: any = null;
 
-  if (typeof input === "string") {
+  if (typeof input === 'string') {
     url = input;
   } else {
     url = input.url;
-    method = input.method || "GET";
+    method = input.method || 'GET';
     headers = input.headers || {};
     body = input.body || null;
   }

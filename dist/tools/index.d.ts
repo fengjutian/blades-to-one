@@ -1,8 +1,8 @@
-import * as search from "./search";
-import * as codeExec from "./codeExec";
-import * as modelInference from "./modelInference";
-import * as dbQuery from "./dbQuery";
-import * as webRequest from "./webRequest";
+import * as search from './search';
+import * as codeExec from './codeExec';
+import * as modelInference from './modelInference';
+import * as dbQuery from './dbQuery';
+import * as webRequest from './webRequest';
 /**
  * Collection of available tools for the agent
  * Maps tool names to their implementation functions

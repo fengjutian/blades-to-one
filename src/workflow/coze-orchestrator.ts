@@ -1,5 +1,5 @@
-import { CozeClient } from "../llm/coze-client";
-import { HistoryItem } from "../core/types";
+import { CozeClient } from '../llm/coze-client';
+import { HistoryItem } from '../core/types';
 
 /**
  * Coze Studio服务编排器类
@@ -17,11 +17,11 @@ export class CozeOrchestrator {
    */
   constructor(
     apiKey: string,
-    baseURL: string = "https://api.coze.com/v1",
+    baseURL: string = 'https://api.coze.com/v1',
     defaultWorkflowId?: string
   ) {
     this.cozeClient = new CozeClient(apiKey, baseURL, defaultWorkflowId);
-    this.defaultWorkflowId = defaultWorkflowId || "";
+    this.defaultWorkflowId = defaultWorkflowId || '';
   }
 
   /**
@@ -39,15 +39,15 @@ export class CozeOrchestrator {
     try {
       // 构建包含历史记录的完整任务输入
       const fullInput = this.buildTaskInput(task, history);
-      
+
       // 执行Coze Studio工作流
       const result = await this.cozeClient.call(fullInput, {
-        workflowId: workflowId || this.defaultWorkflowId
+        workflowId: workflowId || this.defaultWorkflowId,
       });
-      
+
       return result;
     } catch (error) {
-      console.error("Failed to execute Coze Studio workflow:", error);
+      console.error('Failed to execute Coze Studio workflow:', error);
       throw error;
     }
   }
@@ -60,14 +60,14 @@ export class CozeOrchestrator {
    */
   private buildTaskInput(task: string, history?: HistoryItem[]): string {
     let input = `Task: ${task}`;
-    
+
     if (history && history.length > 0) {
-      input += "\n\nHistory:";
+      input += '\n\nHistory:';
       history.forEach((item, index) => {
         input += `\n${index + 1}. ${item.role}: ${item.content}`;
       });
     }
-    
+
     return input;
   }
 
@@ -79,7 +79,7 @@ export class CozeOrchestrator {
     try {
       return await this.cozeClient.getWorkflows();
     } catch (error) {
-      console.error("Failed to get available workflows:", error);
+      console.error('Failed to get available workflows:', error);
       return [];
     }
   }

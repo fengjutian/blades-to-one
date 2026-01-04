@@ -101,11 +101,11 @@ curl -X POST http://localhost:3000/react/run \
 
 ### 环境变量
 
-| 变量名 | 描述 | 默认值 |
-| --- | --- | --- |
-| PORT | 服务器端口 | 3000 |
-| KIMI_API_KEY | Kimi API密钥 | 无 |
-| OPENAI_API_KEY | OpenAI API密钥 | 无 |
+| 变量名         | 描述           | 默认值 |
+| -------------- | -------------- | ------ |
+| PORT           | 服务器端口     | 3000   |
+| KIMI_API_KEY   | Kimi API密钥   | 无     |
+| OPENAI_API_KEY | OpenAI API密钥 | 无     |
 
 ## API文档
 
@@ -153,7 +153,7 @@ curl -X POST http://localhost:3000/react/run \
 执行网络搜索获取信息。
 
 ```typescript
-async function webSearch(query: string): Promise<string>
+async function webSearch(query: string): Promise<string>;
 ```
 
 ### 2. 代码执行工具 (code_exec)
@@ -161,7 +161,7 @@ async function webSearch(query: string): Promise<string>
 执行JavaScript代码片段。
 
 ```typescript
-async function runCode(code: string): Promise<string>
+async function runCode(code: string): Promise<string>;
 ```
 
 ### 3. 小型模型推理工具 (model_small)
@@ -169,7 +169,7 @@ async function runCode(code: string): Promise<string>
 使用小型模型进行推理。
 
 ```typescript
-async function modelSmall(prompt: string): Promise<string>
+async function modelSmall(prompt: string): Promise<string>;
 ```
 
 ### 4. 大型模型推理工具 (model_large)
@@ -177,7 +177,7 @@ async function modelSmall(prompt: string): Promise<string>
 使用大型模型进行推理。
 
 ```typescript
-async function modelLarge(prompt: string): Promise<string>
+async function modelLarge(prompt: string): Promise<string>;
 ```
 
 ### 5. 数据库查询工具 (db_query)
@@ -185,7 +185,7 @@ async function modelLarge(prompt: string): Promise<string>
 执行数据库查询。
 
 ```typescript
-async function dbQuery(query: string): Promise<string>
+async function dbQuery(query: string): Promise<string>;
 ```
 
 ### 6. 网络请求工具 (web_request)
@@ -193,7 +193,16 @@ async function dbQuery(query: string): Promise<string>
 发送HTTP网络请求。
 
 ```typescript
-async function webRequest(input: string | { url: string; method?: string; headers?: Record<string, string>; body?: any }): Promise<string>
+async function webRequest(
+  input:
+    | string
+    | {
+        url: string;
+        method?: string;
+        headers?: Record<string, string>;
+        body?: any;
+      }
+): Promise<string>;
 ```
 
 ## 项目结构
@@ -232,7 +241,7 @@ async function webRequest(input: string | { url: string; method?: string; header
 1. 在`src/tools/`目录下创建新的工具文件
 2. 实现工具函数，遵循以下签名：
    ```typescript
-   async function toolName(input: any): Promise<string>
+   async function toolName(input: any): Promise<string>;
    ```
 3. 在`src/tools/index.ts`中导出新工具
 

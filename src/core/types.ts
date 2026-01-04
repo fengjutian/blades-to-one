@@ -2,13 +2,13 @@
  * Available tool names that can be used by the agent
  */
 export type ToolName =
-  | "search"           // Web search tool
-  | "code_exec"        // Code execution tool
-  | "model_small"      // Small model inference
-  | "model_large"      // Large model inference
-  | "db_query"         // Database query tool
-  | "web_request"      // Web request tool
-  | "none";            // No action
+  | 'search' // Web search tool
+  | 'code_exec' // Code execution tool
+  | 'model_small' // Small model inference
+  | 'model_large' // Large model inference
+  | 'db_query' // Database query tool
+  | 'web_request' // Web request tool
+  | 'none'; // No action
 
 /**
  * Interface for parsed ReAct framework responses
@@ -29,7 +29,7 @@ export interface ReActParsed {
  */
 export interface HistoryItem {
   /** Role of the participant (agent, tool, or system) */
-  role: "agent" | "tool" | "system";
+  role: 'agent' | 'tool' | 'system';
   /** Content of the message */
   content: string;
   /** Additional metadata */
@@ -46,5 +46,8 @@ export interface LLMClient {
    * @param opts Optional parameters for the LLM call
    * @returns The LLM's response
    */
-  call(prompt: string, opts?: { model?: string; temperature?: number }): Promise<string>;
+  call(
+    prompt: string,
+    opts?: { model?: string; temperature?: number }
+  ): Promise<string>;
 }

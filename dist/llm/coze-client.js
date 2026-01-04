@@ -12,10 +12,10 @@ class CozeClient {
      * @param baseURL Coze Studio API基础URL (默认: https://api.coze.com/v1)
      * @param workflowId Coze Studio工作流ID
      */
-    constructor(apiKey, baseURL = "https://api.coze.com/v1", workflowId) {
+    constructor(apiKey, baseURL = 'https://api.coze.com/v1', workflowId) {
         this.apiKey = apiKey;
         this.baseURL = baseURL;
-        this.workflowId = workflowId || "";
+        this.workflowId = workflowId || '';
     }
     /**
      * 调用Coze Studio API执行工作流或模型推理
@@ -31,21 +31,21 @@ class CozeClient {
             const requestBody = {
                 workflow_id: targetWorkflowId,
                 inputs: {
-                    prompt: prompt
+                    prompt: prompt,
                 },
                 parameters: {
                     temperature: opts?.temperature || 0.2,
-                    max_tokens: 1000
-                }
+                    max_tokens: 1000,
+                },
             };
             // 发送请求到Coze Studio API
             const response = await fetch(`${this.baseURL}/workflows/run`, {
-                method: "POST",
+                method: 'POST',
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${this.apiKey}`
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${this.apiKey}`,
                 },
-                body: JSON.stringify(requestBody)
+                body: JSON.stringify(requestBody),
             });
             // 检查响应状态
             if (!response.ok) {
@@ -62,11 +62,11 @@ class CozeClient {
                 return data.outputs.content;
             }
             else {
-                throw new Error("Invalid Coze Studio response format");
+                throw new Error('Invalid Coze Studio response format');
             }
         }
         catch (error) {
-            console.error("Coze Studio API call failed:", error);
+            console.error('Coze Studio API call failed:', error);
             throw error;
         }
     }
@@ -77,10 +77,10 @@ class CozeClient {
     async getWorkflows() {
         try {
             const response = await fetch(`${this.baseURL}/workflows`, {
-                method: "GET",
+                method: 'GET',
                 headers: {
-                    "Authorization": `Bearer ${this.apiKey}`
-                }
+                    Authorization: `Bearer ${this.apiKey}`,
+                },
             });
             if (!response.ok) {
                 throw new Error(`Failed to get workflows: ${response.status} ${response.statusText}`);
@@ -89,7 +89,7 @@ class CozeClient {
             return data.workflows || [];
         }
         catch (error) {
-            console.error("Failed to get Coze Studio workflows:", error);
+            console.error('Failed to get Coze Studio workflows:', error);
             throw error;
         }
     }

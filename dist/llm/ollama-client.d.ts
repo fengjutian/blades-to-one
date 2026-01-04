@@ -1,4 +1,4 @@
-import { LLMClient } from "../core/types";
+import { LLMClient } from '../core/types';
 /**
  * Ollama LLM client implementation
  * Uses the REST API provided by locally deployed Ollama

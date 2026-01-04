@@ -49,5 +49,5 @@ exports.Tools = {
     model_small: modelInference.modelSmall,
     model_large: modelInference.modelLarge,
     db_query: dbQuery.dbQuery,
-    web_request: webRequest.webRequest
+    web_request: webRequest.webRequest,
 };

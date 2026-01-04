@@ -1,5 +1,5 @@
-import { LLMClient } from "../core/types";
-import OpenAI from "openai";
+import { LLMClient } from '../core/types';
+import OpenAI from 'openai';
 
 /**
  * DeepSeek LLM client implementation
@@ -16,7 +16,7 @@ export class DeepSeekClient implements LLMClient {
   constructor(apiKey: string) {
     this.client = new OpenAI({
       apiKey,
-      baseURL: "https://api.deepseek.com/v1"
+      baseURL: 'https://api.deepseek.com/v1',
     });
   }
 
@@ -26,16 +26,20 @@ export class DeepSeekClient implements LLMClient {
    * @param opts Optional parameters for the LLM call
    * @returns The LLM's response as a string
    */
-  async call(prompt: string, opts?: { model?: string; temperature?: number }): Promise<string> {
-    const model = opts?.model || "deepseek-chat";
+  async call(
+    prompt: string,
+    opts?: { model?: string; temperature?: number }
+  ): Promise<string> {
+    const model = opts?.model || 'deepseek-chat';
     const resp = await this.client.chat.completions.create({
       model,
-      messages: [{ role: "user", content: prompt }],
+      messages: [{ role: 'user', content: prompt }],
       temperature: opts?.temperature ?? 0.2,
-      max_tokens: 800
+      max_tokens: 800,
     });
 
-    const text = (resp as any).choices?.[0]?.message?.content ?? JSON.stringify(resp);
+    const text =
+      (resp as any).choices?.[0]?.message?.content ?? JSON.stringify(resp);
     return String(text);
   }
 }

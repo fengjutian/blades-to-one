@@ -9,15 +9,15 @@ exports.webRequest = webRequest;
 async function webRequest(input) {
     // 解析请求参数
     let url;
-    let method = "GET";
+    let method = 'GET';
     let headers = {};
     let body = null;
-    if (typeof input === "string") {
+    if (typeof input === 'string') {
         url = input;
     }
     else {
         url = input.url;
-        method = input.method || "GET";
+        method = input.method || 'GET';
         headers = input.headers || {};
         body = input.body || null;
     }

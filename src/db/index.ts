@@ -37,7 +37,7 @@ export class DatabaseManager {
         database: process.env.MYSQL_DATABASE || '',
         waitForConnections: true,
         connectionLimit: 10,
-        queueLimit: 0
+        queueLimit: 0,
       };
 
       this.mysqlPool = createPool(config);
@@ -60,7 +60,7 @@ export class DatabaseManager {
         database: process.env.PG_DATABASE || '',
         max: 20,
         idleTimeoutMillis: 30000,
-        connectionTimeoutMillis: 2000
+        connectionTimeoutMillis: 2000,
       };
 
       this.pgPool = new PgPool(config);
@@ -114,7 +114,9 @@ export class DatabaseManager {
     try {
       const pool = this.getPostgreSQLPool();
       const client = await pool.connect();
-      const res = await client.query('SELECT $1::text as result', ['PostgreSQL 连接测试成功']);
+      const res = await client.query('SELECT $1::text as result', [
+        'PostgreSQL 连接测试成功',
+      ]);
       console.log(res.rows[0].result);
       client.release();
       return true;

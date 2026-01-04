@@ -1,4 +1,4 @@
-import { LLMClient } from "../core/types";
+import { LLMClient } from '../core/types';
 
 /**
  * Coze Studio客户端类，用于与Coze Studio API交互
@@ -17,12 +17,12 @@ export class CozeClient implements LLMClient {
    */
   constructor(
     apiKey: string,
-    baseURL: string = "https://api.coze.com/v1",
+    baseURL: string = 'https://api.coze.com/v1',
     workflowId?: string
   ) {
     this.apiKey = apiKey;
     this.baseURL = baseURL;
-    this.workflowId = workflowId || "";
+    this.workflowId = workflowId || '';
   }
 
   /**
@@ -38,48 +38,50 @@ export class CozeClient implements LLMClient {
     try {
       // 确定要使用的工作流ID
       const targetWorkflowId = opts?.workflowId || this.workflowId;
-      
+
       // 构建请求体
       const requestBody = {
         workflow_id: targetWorkflowId,
         inputs: {
-          prompt: prompt
+          prompt: prompt,
         },
         parameters: {
           temperature: opts?.temperature || 0.2,
-          max_tokens: 1000
-        }
+          max_tokens: 1000,
+        },
       };
 
       // 发送请求到Coze Studio API
       const response = await fetch(`${this.baseURL}/workflows/run`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${this.apiKey}`
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.apiKey}`,
         },
-        body: JSON.stringify(requestBody)
+        body: JSON.stringify(requestBody),
       });
 
       // 检查响应状态
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(`Coze Studio API error: ${response.status} ${response.statusText} - ${JSON.stringify(errorData)}`);
+        throw new Error(
+          `Coze Studio API error: ${response.status} ${response.statusText} - ${JSON.stringify(errorData)}`
+        );
       }
 
       // 解析响应数据
       const data = await response.json();
-      
+
       // 处理响应结果
       if (data && data.result && data.result.content) {
         return data.result.content;
       } else if (data && data.outputs && data.outputs.content) {
         return data.outputs.content;
       } else {
-        throw new Error("Invalid Coze Studio response format");
+        throw new Error('Invalid Coze Studio response format');
       }
     } catch (error) {
-      console.error("Coze Studio API call failed:", error);
+      console.error('Coze Studio API call failed:', error);
       throw error;
     }
   }
@@ -91,20 +93,22 @@ export class CozeClient implements LLMClient {
   async getWorkflows(): Promise<any[]> {
     try {
       const response = await fetch(`${this.baseURL}/workflows`, {
-        method: "GET",
+        method: 'GET',
         headers: {
-          "Authorization": `Bearer ${this.apiKey}`
-        }
+          Authorization: `Bearer ${this.apiKey}`,
+        },
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to get workflows: ${response.status} ${response.statusText}`);
+        throw new Error(
+          `Failed to get workflows: ${response.status} ${response.statusText}`
+        );
       }
 
       const data = await response.json();
       return data.workflows || [];
     } catch (error) {
-      console.error("Failed to get Coze Studio workflows:", error);
+      console.error('Failed to get Coze Studio workflows:', error);
       throw error;
     }
   }

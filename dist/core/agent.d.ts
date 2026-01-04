@@ -1,6 +1,6 @@
-import { Reasoner } from "./reasoner";
-import { HistoryItem } from "./types";
-import { CozeOrchestrator } from "../workflow/coze-orchestrator";
+import { Reasoner } from './reasoner';
+import { HistoryItem } from './types';
+import { CozeOrchestrator } from '../workflow/coze-orchestrator';
 export declare class Agent {
     private reasoner;
     private maxSteps;
