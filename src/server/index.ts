@@ -11,16 +11,19 @@ import { QwenClient } from "../llm/qwen-client";
 import { DeepSeekClient } from "../llm/deepseek-client";
 import { CozeClient } from "../llm/coze-client";
 import { CozeOrchestrator } from "../workflow/coze-orchestrator";
+import path from "path";
 
 dotenv.config();
 // 加载 `.env`，用于读取 `OPENAI_API_KEY`、`PORT` 等
 
 const app = express();
 app.use(bodyParser.json());
-// 初始化 Express 应用并启用 JSON 解析中间件
 
-const port = process.env.PORT || 3000;
-// 端口优先使用环境变量 `PORT`，否则默认 3000
+// 添加静态文件支持，用于提供Coze Studio编排页面
+app.use(express.static(path.join(__dirname, "../../public")));
+
+// 端口优先使用环境变量 `PORT`，否则默认 3001
+const port = process.env.PORT || 3001;
 
 // 选择 LLM：优先使用 KimiClient，然后是 OpenAIClient，再是 QwenClient，接着是 DeepSeekClient，然后是 CozeClient，然后是 OllamaClient，最后是 Mock
 let llmClient: any;
@@ -74,7 +77,7 @@ const agent = new Agent(reasoner, 6, cozeOrchestrator);
 
 // 添加一个欢迎页面
 app.get("/", (req, res) => {
-  res.send("欢迎使用万剑归宗 (blades-to-one)! 使用 POST /react/run 进行查询。");
+  res.send("欢迎使用万剑归宗 (blades-to-one)! 使用 POST /react/run 进行查询。或访问 /coze-orchestration.html 使用Coze Studio服务编排页面。");
 });
 
 app.post("/react/run", async (req, res) => {
