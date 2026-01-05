@@ -1,40 +1,75 @@
-import { PrismaClient } from '../generated/prisma';
-import { config } from 'dotenv';
+// 导入PrismaClient和相关类型
+import { PrismaClient } from '../generated/prisma/client';
+import dotenv from 'dotenv';
+import { join } from 'path';
+import sqlite3 from 'better-sqlite3';
+import { betterSqlite3 } from '@prisma/adapter-better-sqlite3';
 
 // 加载环境变量
-config();
+dotenv.config();
 
-// 单例模式管理PrismaClient实例
-class PrismaConnection {
-  private static instance: PrismaClient;
+// 定义PrismaConnection接口
+export interface PrismaConnection {
+  client: PrismaClient;
+  connect: () => Promise<void>;
+  disconnect: () => Promise<void>;
+  testConnection: () => Promise<boolean>;
+}
 
-  private constructor() {}
+// 创建单例模式的PrismaClient实例
+class PrismaConnectionImpl implements PrismaConnection {
+  private static instance: PrismaConnectionImpl;
+  public client: PrismaClient;
 
-  public static getClient(): PrismaClient {
-    if (!PrismaConnection.instance) {
-      // 在Prisma v7中，直接在PrismaClient构造函数中配置连接
-      PrismaConnection.instance = new PrismaClient({
-        // 启用日志记录
-        log: ['query', 'info', 'warn', 'error']
-      });
-    }
+  private constructor() {
+    // 获取数据库文件路径
+    const dbPath = join(process.cwd(), 'prisma', 'dev.db');
 
-    return PrismaConnection.instance;
+    // 创建SQLite实例和Prisma适配器
+    const sqlite = sqlite3(dbPath);
+    const adapter = betterSqlite3(sqlite);
+
+    // 创建PrismaClient实例
+    this.client = new PrismaClient({
+      log: ['query', 'info', 'warn', 'error'],
+      adapter,
+    });
   }
 
-  // 关闭数据库连接
-  public static async closeConnection(): Promise<void> {
-    if (PrismaConnection.instance) {
-      await PrismaConnection.instance.$disconnect();
-      PrismaConnection.instance = undefined as any;
+  // 获取单例实例
+  public static getInstance(): PrismaConnectionImpl {
+    if (!PrismaConnectionImpl.instance) {
+      PrismaConnectionImpl.instance = new PrismaConnectionImpl();
+    }
+    return PrismaConnectionImpl.instance;
+  }
+
+  // 连接数据库
+  public async connect(): Promise<void> {
+    try {
+      await this.client.$connect();
+      console.log('Prisma client connected to the database');
+    } catch (error) {
+      console.error('Failed to connect to the database:', error);
+      throw error;
+    }
+  }
+
+  // 断开数据库连接
+  public async disconnect(): Promise<void> {
+    try {
+      await this.client.$disconnect();
+      console.log('Prisma client disconnected from the database');
+    } catch (error) {
+      console.error('Failed to disconnect from the database:', error);
+      throw error;
     }
   }
 
   // 测试数据库连接
-  public static async testConnection(): Promise<boolean> {
+  public async testConnection(): Promise<boolean> {
     try {
-      const client = this.getClient();
-      await client.$queryRaw`SELECT 1`;
+      await this.client.$queryRaw`SELECT 1`;
       return true;
     } catch (error) {
       console.error('Database connection test failed:', error);
@@ -43,7 +78,6 @@ class PrismaConnection {
   }
 }
 
-// 导出Prisma客户端实例
-export const prisma = PrismaConnection.getClient();
-
-export default PrismaConnection;
+// 导出Prisma连接实例和类型
+export const prismaConnection: PrismaConnection = PrismaConnectionImpl.getInstance();
+export const prisma: PrismaClient = prismaConnection.client;

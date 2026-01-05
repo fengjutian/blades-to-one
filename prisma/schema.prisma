@@ -51,3 +51,7 @@ model UserPermission {
   @@id([userId, permissionId])
   @@map("user_permissions")
 }
+
+
+
+
