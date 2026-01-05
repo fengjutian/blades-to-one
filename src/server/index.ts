@@ -27,7 +27,6 @@ app.use(express.static(path.join(__dirname, '../../public')));
 // 端口优先使用环境变量 `PORT`，否则默认 3001
 const port = process.env.PORT || 3001;
 
-// 选择 LLM：优先使用 KimiClient，然后是 OpenAIClient，再是 QwenClient，接着是 DeepSeekClient，然后是 CozeClient，然后是 OllamaClient，最后是 Mock
 let llmClient: any;
 if (process.env.KIMI_API_KEY) {
   llmClient = new KimiClient(process.env.KIMI_API_KEY);
