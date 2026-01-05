@@ -61,8 +61,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       localStorage.setItem('auth_token', response.token);
       localStorage.setItem('auth_user', JSON.stringify(response.user));
 
-      // 登录成功后重定向到首页
-      navigate('/home', { replace: true });
+      // 登录成功后重定向到仪表盘
+      navigate('/dashboard', { replace: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : '登录失败');
     } finally {
