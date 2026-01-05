@@ -15,7 +15,6 @@ import path from 'path';
 import pinoHttp from 'pino-http';
 
 dotenv.config();
-// 加载 `.env`，用于读取 `OPENAI_API_KEY`、`PORT` 等
 
 const app = express();
 app.use(bodyParser.json());
