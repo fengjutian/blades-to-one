@@ -1,6 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import pinoHttp from 'pino-http';
+import cors from 'cors';
 import { Agent } from '../core/agent';
 import { Reasoner } from '../core/reasoner';
 import { CozeOrchestrator } from '../workflow/coze-orchestrator';
@@ -14,6 +15,13 @@ import authRoutes from './auth/auth-routes';
 
 // 初始化应用
 const app = express();
+
+// 配置CORS，允许来自前端的请求
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true,
+}));
+
 app.use(bodyParser.json());
 app.use(pinoHttp({
   // 配置日志格式和级别
