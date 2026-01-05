@@ -2,8 +2,7 @@
 import { PrismaClient } from '../generated/prisma/client';
 import dotenv from 'dotenv';
 import { join } from 'path';
-import sqlite3 from 'better-sqlite3';
-import { betterSqlite3 } from '@prisma/adapter-better-sqlite3';
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 
 // 加载环境变量
 dotenv.config();
@@ -25,9 +24,8 @@ class PrismaConnectionImpl implements PrismaConnection {
     // 获取数据库文件路径
     const dbPath = join(process.cwd(), 'prisma', 'dev.db');
 
-    // 创建SQLite实例和Prisma适配器
-    const sqlite = sqlite3(dbPath);
-    const adapter = betterSqlite3(sqlite);
+    // 创建Prisma适配器
+    const adapter = new PrismaBetterSqlite3({ url: `file:${dbPath}` });
 
     // 创建PrismaClient实例
     this.client = new PrismaClient({
@@ -81,3 +79,4 @@ class PrismaConnectionImpl implements PrismaConnection {
 // 导出Prisma连接实例和类型
 export const prismaConnection: PrismaConnection = PrismaConnectionImpl.getInstance();
 export const prisma: PrismaClient = prismaConnection.client;
+
