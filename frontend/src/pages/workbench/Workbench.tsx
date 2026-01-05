@@ -1,10 +1,10 @@
 import React from 'react';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '../../components/ui/card';
+// import {
+//   Card,
+//   CardContent,
+//   CardHeader,
+//   CardTitle,
+// } from '../../components/ui/card';
 import Workflow from '../workflow/workflow';
 
 const Workbench: React.FC = () => {
@@ -63,13 +63,11 @@ const Workbench: React.FC = () => {
         </div>
       </div>
 
-      {/* 右侧主内容区域 */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* 顶部工具栏 */}
         <div className="h-16 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between px-6">
           <div className="flex items-center space-x-4">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-              仪表盘
+              工作流
             </h2>
           </div>
 
@@ -108,39 +106,13 @@ const Workbench: React.FC = () => {
           </div>
         </div>
 
-        {/* 主内容 */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
-          {/* 统计卡片 */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* <Workflow /> */}
+            <Workflow />
 
-            {/* <Card>
-              <CardHeader>
-                <CardTitle className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                  今日任务
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold text-gray-900 dark:text-white">24</div>
-                <div className="text-sm text-green-600 dark:text-green-400 mt-1">
-                  <span className="font-medium">+12%</span> 较昨日
-                </div>
-              </CardContent>
-            </Card> */}
 
-            {/* <Card>
-              <CardHeader>
-                <CardTitle className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                  活跃用户
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold text-gray-900 dark:text-white">156</div>
-                <div className="text-sm text-green-600 dark:text-green-400 mt-1">
-                  <span className="font-medium">+8%</span> 较上周
-                </div>
-              </CardContent>
-            </Card> */}
+
+
           </div>
         </div>
       </div>
