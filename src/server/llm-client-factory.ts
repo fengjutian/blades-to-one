@@ -5,7 +5,6 @@ import { KimiClient } from '../llm/kimi-client';
 import { OllamaClient } from '../llm/ollama-client';
 import { QwenClient } from '../llm/qwen-client';
 import { DeepSeekClient } from '../llm/deepseek-client';
-import { CozeClient } from '../llm/coze-client';
 import { getLLMClientConfig } from './config';
 
 export class LLMClientFactory {
@@ -16,7 +15,6 @@ export class LLMClientFactory {
       'openai',
       'qwen',
       'deepseek',
-      'coze',
       'ollama',
       'mock',
     ];
@@ -65,16 +63,6 @@ export class LLMClientFactory {
         }
         break;
 
-      case 'coze':
-        if (config.apiKey) {
-          return new CozeClient(
-            config.apiKey,
-            config.baseUrl,
-            config.defaultWorkflow
-          );
-        }
-        break;
-
       case 'ollama':
         return new OllamaClient({
           baseURL: config.baseUrl,
@@ -91,3 +79,4 @@ export class LLMClientFactory {
     return null;
   }
 }
+

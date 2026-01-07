@@ -10,7 +10,7 @@ export const createRoutes = (agent: Agent, llmGateway: LLMGatewayImpl) => {
   router.get('/', (req, res) => {
     req.log.info('收到欢迎页面请求');
     res.send(
-      '欢迎使用万剑归宗 (blades-to-one)! 使用 POST /react/run 进行查询。或访问 /coze-orchestration.html 使用Coze Studio服务编排页面。'
+      '欢迎使用万剑归宗 (blades-to-one)! 使用 POST /react/run 进行查询。'
     );
   });
 
@@ -67,3 +67,4 @@ export const createRoutes = (agent: Agent, llmGateway: LLMGatewayImpl) => {
 
   return router;
 };
+

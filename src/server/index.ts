@@ -4,9 +4,8 @@ import pinoHttp from 'pino-http';
 import cors from 'cors';
 import { Agent } from '../core/agent';
 import { Reasoner } from '../core/reasoner';
-import { CozeOrchestrator } from '../workflow/coze-orchestrator';
 import { LLMGatewayImpl } from '../llm-gateway/llm-gateway';
-import { getServerConfig, getPublicPath, getLLMClientConfig } from './config';
+import { getServerConfig, getPublicPath } from './config';
 import { LLMClientFactory } from './llm-client-factory';
 import { createRoutes } from './routes';
 
@@ -65,20 +64,8 @@ console.log('LLM Gateway initialized with rate limiting');
 // 创建推理器
 const reasoner = new Reasoner(llmGateway);
 
-// 初始化Coze Studio服务编排器
-let cozeOrchestrator: CozeOrchestrator | undefined;
-const cozeConfig = getLLMClientConfig('coze');
-if (cozeConfig.apiKey) {
-  cozeOrchestrator = new CozeOrchestrator(
-    cozeConfig.apiKey,
-    cozeConfig.baseUrl,
-    cozeConfig.defaultWorkflow
-  );
-  console.log('Coze Studio服务编排器已初始化');
-}
-
 // 创建代理
-const agent = new Agent(reasoner, 6, cozeOrchestrator);
+const agent = new Agent(reasoner, 6);
 
 // 注册路由
 app.use('/', createRoutes(agent, llmGateway));
@@ -87,3 +74,5 @@ app.use('/', createRoutes(agent, llmGateway));
 app.listen(serverConfig.port, () => {
   console.log(`Server listening on http://localhost:${serverConfig.port}`);
 });
+
+
