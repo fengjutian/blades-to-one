@@ -9,7 +9,6 @@ import { getLLMClientConfig } from './config';
 
 export class LLMClientFactory {
   static createClient(): { client: LLMClient; type: string } {
-    // 按优先级顺序检查可用的LLM客户端
     const clientTypes = [
       'kimi',
       'openai',
