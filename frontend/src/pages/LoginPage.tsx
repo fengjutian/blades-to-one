@@ -28,8 +28,8 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
-      <Card className="w-[600px]">
+    <div className="flex items-center justify-center min-h-screen bg-background">
+      <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle>登录到您的账户</CardTitle>
           <CardDescription>请输入您的用户名和密码登录</CardDescription>
@@ -37,59 +37,60 @@ const LoginPage: React.FC = () => {
             <Button variant="link">注册新账户</Button>
           </div>
         </CardHeader>
-        <CardContent>
-          {error && (
-            <div className="p-3 mb-4 bg-red-50 border border-red-200 text-red-700 rounded-md">
-              {error}
-            </div>
-          )}
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="username">用户名</Label>
-              <Input
-                id="username"
-                type="text"
-                placeholder="请输入用户名"
-                required
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                disabled={isLoading}
-              />
-            </div>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="password">密码</Label>
-                <a
-                  href="#"
-                  className="text-sm text-primary underline-offset-4 hover:underline"
-                >
-                  忘记密码?
-                </a>
+        <form onSubmit={handleSubmit}>
+          <CardContent>
+            {error && (
+              <div className="p-3 mb-4 bg-destructive/10 border border-destructive/20 text-destructive rounded-md">
+                {error}
               </div>
-              <Input
-                id="password"
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                disabled={isLoading}
-              />
+            )}
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="username">用户名</Label>
+                <Input
+                  id="username"
+                  type="text"
+                  placeholder="请输入用户名"
+                  required
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  disabled={isLoading}
+                />
+              </div>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="password">密码</Label>
+                  <a
+                    href="#"
+                    className="text-sm text-primary underline-offset-4 hover:underline"
+                  >
+                    忘记密码?
+                  </a>
+                </div>
+                <Input
+                  id="password"
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  disabled={isLoading}
+                />
+              </div>
             </div>
-          </form>
-        </CardContent>
-        <CardFooter className="flex flex-col gap-2">
-          <Button
-            type="submit"
-            className="w-full"
-            onClick={handleSubmit}
-            disabled={isLoading}
-          >
-            {isLoading ? '登录中...' : '登录'}
-          </Button>
-          {/* <Button variant="outline" className="w-full">
-            使用Google登录
-          </Button> */}
-        </CardFooter>
+          </CardContent>
+          <CardFooter className="flex flex-col gap-2">
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={isLoading}
+            >
+              {isLoading ? '登录中...' : '登录'}
+            </Button>
+            {/* <Button variant="outline" className="w-full">
+              使用Google登录
+            </Button> */}
+          </CardFooter>
+        </form>
       </Card>
     </div>
   );
