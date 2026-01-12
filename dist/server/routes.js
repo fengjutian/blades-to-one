@@ -7,7 +7,7 @@ const createRoutes = (agent, llmGateway) => {
     // 欢迎页面
     router.get('/', (req, res) => {
         req.log.info('收到欢迎页面请求');
-        res.send('欢迎使用万剑归宗 (blades-to-one)! 使用 POST /react/run 进行查询。或访问 /coze-orchestration.html 使用Coze Studio服务编排页面。');
+        res.send('欢迎使用万剑归宗 (blades-to-one)! 使用 POST /react/run 进行查询。');
     });
     // 获取token统计信息
     router.get('/llm/token-stats', (req, res) => {

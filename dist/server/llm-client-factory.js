@@ -7,19 +7,16 @@ const kimi_client_1 = require("../llm/kimi-client");
 const ollama_client_1 = require("../llm/ollama-client");
 const qwen_client_1 = require("../llm/qwen-client");
 const deepseek_client_1 = require("../llm/deepseek-client");
-const coze_client_1 = require("../llm/coze-client");
 const config_1 = require("./config");
 class LLMClientFactory {
     static createClient() {
-        // 按优先级顺序检查可用的LLM客户端
         const clientTypes = [
             'kimi',
             'openai',
             'qwen',
             'deepseek',
-            'coze',
             'ollama',
-            'mock'
+            'mock',
         ];
         for (const clientType of clientTypes) {
             try {
@@ -57,11 +54,6 @@ class LLMClientFactory {
             case 'deepseek':
                 if (config.apiKey) {
                     return new deepseek_client_1.DeepSeekClient(config.apiKey);
-                }
-                break;
-            case 'coze':
-                if (config.apiKey) {
-                    return new coze_client_1.CozeClient(config.apiKey, config.baseUrl, config.defaultWorkflow);
                 }
                 break;
             case 'ollama':

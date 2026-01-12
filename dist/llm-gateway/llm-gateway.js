@@ -89,7 +89,7 @@ class LLMGatewayImpl {
      */
     getTokenStats(userId) {
         if (userId) {
-            return this.tokenStats.filter(stats => stats.userId === userId);
+            return this.tokenStats.filter((stats) => stats.userId === userId);
         }
         return [...this.tokenStats];
     }
@@ -99,7 +99,7 @@ class LLMGatewayImpl {
      */
     resetTokenStats(userId) {
         if (userId) {
-            this.tokenStats = this.tokenStats.filter(stats => stats.userId !== userId);
+            this.tokenStats = this.tokenStats.filter((stats) => stats.userId !== userId);
         }
         else {
             this.tokenStats = [];

@@ -29,11 +29,6 @@ const getLLMClientConfig = (clientType) => {
         case 'deepseek':
             config.apiKey = process.env.DEEPSEEK_API_KEY;
             break;
-        case 'coze':
-            config.apiKey = process.env.COZE_API_KEY;
-            config.baseUrl = process.env.COZE_BASE_URL;
-            config.defaultWorkflow = process.env.COZE_DEFAULT_WORKFLOW;
-            break;
         case 'ollama':
             config.baseUrl = process.env.OLLAMA_BASE_URL;
             config.defaultModel = process.env.OLLAMA_DEFAULT_MODEL;
