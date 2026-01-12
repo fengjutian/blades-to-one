@@ -14,6 +14,7 @@
 - ✅ **TypeScript开发**：类型安全，代码质量高
 - ✅ **REST API**：提供HTTP接口供外部调用
 - ✅ **模块化设计**：易于扩展和定制
+- ✅ **现代化UI**：基于shadcn/ui的响应式前端界面
 
 ## 技术栈
 
@@ -21,6 +22,15 @@
 - **Express**：Web服务器
 - **OpenAI SDK**：与LLM交互
 - **dotenv**：环境变量管理
+
+### 前端技术栈
+
+- **React 19**：用户界面框架
+- **Vite**：前端构建工具
+- **shadcn/ui**：组件库
+- **Tailwind CSS**：样式框架
+- **Radix UI**：UI原语库
+- **Lucide React**：图标库
 
 ## 核心概念
 
@@ -208,7 +218,7 @@ async function webRequest(
 ## 项目结构
 
 ```
-├── src/
+├── src/                    # 后端源代码
 │   ├── core/              # 核心组件
 │   │   ├── agent.ts       # 智能体核心
 │   │   ├── parser.ts      # 响应解析器
@@ -227,6 +237,15 @@ async function webRequest(
 │       ├── modelInference.ts # 模型推理工具
 │       ├── search.ts      # 搜索工具
 │       └── webRequest.ts  # 网络请求工具
+├── frontend/              # 前端应用
+│   ├── src/              # 前端源代码
+│   │   ├── components/   # 组件
+│   │   │   └── ui/       # UI组件（shadcn/ui）
+│   │   ├── hooks/        # 自定义钩子
+│   │   ├── lib/          # 工具函数
+│   │   └── pages/        # 页面
+│   ├── public/           # 静态资源
+│   └── vite.config.ts    # Vite配置
 ├── tests/                 # 测试文件
 ├── .env.example           # 环境变量示例
 ├── package.json           # 项目配置
@@ -298,3 +317,6 @@ MIT License
 - [ReAct: Synergizing Reasoning and Acting in Language Models](https://arxiv.org/abs/2210.03629)
 - [Moonshot AI](https://www.moonshot.cn/) - Kimi API
 - [OpenAI](https://openai.com/) - OpenAI API
+
+
+
