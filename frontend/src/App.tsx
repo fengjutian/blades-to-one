@@ -4,8 +4,6 @@ import Counter from './components/Counter';
 import LoginPage from './pages/LoginPage';
 import Dashboard from './pages/dashboard/Dashboard';
 import { AuthProvider } from './hooks/useAuth';
-// import typescriptLogo from './typescript.svg';
-// import viteLogo from '/vite.svg';
 import Workbench from './pages/workbench/Workbench';
 
 const App: React.FC = () => {
