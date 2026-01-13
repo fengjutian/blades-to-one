@@ -29,7 +29,6 @@ const LLMConfig = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  // 从localStorage加载配置
   useEffect(() => {
     const savedConfig = localStorage.getItem(LLM_CONFIG_KEY);
     if (savedConfig) {
@@ -60,10 +59,6 @@ const LLMConfig = () => {
     setSuccess(false);
 
     try {
-
-
-      console.log('提交的配置:', formData);
-      // 保存到localStorage
       localStorage.setItem(LLM_CONFIG_KEY, JSON.stringify(formData));
 
       setSuccess(true);
