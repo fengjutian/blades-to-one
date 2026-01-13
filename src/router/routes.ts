@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { Agent } from '../core/agent';
 import { LLMGatewayImpl } from '../llm-gateway/llm-gateway';
-import { RateLimitConfig } from '../llm-gateway/types';
+import { createStatisticsRoutes } from './statistics';
 
 export const createRoutes = (agent: Agent, llmGateway: LLMGatewayImpl) => {
   const router = Router();
@@ -13,34 +13,8 @@ export const createRoutes = (agent: Agent, llmGateway: LLMGatewayImpl) => {
     );
   });
 
-  // 获取token统计信息
-  router.get('/llm/token-stats', (req, res) => {
-    req.log.info('收到token统计信息请求');
-    const userId = req.query.userId as string;
-    const stats = llmGateway.getTokenStats(userId);
-    res.json({ tokenStats: stats });
-  });
-
-  // 重置token统计信息
-  router.post('/llm/token-stats/reset', (req, res) => {
-    req.log.info('收到重置token统计信息请求');
-    const userId = req.body?.userId;
-    llmGateway.resetTokenStats(userId);
-    res.json({ message: 'Token stats reset successfully' });
-  });
-
-  // 更新限流配置
-  router.post('/llm/rate-limit', (req, res) => {
-    req.log.info('收到更新限流配置请求');
-    try {
-      const config: RateLimitConfig = req.body;
-      llmGateway.updateRateLimitConfig(config);
-      res.json({ message: 'Rate limit config updated successfully' });
-    } catch (e: any) {
-      req.log.error('更新限流配置失败:', e);
-      res.status(400).json({ error: e.message });
-    }
-  });
+  // 使用新创建的statistics路由
+  router.use('/llm', createStatisticsRoutes(llmGateway));
 
   // 执行ReAct查询
   router.post('/react/run', async (req, res) => {
