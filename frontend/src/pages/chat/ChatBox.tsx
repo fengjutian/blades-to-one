@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { Chat, Radio, RadioGroup } from '@douyinfe/semi-ui';
+import styles from './chatBox.module.scss'
 
 const defaultMessage = [
   {
@@ -60,14 +61,6 @@ const ChatBox: React.FC = () => {
   const [mode, setMode] = useState('bubble');
   const [align, setAlign] = useState('leftRight');
 
-  const onAlignChange = useCallback((e) => {
-    setAlign(e.target.value);
-  }, []);
-
-  const onModeChange = useCallback((e) => {
-    setMode(e.target.value);
-  }, []);
-
   const onMessageSend = useCallback((content, attachment) => {
     const newAssistantMessage = {
       role: 'assistant',
@@ -99,8 +92,7 @@ const ChatBox: React.FC = () => {
   });
 
   return (
-    <>
-      <Chat
+    <Chat
         key={align + mode}
         align={align}
         mode={mode}
@@ -112,8 +104,11 @@ const ChatBox: React.FC = () => {
         onMessageSend={onMessageSend}
         onMessageReset={onMessageReset}
         uploadTipProps={uploadTipProps}
-      />
-    </>
+        className={styles.chatBoxWrap}
+        hintStyle={{
+        //   backgroundColor: '#ff0000',
+        }}
+    />
   );
 };
 
