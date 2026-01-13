@@ -44,8 +44,8 @@ const roleInfo = {
 
 const commonOuterStyle = {
   border: '1px solid var(--semi-color-border)',
-  width: '100%',
-//   height: '100%',
+  height: '100%',
+  overflowY: 'auto',
 };
 
 let id = 0;
