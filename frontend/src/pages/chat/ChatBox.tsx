@@ -43,10 +43,8 @@ const roleInfo = {
 
 const commonOuterStyle = {
   border: '1px solid var(--semi-color-border)',
-  // borderRadius: '16px',
-  // margin: '8px 16px',
   width: '100%',
-  height: '100%',
+//   height: '100%',
 };
 
 let id = 0;
