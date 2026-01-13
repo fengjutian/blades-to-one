@@ -29,7 +29,7 @@ const LoginPage: React.FC = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-background">
-      <Card className="w-full max-w-sm">
+      <Card className="w-[600px] max-w-sm">
         <CardHeader>
           <CardTitle>登录到您的账户</CardTitle>
           <CardDescription>请输入您的用户名和密码登录</CardDescription>

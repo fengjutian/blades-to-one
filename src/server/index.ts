@@ -18,7 +18,7 @@ const app = express();
 // 配置CORS，允许来自前端的请求
 app.use(
   cors({
-    origin: 'http://localhost:5173',
+    origin: 'http://localhost:3001',
     credentials: true,
   })
 );
