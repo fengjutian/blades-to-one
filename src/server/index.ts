@@ -7,7 +7,7 @@ import { Reasoner } from '../core/reasoner';
 import { LLMGatewayImpl } from '../llm-gateway/llm-gateway';
 import { getServerConfig, getPublicPath } from './config';
 import { LLMClientFactory } from './llm-client-factory';
-import { createRoutes } from './routes';
+import { createRoutes } from '../router/routes';
 
 // 导入认证路由
 import authRoutes from './auth/auth-routes';
