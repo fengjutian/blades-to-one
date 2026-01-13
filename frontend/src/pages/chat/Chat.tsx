@@ -1,12 +1,17 @@
 import React from 'react';
 import styles from './chat.module.scss';
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { AppSidebar } from "./AppSidebar"
 
-const Chat: React.FC = () => {
+const Chat: React.FC = ({ children }) => {
   return (
-    <div className={styles.chat}>
-      <div className={styles.chatHeader}>chat</div>
-      <div className={styles.chatContent}></div>
-    </div>
+    <SidebarProvider>
+      <AppSidebar />
+      {/* <main>
+        <SidebarTrigger />
+        {children}
+      </main> */}
+    </SidebarProvider>
   );
 };
 
