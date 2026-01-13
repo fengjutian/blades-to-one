@@ -1,0 +1,60 @@
+root = true
+
+# 通用设置（适用于所有文件类型）
+[*]
+indent_style = space              # 使用空格缩进
+indent_size = 2                   # Flutter 项目通常使用 2 空格缩进
+charset = utf-8                   # 文件编码为 UTF-8
+end_of_line = lf                  # 换行符使用 LF（适用于跨平台开发）
+trim_trailing_whitespace = true   # 自动移除行尾空白字符
+insert_final_newline = true       # 文件末尾添加空行
+
+# 针对 Dart 文件的特殊配置
+[*.dart]
+indent_size = 2                   # Dart 文件使用 2 个空格缩进
+max_line_length = 80              # 推荐行宽为 80 字符，符合 Dart 规范
+
+# 针对 Java 文件的特殊配置
+[*.java]
+indent_size = 4                   # Java 文件使用 4 个空格缩进
+max_line_length = 100             # Java 通常允许稍长的行宽，设为 100 字符
+
+# 针对 Kotlin 文件的特殊配置
+[*.kt]
+indent_size = 4                   # Kotlin 文件使用 4 个空格缩进
+max_line_length = 100             # Kotlin 文件推荐最大行宽为 100 字符
+
+# 针对 XML 文件的特殊配置
+[*.xml]
+indent_size = 2                   # XML 文件使用 2 个空格缩进
+
+# 针对 YAML 文件的特殊配置
+[*.yaml]
+indent_size = 2                   # YAML 文件使用 2 个空格缩进
+
+# 针对 JSON 文件的特殊配置
+[*.json]
+indent_size = 2                   # JSON 文件使用 2 个空格缩进
+
+# 针对 Properties 文件的特殊配置
+[*.properties]
+indent_style = space              # Properties 文件使用空格缩进
+indent_size = 2
+
+# 针对 Markdown 文件的特殊配置
+[*.md]
+trim_trailing_whitespace = false  # Markdown 文件允许行尾空白
+max_line_length = off             # Markdown 文件不限制行宽
+
+# 针对 SCSS 文件的特殊配置
+[*.scss]
+indent_size = 2                   # SCSS 文件使用 2 个空格缩进
+indent_style = space
+
+# 针对 TypeScript 文件的特殊配置
+[*.ts]
+indent_size = 2                   # TypeScript 文件使用 2 个空格缩进
+
+# 针对 TypeScript JSX 文件的特殊配置
+[*.tsx]
+indent_size = 2                   # TypeScript JSX 文件使用 2 个空格缩进
