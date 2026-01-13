@@ -24,24 +24,36 @@ max_line_length = 100             # Java 通常允许稍长的行宽，设为 10
 indent_size = 4                   # Kotlin 文件使用 4 个空格缩进
 max_line_length = 100             # Kotlin 文件推荐最大行宽为 100 字符
 
-# 针对 XML 文件（如 AndroidManifest.xml）
+# 针对 XML 文件的特殊配置
 [*.xml]
 indent_size = 2                   # XML 文件使用 2 个空格缩进
 
-# 针对 YAML 文件（如 pubspec.yaml）
+# 针对 YAML 文件的特殊配置
 [*.yaml]
 indent_size = 2                   # YAML 文件使用 2 个空格缩进
 
-# 针对 JSON 文件
+# 针对 JSON 文件的特殊配置
 [*.json]
 indent_size = 2                   # JSON 文件使用 2 个空格缩进
 
-# 针对 Properties 文件（如 gradle.properties）
+# 针对 Properties 文件的特殊配置
 [*.properties]
 indent_style = space              # Properties 文件使用空格缩进
 indent_size = 2
 
-# 针对 Markdown 文件（如 README.md）
+# 针对 Markdown 文件的特殊配置
 [*.md]
 trim_trailing_whitespace = false  # Markdown 文件允许行尾空白
 max_line_length = off             # Markdown 文件不限制行宽
+
+# 针对 SCSS 文件的特殊配置
+[*.scss]
+indent_size = 2                   # SCSS 文件使用 2 个空格缩进
+
+# 针对 TypeScript 文件的特殊配置
+[*.ts]
+indent_size = 2                   # TypeScript 文件使用 2 个空格缩进
+
+# 针对 TypeScript JSX 文件的特殊配置
+[*.tsx]
+indent_size = 2                   # TypeScript JSX 文件使用 2 个空格缩进
