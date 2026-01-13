@@ -9,6 +9,15 @@ export interface LoginRequest {
 }
 
 /**
+ * LLM配置请求参数
+ */
+export interface LLMConfigRequest {
+  apiUrl: string;
+  apiKey: string;
+  model: string;
+}
+
+/**
  * 认证响应
  */
 export interface AuthResponse {
