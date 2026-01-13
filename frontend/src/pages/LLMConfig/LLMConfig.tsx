@@ -17,7 +17,6 @@ import { Label } from "@/components/ui/label"
 import { Settings } from 'lucide-react';
 import { LLMConfigRequest } from '@/lib/api';
 
-// localStorage键名
 const LLM_CONFIG_KEY = 'llm_config';
 
 const LLMConfig = () => {
@@ -129,7 +128,7 @@ const LLMConfig = () => {
               />
             </div>
           </div>
-          <DialogFooter>
+          <DialogFooter className="mt-6">
             <DialogClose asChild>
               <Button variant="outline">取消</Button>
             </DialogClose>
