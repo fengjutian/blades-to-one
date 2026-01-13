@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 // import { useAuth } from '../../hooks/useAuth';
 import styles from './dashboard.module.scss';
 import LLMConfig from '@/pages/LLMConfig/LLMConfig';
@@ -7,9 +7,11 @@ import Chat from '@/pages/chat/Chat';
 
 const Dashboard: React.FC = () => {
   // const { user, logout } = useAuth();
+  const [showChat, setShowChat] = useState(false);
 
   const ShowBot = () => {
     console.log('ShowBot');
+    setShowChat(prev => !prev);
   };
 
   return (
@@ -22,10 +24,7 @@ const Dashboard: React.FC = () => {
           <LLMConfig />
         </div>
         <div className={styles.mainContent}>
-          <Chat />
-
-
-
+          {showChat && <Chat />}
         </div>
       </div>
     </div>
