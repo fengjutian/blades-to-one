@@ -14,6 +14,12 @@ $darkBgColor: #0f1011;
   width: 80px;
   height: 100%;
   border-right: 1px dashed $borderColor;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 20px 0;
+  box-sizing: border-box;
 }
 
 .mainPage {
