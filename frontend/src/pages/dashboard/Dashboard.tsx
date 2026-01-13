@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 // import { useAuth } from '../../hooks/useAuth';
 import styles from './dashboard.module.scss';
 import LLMConfig from '@/pages/LLMConfig/LLMConfig';
-import { Bot } from 'lucide-react';
+import { Bot, Workflow  } from 'lucide-react';
 import Chat from '@/pages/chat/Chat';
+import WorkflowEle from '@/pages/workflow/Workflow';
 
 const Dashboard: React.FC = () => {
   // const { user, logout } = useAuth();
@@ -18,6 +19,7 @@ const Dashboard: React.FC = () => {
     <div className={styles.dashboard}>
       <div className={styles.operatorCard}>
         <Bot onClick={ShowBot} className="cursor-pointer" />
+        <Workflow onClick={ShowBot} className="cursor-pointer" />
       </div>
       <div className={styles.mainPage}>
         <div className={styles.mainHeader}>
@@ -25,6 +27,7 @@ const Dashboard: React.FC = () => {
         </div>
         <div className={styles.mainContent}>
           {showChat && <Chat />}
+          <WorkflowEle />
         </div>
       </div>
     </div>
