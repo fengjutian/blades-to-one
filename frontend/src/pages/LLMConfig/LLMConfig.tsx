@@ -17,12 +17,14 @@ import { Label } from "@/components/ui/label"
 import { Settings } from 'lucide-react';
 
 const LLMConfig = () => {
+
+
+
   return (
     <Dialog>
       <form>
         <DialogTrigger asChild>
-          {/* <Button variant="outline">Open Dialog</Button> */}
-            <Settings />
+          <Settings />
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
