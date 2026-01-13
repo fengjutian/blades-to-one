@@ -14,37 +14,42 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Settings } from 'lucide-react';
 
 const LLMConfig = () => {
   return (
     <Dialog>
       <form>
         <DialogTrigger asChild>
-          <Button variant="outline">Open Dialog</Button>
+          {/* <Button variant="outline">Open Dialog</Button> */}
+            <Settings />
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>Edit profile</DialogTitle>
+            <DialogTitle>LLM配置</DialogTitle>
             <DialogDescription>
-              Make changes to your profile here. Click save when you&apos;re
-              done.
+              配置大模型API地址、API密钥、模型名称等
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4">
             <div className="grid gap-3">
-              <Label htmlFor="name-1">Name</Label>
-              <Input id="name-1" name="name" defaultValue="Pedro Duarte" />
+              <Label htmlFor="api-url-1">API URL</Label>
+              <Input id="api-url-1" name="api-url" defaultValue="https://api.openai.com/v1" />
             </div>
             <div className="grid gap-3">
-              <Label htmlFor="username-1">Username</Label>
-              <Input id="username-1" name="username" defaultValue="@peduarte" />
+              <Label htmlFor="api-key-1">API Key</Label>
+              <Input id="api-key-1" name="api-key" defaultValue="sk-1234567890abcdef1234567890abcdef" />
+            </div>
+            <div className="grid gap-3">
+              <Label htmlFor="model-1">Model</Label>
+              <Input id="model-1" name="model" defaultValue="gpt-3.5-turbo" />
             </div>
           </div>
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
+              <Button variant="outline">取消</Button>
             </DialogClose>
-            <Button type="submit">Save changes</Button>
+            <Button type="submit">保存配置</Button>
           </DialogFooter>
         </DialogContent>
       </form>
