@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styles from './dashboard.module.scss';
 import LLMConfig from '@/pages/LLMConfig/LLMConfig';
-import { Bot, Workflow, BrainCircuit   } from 'lucide-react';
+import { Bot, Workflow, BrainCircuit } from 'lucide-react';
 import Chat from '@/pages/chat/Chat';
 import WorkflowEle from '@/pages/workflow/Workflow';
 import RAG from '@/pages/rag/RAG';
@@ -52,9 +52,7 @@ const Dashboard: React.FC = () => {
         <div className={styles.mainHeader}>
           <LLMConfig />
         </div>
-        <div className={styles.mainContent}>
-          {renderSelectedComponent()}
-        </div>
+        <div className={styles.mainContent}>{renderSelectedComponent()}</div>
       </div>
     </div>
   );

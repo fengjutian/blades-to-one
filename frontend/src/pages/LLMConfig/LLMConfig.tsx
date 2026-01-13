@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styles from './LLMConfig.module.scss';
 
-import { Button } from "@/components/ui/button"
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogClose,
@@ -11,9 +11,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Settings } from 'lucide-react';
 import { LLMConfigRequest } from '@/lib/api';
 
@@ -23,7 +23,7 @@ const LLMConfig = () => {
   const [formData, setFormData] = useState<LLMConfigRequest>({
     apiUrl: 'https://api.openai.com/v1',
     apiKey: 'sk-1234567890abcdef1234567890abcdef',
-    model: 'gpt-3.5-turbo'
+    model: 'gpt-3.5-turbo',
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -34,9 +34,9 @@ const LLMConfig = () => {
     if (savedConfig) {
       try {
         const parsedConfig = JSON.parse(savedConfig);
-        setFormData(prev => ({
+        setFormData((prev) => ({
           ...prev,
-          ...parsedConfig
+          ...parsedConfig,
         }));
       } catch (error) {
         console.error('解析LLM配置失败:', error);
@@ -46,9 +46,9 @@ const LLMConfig = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -74,7 +74,7 @@ const LLMConfig = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Settings className="cursor-pointer"/>
+        <Settings className="cursor-pointer" />
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <form onSubmit={handleSubmit}>
@@ -134,7 +134,7 @@ const LLMConfig = () => {
         </form>
       </DialogContent>
     </Dialog>
-  )
-}
+  );
+};
 
 export default LLMConfig;

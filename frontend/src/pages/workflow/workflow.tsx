@@ -4,8 +4,6 @@ import {
   EditorRenderer,
 } from '@flowgram.ai/free-layout-editor';
 
-const WorkflowEle: React.FC = () => (
-  <div>Workflow</div>
-);
+const WorkflowEle: React.FC = () => <div>Workflow</div>;
 
 export default WorkflowEle;

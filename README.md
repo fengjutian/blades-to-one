@@ -317,6 +317,3 @@ MIT License
 - [ReAct: Synergizing Reasoning and Acting in Language Models](https://arxiv.org/abs/2210.03629)
 - [Moonshot AI](https://www.moonshot.cn/) - Kimi API
 - [OpenAI](https://openai.com/) - OpenAI API
-
-
-

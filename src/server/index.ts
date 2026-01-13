@@ -74,5 +74,3 @@ app.use('/', createRoutes(agent, llmGateway));
 app.listen(serverConfig.port, () => {
   console.log(`Server listening on http://localhost:${serverConfig.port}`);
 });
-
-

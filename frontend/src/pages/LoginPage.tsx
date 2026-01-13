@@ -79,11 +79,7 @@ const LoginPage: React.FC = () => {
             </div>
           </CardContent>
           <CardFooter className="flex flex-col gap-2">
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isLoading}
-            >
+            <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? '登录中...' : '登录'}
             </Button>
             {/* <Button variant="outline" className="w-full">
