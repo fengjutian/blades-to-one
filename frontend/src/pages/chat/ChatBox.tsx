@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { Chat, Radio, RadioGroup } from '@douyinfe/semi-ui';
+import { Chat } from '@douyinfe/semi-ui';
 import styles from './chatBox.module.scss'
 
 const defaultMessage = [

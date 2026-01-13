@@ -6,7 +6,6 @@ import { RateLimitConfig } from '../llm-gateway/types';
 export const createRoutes = (agent: Agent, llmGateway: LLMGatewayImpl) => {
   const router = Router();
 
-  // 欢迎页面
   router.get('/', (req, res) => {
     req.log.info('收到欢迎页面请求');
     res.send(
@@ -49,7 +48,6 @@ export const createRoutes = (agent: Agent, llmGateway: LLMGatewayImpl) => {
     try {
       const { query, userId } = req.body;
 
-      // 参数校验
       if (!query) {
         req.log.warn('查询请求缺少query参数');
         return res.status(400).json({ error: 'missing query parameter' });
