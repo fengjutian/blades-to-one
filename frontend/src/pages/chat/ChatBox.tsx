@@ -61,7 +61,11 @@ const ChatBox: React.FC = () => {
   const [mode, setMode] = useState('bubble');
   const [align, setAlign] = useState('leftRight');
 
-  const onMessageSend = useCallback((content, attachment) => {
+  const onMessageSend = useCallback((content: string, attachment: any) => {
+
+    console.log('点击发送', content, attachment);
+
+
     const newAssistantMessage = {
       role: 'assistant',
       id: getId(),
@@ -73,11 +77,12 @@ const ChatBox: React.FC = () => {
     }, 200);
   }, []);
 
-  const onChatsChange = useCallback((chats) => {
+  const onChatsChange = useCallback((chats: any) => {
+    console.log('onChatsChange', chats);
     setMessage(chats);
   }, []);
 
-  const onMessageReset = useCallback((e) => {
+  const onMessageReset = useCallback((e: any) => {
     setTimeout(() => {
       setMessage((message) => {
         const lastMessage = message[message.length - 1];
@@ -94,8 +99,8 @@ const ChatBox: React.FC = () => {
   return (
     <Chat
         key={align + mode}
-        align={align}
-        mode={mode}
+        align='leftRight'
+        mode='bubble'
         uploadProps={uploadProps}
         style={commonOuterStyle}
         chats={message}
@@ -105,9 +110,6 @@ const ChatBox: React.FC = () => {
         onMessageReset={onMessageReset}
         uploadTipProps={uploadTipProps}
         className={styles.chatBoxWrap}
-        hintStyle={{
-        //   backgroundColor: '#ff0000',
-        }}
     />
   );
 };
