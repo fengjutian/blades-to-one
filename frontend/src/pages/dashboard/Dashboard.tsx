@@ -2,6 +2,7 @@ import React from 'react';
 // import { useAuth } from '../../hooks/useAuth';
 import styles from './dashboard.module.scss';
 import { Settings } from 'lucide-react';
+import LLMConfig from '@/pages/LLMConfig/LLMConfig';
 
 const Dashboard: React.FC = () => {
   // const { user, logout } = useAuth();
@@ -14,6 +15,7 @@ const Dashboard: React.FC = () => {
       <div className={styles.mainPage}>
         <div className={styles.mainHeader}>
           <Settings />
+          <LLMConfig />
         </div>
         <div className={styles.mainContent}>
 
