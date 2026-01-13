@@ -12,7 +12,10 @@ const Dashboard: React.FC = () => {
       </div>
       <div className={styles.mainPage}>
         <div className={styles.mainHeader}></div>
-        <div className={styles.mainContent}></div>
+        <div className={styles.mainContent}>
+
+
+        </div>
       </div>
     </div>
   );
