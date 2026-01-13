@@ -5,6 +5,8 @@ import ChatBox from './ChatBox';
 import ImageChat from './ImageChat';
 
 const Chat: React.FC = () => {
+  const [selectedComponentName, setSelectedComponentName] = useState<string>('新聊天');
+
   const [siderBarList, setSiderBarList] = useState<
     { icon: ReactElement<any, any>; name: string; isActivity: boolean }[]
   >([
@@ -27,6 +29,8 @@ const Chat: React.FC = () => {
         isActivity: item.name === componentName,
       }))
     );
+
+    setSelectedComponentName(componentName);
   };
 
   return (
@@ -44,11 +48,12 @@ const Chat: React.FC = () => {
         ))}
       </div>
       <div className={styles.chat}>
-        <ChatBox />
-        <ImageChat />
+        {selectedComponentName === '新聊天' && <ChatBox />}
+        {selectedComponentName === '图片' && <ImageChat />}
       </div>
     </div>
   );
 };
 
 export default Chat;
+
