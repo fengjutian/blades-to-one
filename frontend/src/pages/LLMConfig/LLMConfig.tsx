@@ -79,11 +79,11 @@ const LLMConfig = () => {
 
   return (
     <Dialog>
-      <form onSubmit={handleSubmit}>
-        <DialogTrigger asChild>
-          <Settings />
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
+      <DialogTrigger asChild>
+        <Settings />
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>LLM配置</DialogTitle>
             <DialogDescription>
@@ -133,14 +133,12 @@ const LLMConfig = () => {
             <DialogClose asChild>
               <Button variant="outline">取消</Button>
             </DialogClose>
-
-              <Button type="submit" disabled={isLoading}>
-                {isLoading ? '保存中...' : '保存配置'}
-              </Button>
-
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? '保存中...' : '保存配置'}
+            </Button>
           </DialogFooter>
-        </DialogContent>
-      </form>
+        </form>
+      </DialogContent>
     </Dialog>
   )
 }
