@@ -1,8 +1,8 @@
 import React, { ReactElement, useState } from 'react';
 import styles from './chat.module.scss';
 import { SquarePen, Image } from 'lucide-react';
-// import { Chat as SemiChat } from '@douyinfe/semi-ui';
 import ChatBox from './ChatBox';
+import ImageChat from './ImageChat';
 
 const Chat: React.FC = () => {
   const [siderBarList, setSiderBarList] = useState<
@@ -45,6 +45,7 @@ const Chat: React.FC = () => {
       </div>
       <div className={styles.chat}>
         <ChatBox />
+        <ImageChat />
       </div>
     </div>
   );
