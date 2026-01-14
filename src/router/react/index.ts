@@ -4,7 +4,6 @@ import { Agent } from '../../core/agent';
 export const createReactRoutes = (agent: Agent) => {
   const router = Router();
 
-  // 执行ReAct查询
   router.post('/run', async (req, res) => {
     req.log.info('收到查询请求');
     try {
