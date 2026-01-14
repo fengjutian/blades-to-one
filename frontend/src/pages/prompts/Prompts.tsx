@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Table, Tag, Space, SideSheet, Button, Form, Select, Row, Col, Toast  } from '@douyinfe/semi-ui';
 import styles from './prompts.module.scss';
 import { IconDelete, IconEdit  } from '@douyinfe/semi-icons';
@@ -6,9 +6,10 @@ import { IconDelete, IconEdit  } from '@douyinfe/semi-icons';
 const Prompts: React.FC = () => {
   const [sideSheetVisible, setSideSheetVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<any>(null);
-  const [sideSheetSize, setSideSheetSize] = useState('large');
+  const [sideSheetSize, setSideSheetSize] = useState<'small' | 'medium' | 'large'>('large');
   const [dataSource, setDataSource] = useState([]);
-  const [formApi, setFormApi] = useState<any>(null);
+  // 使用ref来获取表单API
+  const formRef = useRef<any>(null);
 
   const openSideSheet = (record: any) => {
     setSelectedRecord(record);
@@ -18,16 +19,23 @@ const Prompts: React.FC = () => {
   const closeSideSheet = () => {
     setSideSheetVisible(false);
     setSelectedRecord(null);
-    setFormApi(null);
+    // 重置表单ref
+    formRef.current = null;
   };
 
-  const changeSideSheetSize = (e: any) => {
-    setSideSheetSize(e.target.value);
+  // 保存按钮的点击事件处理
+  const handleSaveClick = () => {
+    if (formRef.current) {
+      handleSave();
+    } else {
+      console.error('表单API未初始化');
+    }
   };
 
   // 保存Prompt的处理函数
   const handleSave = async () => {
     try {
+      const formApi = formRef.current;
       if (!formApi) {
         throw new Error('表单API未初始化');
       }
@@ -44,8 +52,10 @@ const Prompts: React.FC = () => {
         version: parseInt(values.version, 10) || 1,
         status: values.status,
         author_id: values.author_id || 100, // 默认用户ID
-        categoryId: values.categoryId, // 注意：这里需要根据实际情况调整，当前表单使用的是category名称，可能需要转换为ID
-        is_public: values.is_public ? 1 : 0,
+        // 使用category字段的值，在演示环境中直接使用字符串作为ID
+        categoryId: values.category ? values.category : 1,
+        // 设置默认的is_public值，因为表单中没有这个字段
+        is_public: selectedRecord?.is_public || 0,
         source: values.source,
         remarks: values.remarks,
         role: values.role
@@ -124,8 +134,7 @@ const Prompts: React.FC = () => {
     {
         title: '标签',
         dataIndex: 'tags',
-        minWidth: 150,
-        maxWidth: 300,
+        width: 100,
         render: (tags: string) => {
             return tags.split(',').map(tag => (
                 <Tag key={tag} color="blue" size="small">{tag}</Tag>
@@ -151,11 +160,6 @@ const Prompts: React.FC = () => {
             return <Tag color={statusMap[status] || 'default'}>{status}</Tag>;
         },
     },
-    // {
-    //     title: '使用次数',
-    //     dataIndex: 'usage_count',
-    //     width: 100, // 固定宽度，使用次数长度有限
-    // },
     {
         title: '是否公开',
         dataIndex: 'is_public',
@@ -279,92 +283,100 @@ const Prompts: React.FC = () => {
         size={sideSheetSize}
       >
         {selectedRecord && (
-          <Form layout='horizontal' onValueChange={values => console.log(values)} initialValues={selectedRecord}>
-            {({ formState, values, api }) => {
-              // 保存表单API
-              setFormApi(api);
-
+          <Form
+            layout='horizontal'
+            onValueChange={values => console.log(values)}
+            // 使用initValues而不是initialValues
+            initValues={selectedRecord}
+            // 使用ref获取表单API
+            ref={formRef}
+          >
+            {/* 移除未使用的values参数 */}
+            {({ formState }) => {
               return (
-                <div className="grid w-full">
-                  <Row>
-                    <Col span={12}>
-                      <Form.Input field="title" label="标题" style={{ width: '100%' }} placeholder="请输入标题" />
-                    </Col>
-                    <Col span={12}>
-                      <Form.Input field="description" label="描述" style={{ width: '100%' }} placeholder="请输入描述" />
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col span={12}>
-                      <Form.Select field="category" label="分类" style={{ width: '100%' }}>
-                        <Select.Option value="SQL">SQL</Select.Option>
-                        <Select.Option value="NLP">NLP</Select.Option>
-                        <Select.Option value="图像生成">图像生成</Select.Option>
-                        <Select.Option value="对话模型">对话模型</Select.Option>
-                        <Select.Option value="代码生成">代码生成</Select.Option>
-                        <Select.Option value="数据分析">数据分析</Select.Option>
-                      </Form.Select>
-                    </Col>
-                    <Col span={12}>
-                      <Form.Input field="tags" label="标签" style={{ width: '100%' }} placeholder="请输入标签，逗号分隔" />
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col span={12}>
-                      <Form.Select field="status" label="状态" style={{ width: '100%' }}>
-                        <Select.Option value="active">活跃</Select.Option>
-                        <Select.Option value="draft">草稿</Select.Option>
-                        <Select.Option value="deprecated">已废弃</Select.Option>
-                        <Select.Option value="archived">已归档</Select.Option>
-                      </Form.Select>
-                    </Col>
-                    <Col span={12}>
-                      <Form.Input field="version" label="版本" style={{ width: '100%' }} />
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col span={12}>
-                      <Form.Select field="source" label="来源" style={{ width: '100%' }}>
-                        <Select.Option value="系统生成">系统生成</Select.Option>
-                        <Select.Option value="用户上传">用户上传</Select.Option>
-                        <Select.Option value="第三方导入">第三方导入</Select.Option>
-                      </Form.Select>
-                    </Col>
-                    <Col span={12}>
-                      <Form.Select field="role" label="角色" style={{ width: '100%' }}>
-                        <Select.Option value="developer">开发者</Select.Option>
-                        <Select.Option value="user">普通用户</Select.Option>
-                        <Select.Option value="ai">AI助手</Select.Option>
-                        <Select.Option value="admin">管理员</Select.Option>
-                      </Form.Select>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col span={24}>
-                      <Form.TextArea field="content"  showClear label="内容" style={{ width: '100%' }} placeholder="请输入Prompt内容" textArea={{ rows: 5 }} />
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col span={24}>
-                      <Form.TextArea field="remarks" showClear label="备注" style={{ width: '100%' }} placeholder="请输入备注信息" textArea={{ rows: 3 }} />
-                    </Col>
-                  </Row>
+                <>
+                  {/* 表单内容 */}
 
-                  <div style={{ marginTop: 24 }}>
-                    <code>{JSON.stringify(formState, null, 2)}</code>
+                  <div className="grid w-full">
+                    <Row>
+                      <Col span={12}>
+                        <Form.Input field="title" label="标题" style={{ width: '100%' }} placeholder="请输入标题" />
+                      </Col>
+                      <Col span={12}>
+                        <Form.Input field="description" label="描述" style={{ width: '100%' }} placeholder="请输入描述" />
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col span={12}>
+                        <Form.Select field="category" label="分类" style={{ width: '100%' }}>
+                          <Select.Option value="SQL">SQL</Select.Option>
+                          <Select.Option value="NLP">NLP</Select.Option>
+                          <Select.Option value="图像生成">图像生成</Select.Option>
+                          <Select.Option value="对话模型">对话模型</Select.Option>
+                          <Select.Option value="代码生成">代码生成</Select.Option>
+                          <Select.Option value="数据分析">数据分析</Select.Option>
+                        </Form.Select>
+                      </Col>
+                      <Col span={12}>
+                        <Form.Input field="tags" label="标签" style={{ width: '100%' }} placeholder="请输入标签，逗号分隔" />
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col span={12}>
+                        <Form.Select field="status" label="状态" style={{ width: '100%' }}>
+                          <Select.Option value="active">活跃</Select.Option>
+                          <Select.Option value="draft">草稿</Select.Option>
+                          <Select.Option value="deprecated">已废弃</Select.Option>
+                          <Select.Option value="archived">已归档</Select.Option>
+                        </Form.Select>
+                      </Col>
+                      <Col span={12}>
+                        <Form.Input field="version" label="版本" style={{ width: '100%' }} />
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col span={12}>
+                        <Form.Select field="source" label="来源" style={{ width: '100%' }}>
+                          <Select.Option value="系统生成">系统生成</Select.Option>
+                          <Select.Option value="用户上传">用户上传</Select.Option>
+                          <Select.Option value="第三方导入">第三方导入</Select.Option>
+                        </Form.Select>
+                      </Col>
+                      <Col span={12}>
+                        <Form.Select field="role" label="角色" style={{ width: '100%' }}>
+                          <Select.Option value="developer">开发者</Select.Option>
+                          <Select.Option value="user">普通用户</Select.Option>
+                          <Select.Option value="ai">AI助手</Select.Option>
+                          <Select.Option value="admin">管理员</Select.Option>
+                        </Form.Select>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col span={24}>
+                        <Form.TextArea field="content"  showClear label="内容" style={{ width: '100%' }} placeholder="请输入Prompt内容" rows={5} />
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col span={24}>
+                        <Form.TextArea field="remarks" showClear label="备注" style={{ width: '100%' }} placeholder="请输入备注信息" rows={3} />
+                      </Col>
+                    </Row>
+
+                    <div style={{ marginTop: 24 }}>
+                      <code>{JSON.stringify(formState, null, 2)}</code>
+                    </div>
+                    <div style={{ marginTop: 20, display: 'flex', justifyContent: 'flex-end' }}>
+                      <Space>
+                        <Button onClick={closeSideSheet}>取消</Button>
+                        <Button type="primary" onClick={handleSaveClick}>保存</Button>
+                      </Space>
+                    </div>
                   </div>
-                </div>
+                </>
               );
             }}
           </Form>
         )}
-
-        <div style={{ marginTop: 20, display: 'flex', justifyContent: 'flex-end' }}>
-          <Space>
-            <Button onClick={closeSideSheet}>取消</Button>
-            <Button type="primary" onClick={handleSave}>保存</Button>
-          </Space>
-        </div>
       </SideSheet>
     </div>
   );

@@ -28,16 +28,6 @@ class PrismaConnectionImpl implements PrismaConnection {
     const port = Number(process.env.MYSQL_PORT);
     const database = process.env.MYSQL_DATABASE;
 
-    // 打印环境变量，用于调试
-    console.log('=== Database Connection Configuration ===');
-    console.log('MYSQL_USERNAME:', username);
-    console.log('MYSQL_PASSWORD:', password ? '[REDACTED]' : 'undefined');
-    console.log('MYSQL_HOST:', host);
-    console.log('MYSQL_PORT:', port);
-    console.log('MYSQL_DATABASE:', database);
-    console.log('DATABASE_URL:', process.env.DATABASE_URL ? '[REDACTED]' : 'undefined');
-    console.log('=========================================');
-
     // 验证必要的连接参数
     if (!username || !password || !host || !port || !database) {
       throw new Error('Missing required database connection parameters');
