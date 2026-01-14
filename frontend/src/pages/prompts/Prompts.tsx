@@ -6,7 +6,7 @@ import { IconDelete, IconEdit  } from '@douyinfe/semi-icons';
 const Prompts: React.FC = () => {
   const [sideSheetVisible, setSideSheetVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<any>(null);
-  const [sideSheetSize, setSideSheetSize] = useState('medium');
+  const [sideSheetSize, setSideSheetSize] = useState('large');
 
   const openSideSheet = (record: any) => {
     setSelectedRecord(record);
@@ -136,7 +136,7 @@ const Prompts: React.FC = () => {
 
   const scroll = useMemo(() => ({
     x: 1200,
-    y: 'calc(100vh - 200px)'
+    y: 'calc(100vh - 240px)'
   }), []);
 
   const generateMockData = () => {
@@ -147,7 +147,6 @@ const Prompts: React.FC = () => {
     const roles = ['developer', 'user', 'ai', 'admin'];
 
     for (let i = 1; i <= 50; i++) {
-      // 生成随机标签
       const tagCount = Math.floor(Math.random() * 3) + 1;
       const tagsArray = [];
       for (let j = 0; j < tagCount; j++) {
@@ -194,6 +193,7 @@ const Prompts: React.FC = () => {
 
   return (
     <div className={styles.promptsCtx} style={{ width: '100%', height: '100%' }}>
+      <Button className="w-30 mb-2" onClick={() => openSideSheet({ id: 1, title: 'Test Prompt', description: 'Test Description' })}>新建提示词</Button>
       <Table
         bordered={true}
         columns={columns}
@@ -202,7 +202,6 @@ const Prompts: React.FC = () => {
         scroll={scroll}
       />
 
-      {/* SideSheet组件 */}
       <SideSheet
         title="编辑Prompt"
         visible={sideSheetVisible}
