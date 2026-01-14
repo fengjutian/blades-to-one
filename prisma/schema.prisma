@@ -10,7 +10,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "mysql"
 }
 
 // 用户表
@@ -51,6 +51,7 @@ model UserPermission {
   @@id([userId, permissionId])
   @@map("user_permissions")
 }
+
 
 
 

@@ -1,7 +1,8 @@
 // 导入PrismaClient和相关类型
 import { PrismaClient } from '../generated/prisma/client';
 import dotenv from 'dotenv';
-import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
+import { PrismaMySQL } from '@prisma/adapter-mysql';
+import mysql from 'mysql2/promise';
 
 // 加载环境变量
 dotenv.config();
@@ -20,8 +21,18 @@ class PrismaConnectionImpl implements PrismaConnection {
   public client: PrismaClient;
 
   private constructor() {
-    // 创建Prisma适配器
-    const adapter = new PrismaBetterSqlite3({ url: 'file:./dev.db' });
+    // 从环境变量获取数据库URL
+    const databaseUrl = process.env.DATABASE_URL;
+
+    if (!databaseUrl) {
+      throw new Error('DATABASE_URL environment variable is not set');
+    }
+
+    // 创建MySQL连接池
+    const connectionPool = mysql.createPool(databaseUrl);
+
+    // 创建MySQL适配器
+    const adapter = new PrismaMySQL(connectionPool);
 
     // 创建PrismaClient实例
     this.client = new PrismaClient({
@@ -73,6 +84,5 @@ class PrismaConnectionImpl implements PrismaConnection {
 }
 
 // 导出Prisma连接实例和类型
-export const prismaConnection: PrismaConnection =
-  PrismaConnectionImpl.getInstance();
+export const prismaConnection: PrismaConnection = PrismaConnectionImpl.getInstance();
 export const prisma: PrismaClient = prismaConnection.client;
