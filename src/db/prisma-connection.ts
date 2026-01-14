@@ -1,13 +1,10 @@
-// 导入PrismaClient和相关类型
 import { PrismaClient } from '../generated/prisma/client';
 import { PrismaMariaDb } from '@prisma/adapter-mariadb';
 import mariadb from 'mysql2/promise';
 import dotenv from 'dotenv';
 
-// 加载环境变量
 dotenv.config();
 
-// 定义PrismaConnection接口
 export interface PrismaConnection {
   client: PrismaClient;
   connect: () => Promise<void>;
@@ -15,7 +12,6 @@ export interface PrismaConnection {
   testConnection: () => Promise<boolean>;
 }
 
-// 创建单例模式的PrismaClient实例
 class PrismaConnectionImpl implements PrismaConnection {
   private static instance: PrismaConnectionImpl;
   public client: PrismaClient;
