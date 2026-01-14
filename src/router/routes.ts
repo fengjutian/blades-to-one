@@ -13,7 +13,6 @@ export const createRoutes = (agent: Agent, llmGateway: LLMGatewayImpl) => {
     );
   });
 
-  // 使用新创建的statistics路由
   router.use('/llm', createStatisticsRoutes(llmGateway));
 
   // 执行ReAct查询
