@@ -1,9 +1,27 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Table, Tag, Space } from '@douyinfe/semi-ui';
+import { Table, Tag, Space, SideSheet, RadioGroup, Radio, Button } from '@douyinfe/semi-ui';
 import styles from './prompts.module.scss';
 import { IconDelete, IconEdit  } from '@douyinfe/semi-icons';
 
 const Prompts: React.FC = () => {
+  const [sideSheetVisible, setSideSheetVisible] = useState(false);
+  const [selectedRecord, setSelectedRecord] = useState<any>(null);
+  const [sideSheetSize, setSideSheetSize] = useState('medium');
+
+  const openSideSheet = (record: any) => {
+    setSelectedRecord(record);
+    setSideSheetVisible(true);
+  };
+
+  const closeSideSheet = () => {
+    setSideSheetVisible(false);
+    setSelectedRecord(null);
+  };
+
+  const changeSideSheetSize = (e: any) => {
+    setSideSheetSize(e.target.value);
+  };
+
   const columns = [
     {
         title: 'ID',
@@ -101,11 +119,11 @@ const Prompts: React.FC = () => {
       fixed: 'right',
       width: 80,
       resize: false,
-      render: () => {
+      render: (_: any, record: any) => {
           return (
             <div>
               <Space>
-                <IconEdit />
+                <IconEdit onClick={() => openSideSheet(record)} style={{ cursor: 'pointer' }} />
                 <IconDelete />
               </Space>
             </div>
@@ -183,6 +201,50 @@ const Prompts: React.FC = () => {
         pagination={paginationConfig}
         scroll={scroll}
       />
+
+      {/* SideSheet组件 */}
+      <SideSheet
+        title="编辑Prompt"
+        visible={sideSheetVisible}
+        onCancel={closeSideSheet}
+        size={sideSheetSize}
+      >
+        <div style={{ marginBottom: 20 }}>
+          <h3>SideSheet大小设置</h3>
+          <RadioGroup onChange={changeSideSheetSize} value={sideSheetSize}>
+            <Radio value="small">small</Radio>
+            <Radio value="medium">medium</Radio>
+            <Radio value="large">large</Radio>
+          </RadioGroup>
+        </div>
+
+        {selectedRecord && (
+          <div>
+            <h4>Prompt详情</h4>
+            <p><strong>ID:</strong> {selectedRecord.id}</p>
+            <p><strong>标题:</strong> {selectedRecord.title}</p>
+            <p><strong>描述:</strong> {selectedRecord.description}</p>
+            <p><strong>分类:</strong> {selectedRecord.category}</p>
+            <p><strong>标签:</strong> {selectedRecord.tags}</p>
+            <p><strong>版本:</strong> {selectedRecord.version}</p>
+            <p><strong>状态:</strong> {selectedRecord.status}</p>
+            <p><strong>作者ID:</strong> {selectedRecord.author_id}</p>
+            <p><strong>使用次数:</strong> {selectedRecord.usage_count}</p>
+            <p><strong>是否公开:</strong> {selectedRecord.is_public ? '公开' : '私有'}</p>
+            <p><strong>来源:</strong> {selectedRecord.source}</p>
+            <p><strong>角色:</strong> {selectedRecord.role}</p>
+            <p><strong>创建时间:</strong> {selectedRecord.created_at}</p>
+            <p><strong>更新时间:</strong> {selectedRecord.updated_at}</p>
+          </div>
+        )}
+
+        <div style={{ marginTop: 20, display: 'flex', justifyContent: 'flex-end' }}>
+          <Space>
+            <Button onClick={closeSideSheet}>取消</Button>
+            <Button type="primary">保存</Button>
+          </Space>
+        </div>
+      </SideSheet>
     </div>
   );
 };
