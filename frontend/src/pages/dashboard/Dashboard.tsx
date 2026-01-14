@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import styles from './dashboard.module.scss';
 import LLMConfig from '@/pages/LLMConfig/LLMConfig';
 import { Bot, Workflow, BrainCircuit, Drill, FilePenLine } from 'lucide-react';
@@ -9,10 +10,23 @@ import Tools from '@/pages/tools/Tools';
 import Prompts from '@/pages/prompts/Prompts';
 
 const Dashboard: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [selectedComponent, setSelectedComponent] = useState('chat');
+
+  // 根据URL路径设置初始选中的组件
+  useEffect(() => {
+    const path = location.pathname;
+    if (path.startsWith('/dashboard/')) {
+      const componentName = path.split('/dashboard/')[1] || 'chat';
+      setSelectedComponent(componentName);
+    }
+  }, [location.pathname]);
 
   const handleIconClick = (componentName: string) => {
     setSelectedComponent(componentName);
+    // 更新URL
+    navigate(`/dashboard/${componentName}`);
   };
 
   const renderSelectedComponent = () => {
