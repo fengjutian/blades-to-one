@@ -3,7 +3,11 @@ import { PrismaMariaDb } from '@prisma/adapter-mariadb';
 import mariadb from 'mysql2/promise';
 import dotenv from 'dotenv';
 
-dotenv.config();
+// 加载环境变量，指定.env文件路径确保正确加载
+dotenv.config({
+  path: './.env',
+  debug: true
+});
 
 export interface PrismaConnection {
   client: PrismaClient;
@@ -17,15 +21,49 @@ class PrismaConnectionImpl implements PrismaConnection {
   public client: PrismaClient;
 
   private constructor() {
-    // 从环境变量获取数据库URL
-    const databaseUrl = process.env.DATABASE_URL;
+    // 从环境变量获取数据库连接参数
+    const username = process.env.MYSQL_USERNAME;
+    const password = process.env.MYSQL_PASSWORD;
+    const host = process.env.MYSQL_HOST;
+    const port = Number(process.env.MYSQL_PORT);
+    const database = process.env.MYSQL_DATABASE;
 
-    if (!databaseUrl) {
-      throw new Error('DATABASE_URL environment variable is not set');
+    // 打印环境变量，用于调试
+    console.log('=== Database Connection Configuration ===');
+    console.log('MYSQL_USERNAME:', username);
+    console.log('MYSQL_PASSWORD:', password ? '[REDACTED]' : 'undefined');
+    console.log('MYSQL_HOST:', host);
+    console.log('MYSQL_PORT:', port);
+    console.log('MYSQL_DATABASE:', database);
+    console.log('DATABASE_URL:', process.env.DATABASE_URL ? '[REDACTED]' : 'undefined');
+    console.log('=========================================');
+
+    // 验证必要的连接参数
+    if (!username || !password || !host || !port || !database) {
+      throw new Error('Missing required database connection parameters');
     }
 
+    // 创建连接池配置
+    const poolConfig = {
+      host,
+      port,
+      user: username,
+      password,
+      database,
+      connectionLimit: 10,
+      waitForConnections: true,
+      queueLimit: 0,
+      connectTimeout: 30000, // 增加连接超时时间
+      idleTimeout: 60000, // 增加空闲连接超时时间
+      enableKeepAlive: true,
+      keepAliveInitialDelay: 0
+    };
+
     // 创建MariaDB连接池
-    const pool = mariadb.createPool(databaseUrl);
+    const pool = mariadb.createPool(poolConfig);
+
+    // 测试连接池是否能正常工作
+    this.testPoolConnection(pool);
 
     // 创建PrismaMariaDb适配器
     const adapter = new PrismaMariaDb(pool);
@@ -33,8 +71,21 @@ class PrismaConnectionImpl implements PrismaConnection {
     // 使用适配器创建PrismaClient实例
     this.client = new PrismaClient({
       log: ['query', 'info', 'warn', 'error'],
-      adapter,
+      adapter
     });
+  }
+
+  // 测试连接池是否能正常工作
+  private async testPoolConnection(pool: mariadb.Pool) {
+    try {
+      const connection = await pool.getConnection();
+      console.log('Successfully obtained connection from pool');
+      await connection.release();
+      console.log('Successfully released connection back to pool');
+    } catch (error) {
+      console.error('Failed to test connection pool:', error);
+      // 不要抛出错误，让应用程序继续运行
+    }
   }
 
   // 获取单例实例

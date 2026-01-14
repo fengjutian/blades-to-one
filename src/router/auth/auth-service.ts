@@ -1,12 +1,27 @@
-import { prisma } from '../../db';
-import {
-  LoginRequest,
-  RegisterRequest,
-  AuthResponse,
-  JwtPayload,
-} from './types';
+import { LoginRequest, RegisterRequest, AuthResponse, JwtPayload } from './types';
 import { generateToken } from './token-utils';
 import bcrypt from 'bcryptjs';
+import mysql from 'mysql2/promise';
+import dotenv from 'dotenv';
+
+// 加载环境变量
+dotenv.config();
+
+// 创建数据库连接池
+const pool = mysql.createPool({
+  host: process.env.MYSQL_HOST,
+  port: Number(process.env.MYSQL_PORT),
+  user: process.env.MYSQL_USERNAME,
+  password: process.env.MYSQL_PASSWORD,
+  database: process.env.MYSQL_DATABASE,
+  connectionLimit: 10,
+  waitForConnections: true,
+  queueLimit: 0,
+  connectTimeout: 30000,
+  idleTimeout: 60000,
+  enableKeepAlive: true,
+  keepAliveInitialDelay: 0
+});
 
 /**
  * 用户认证服务类
@@ -21,16 +36,12 @@ export class AuthService {
     const { username, password } = loginData;
 
     // 查找用户
-    const user = await prisma.user.findUnique({
-      where: { username },
-      include: {
-        userPermissions: {
-          include: {
-            permission: true,
-          },
-        },
-      },
-    });
+    const [users] = await pool.execute(
+      'SELECT id, username, password, email, created_at FROM users WHERE username = ?',
+      [username]
+    );
+
+    const user = (users as any[])[0];
 
     if (!user) {
       throw new Error('用户不存在');
@@ -57,7 +68,7 @@ export class AuthService {
         id: user.id,
         username: user.username,
         email: user.email,
-        createdAt: user.createdAt,
+        createdAt: user.created_at,
       },
     };
   }
@@ -71,20 +82,22 @@ export class AuthService {
     const { username, password, email } = registerData;
 
     // 检查用户名是否已存在
-    const existingUser = await prisma.user.findUnique({
-      where: { username },
-    });
+    const [existingUsers] = await pool.execute(
+      'SELECT id FROM users WHERE username = ?',
+      [username]
+    );
 
-    if (existingUser) {
+    if ((existingUsers as any[]).length > 0) {
       throw new Error('用户名已存在');
     }
 
     // 检查邮箱是否已存在
-    const existingEmail = await prisma.user.findUnique({
-      where: { email },
-    });
+    const [existingEmails] = await pool.execute(
+      'SELECT id FROM users WHERE email = ?',
+      [email]
+    );
 
-    if (existingEmail) {
+    if ((existingEmails as any[]).length > 0) {
       throw new Error('邮箱已存在');
     }
 
@@ -92,13 +105,17 @@ export class AuthService {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // 创建用户
-    const newUser = await prisma.user.create({
-      data: {
-        username,
-        password: hashedPassword,
-        email,
-      },
-    });
+    const [result] = await pool.execute(
+      'INSERT INTO users (username, password, email) VALUES (?, ?, ?)',
+      [username, hashedPassword, email]
+    );
+
+    const newUser = {
+      id: (result as any).insertId,
+      username,
+      email,
+      created_at: new Date(),
+    };
 
     // 生成JWT token
     const jwtPayload: Omit<JwtPayload, 'exp' | 'iat'> = {
@@ -115,7 +132,7 @@ export class AuthService {
         id: newUser.id,
         username: newUser.username,
         email: newUser.email,
-        createdAt: newUser.createdAt,
+        createdAt: newUser.created_at,
       },
     };
   }
@@ -126,37 +143,29 @@ export class AuthService {
    * @returns 用户信息
    */
   async getUserById(userId: number) {
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      include: {
-        userPermissions: {
-          include: {
-            permission: true,
-          },
-        },
-      },
-      select: {
-        id: true,
-        username: true,
-        email: true,
-        createdAt: true,
-        userPermissions: {
-          select: {
-            permission: {
-              select: {
-                name: true,
-              },
-            },
-          },
-        },
-      },
-    });
+    const [users] = await pool.execute(
+      'SELECT id, username, email, created_at FROM users WHERE id = ?',
+      [userId]
+    );
+
+    const user = (users as any[])[0];
 
     if (!user) {
       throw new Error('用户不存在');
     }
 
-    return user;
+    // 获取用户权限
+    const [permissions] = await pool.execute(
+      `SELECT p.name FROM permissions p
+       JOIN user_permissions up ON p.id = up.permission_id
+       WHERE up.user_id = ?`,
+      [userId]
+    );
+
+    return {
+      ...user,
+      userPermissions: (permissions as any[]).map(p => ({ permission: { name: p.name } })),
+    };
   }
 }
 
