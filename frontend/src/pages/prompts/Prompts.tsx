@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Table, Tag, Space, SideSheet, Button, Form, Select, Row, Col } from '@douyinfe/semi-ui';
+import { Table, Tag, Space, SideSheet, Button, Form, Select, Row, Col, Toast  } from '@douyinfe/semi-ui';
 import styles from './prompts.module.scss';
 import { IconDelete, IconEdit  } from '@douyinfe/semi-icons';
 
@@ -85,18 +85,18 @@ const Prompts: React.FC = () => {
         setDataSource(prev => prev.map(item =>
           item.id === selectedRecord.id ? savedPrompt : item
         ));
-        Message.success('Prompt更新成功');
+        Toast.success('Prompt更新成功');
       } else {
         // 添加新记录
         setDataSource(prev => [...prev, savedPrompt]);
-        Message.success('Prompt创建成功');
+        Toast.success('Prompt创建成功');
       }
 
       // 关闭侧边栏
       closeSideSheet();
     } catch (error) {
       console.error('保存失败:', error);
-      Message.error(error instanceof Error ? error.message : '保存失败，请重试');
+      Toast.error(error instanceof Error ? error.message : '保存失败，请重试');
     }
   };
 
@@ -151,16 +151,11 @@ const Prompts: React.FC = () => {
             return <Tag color={statusMap[status] || 'default'}>{status}</Tag>;
         },
     },
-    {
-        title: '作者ID',
-        dataIndex: 'author_id',
-        width: 80, // 固定宽度，ID长度有限
-    },
-    {
-        title: '使用次数',
-        dataIndex: 'usage_count',
-        width: 100, // 固定宽度，使用次数长度有限
-    },
+    // {
+    //     title: '使用次数',
+    //     dataIndex: 'usage_count',
+    //     width: 100, // 固定宽度，使用次数长度有限
+    // },
     {
         title: '是否公开',
         dataIndex: 'is_public',
@@ -172,22 +167,22 @@ const Prompts: React.FC = () => {
     {
         title: '来源',
         dataIndex: 'source',
-        width: 120, // 固定宽度，来源信息长度有限
+        width: 80, // 固定宽度，来源信息长度有限
     },
     {
         title: '角色',
         dataIndex: 'role',
-        width: 100, // 固定宽度，角色名称长度有限
+        width: 80, // 固定宽度，角色名称长度有限
     },
     {
         title: '创建时间',
         dataIndex: 'created_at',
-        width: 180, // 固定宽度，时间格式统一
+        width: 120, // 固定宽度，时间格式统一
     },
     {
         title: '更新时间',
         dataIndex: 'updated_at',
-        width: 180
+        width: 120
     },
     {
       title: '操作列',
