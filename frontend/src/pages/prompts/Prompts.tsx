@@ -247,14 +247,6 @@ const Prompts: React.FC = () => {
                 <Form.Input field="content" label="内容" style={{ width: 500 }} placeholder="请输入Prompt内容" textArea={{ rows: 5 }} />
                 <Form.Input field="remarks" label="备注" style={{ width: 500 }} placeholder="请输入备注信息" textArea={{ rows: 3 }} />
 
-                {selectedRecord.id && (
-                  <>
-                    <Form.Input field="id" label="ID" style={{ width: 150 }} disabled />
-                    <Form.Input field="created_at" label="创建时间" style={{ width: 300 }} disabled />
-                    <Form.Input field="updated_at" label="更新时间" style={{ width: 300 }} disabled />
-                  </>
-                )}
-
                 <div style={{ marginTop: 24 }}>
                   <code>{JSON.stringify(formState, null, 2)}</code>
                 </div>

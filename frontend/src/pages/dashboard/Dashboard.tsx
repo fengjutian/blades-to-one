@@ -14,7 +14,6 @@ const Dashboard: React.FC = () => {
   const location = useLocation();
   const [selectedComponent, setSelectedComponent] = useState('chat');
 
-  // 根据URL路径设置初始选中的组件
   useEffect(() => {
     const path = location.pathname;
     if (path.startsWith('/dashboard/')) {
@@ -25,7 +24,6 @@ const Dashboard: React.FC = () => {
 
   const handleIconClick = (componentName: string) => {
     setSelectedComponent(componentName);
-    // 更新URL
     navigate(`/dashboard/${componentName}`);
   };
 
