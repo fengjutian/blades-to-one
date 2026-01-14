@@ -1,8 +1,8 @@
 // 导入PrismaClient和相关类型
 import { PrismaClient } from '../generated/prisma/client';
+import { PrismaMariaDb } from '@prisma/adapter-mariadb';
+import mariadb from 'mysql2/promise';
 import dotenv from 'dotenv';
-import { PrismaMySQL } from '@prisma/adapter-mysql';
-import mysql from 'mysql2/promise';
 
 // 加载环境变量
 dotenv.config();
@@ -28,13 +28,13 @@ class PrismaConnectionImpl implements PrismaConnection {
       throw new Error('DATABASE_URL environment variable is not set');
     }
 
-    // 创建MySQL连接池
-    const connectionPool = mysql.createPool(databaseUrl);
+    // 创建MariaDB连接池
+    const pool = mariadb.createPool(databaseUrl);
 
-    // 创建MySQL适配器
-    const adapter = new PrismaMySQL(connectionPool);
+    // 创建PrismaMariaDb适配器
+    const adapter = new PrismaMariaDb(pool);
 
-    // 创建PrismaClient实例
+    // 使用适配器创建PrismaClient实例
     this.client = new PrismaClient({
       log: ['query', 'info', 'warn', 'error'],
       adapter,
