@@ -245,15 +245,7 @@ const Prompts: React.FC = () => {
                     </Form.Select>
                   </Col>
                   <Col span={12}>
-                    <Form.Input field="author_id" label="作者ID" style={{ width: '100%' }} />
-                  </Col>
-                </Row>
-                <Row>
-                  <Col span={12}>
                     <Form.Input field="version" label="版本" style={{ width: '100%' }} />
-                  </Col>
-                  <Col span={12}>
-                    <Form.Input field="usage_count" label="使用次数" style={{ width: '100%' }} />
                   </Col>
                 </Row>
                 <Row>
@@ -275,12 +267,12 @@ const Prompts: React.FC = () => {
                 </Row>
                 <Row>
                   <Col span={24}>
-                    <Form.Input field="content" label="内容" style={{ width: '100%' }} placeholder="请输入Prompt内容" textArea={{ rows: 5 }} />
+                    <Form.TextArea field="content"  showClear label="内容" style={{ width: '100%' }} placeholder="请输入Prompt内容" textArea={{ rows: 5 }} />
                   </Col>
                 </Row>
                 <Row>
                   <Col span={24}>
-                    <Form.Input field="remarks" label="备注" style={{ width: '100%' }} placeholder="请输入备注信息" textArea={{ rows: 3 }} />
+                    <Form.TextArea field="remarks" showClear label="备注" style={{ width: '100%' }} placeholder="请输入备注信息" textArea={{ rows: 3 }} />
                   </Col>
                 </Row>
 
