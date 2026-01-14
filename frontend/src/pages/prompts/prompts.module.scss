@@ -1,3 +1,12 @@
 .promptsCtx{
     padding: 20px;
+    height: calc(100vh - 80px); // 减去页面顶部和底部的空间
+    overflow: hidden; // 防止容器本身出现滚动条
+    display: flex;
+    flex-direction: column;
+}
+
+// 确保Table有足够的空间展示
+.promptsCtx :global(.semi-table-container) {
+    flex: 1;
 }

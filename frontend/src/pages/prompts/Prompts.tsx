@@ -54,42 +54,40 @@ const Prompts: React.FC = () => {
             },
         },
         {
-            title: '作者ID',
-            dataIndex: 'author_id',
-            width: 100,
+          title: '作者ID',
+          dataIndex: 'author_id',
         },
         {
-            title: '使用次数',
-            dataIndex: 'usage_count',
-            width: 100,
+          title: '使用次数',
+          dataIndex: 'usage_count',
+
         },
         {
-            title: '是否公开',
-            dataIndex: 'is_public',
-            width: 100,
-            render: (isPublic: number) => {
-                return isPublic === 1 ? <Tag color="green">公开</Tag> : <Tag color="red">私有</Tag>;
-            },
+          title: '是否公开',
+          dataIndex: 'is_public',
+          render: (isPublic: number) => {
+            return isPublic === 1 ? <Tag color="green">公开</Tag> : <Tag color="red">私有</Tag>;
+          },
         },
         {
-            title: '来源',
-            dataIndex: 'source',
-            width: 120,
+          title: '来源',
+          dataIndex: 'source',
         },
         {
-            title: '角色',
-            dataIndex: 'role',
-            width: 100,
+          title: '角色',
+          dataIndex: 'role',
+          width: 120,
         },
         {
-            title: '创建时间',
-            dataIndex: 'created_at',
-            width: 180,
+          title: '创建时间',
+          dataIndex: 'created_at',
+          width: 180,
         },
         {
-            title: '更新时间',
-            dataIndex: 'updated_at',
-            width: 180,
+          title: '更新时间',
+          dataIndex: 'updated_at',
+          width: 180,
+          // 不设置宽度，让其自动适应剩余空间
         },
     ];
 
@@ -197,16 +195,21 @@ const Prompts: React.FC = () => {
     ];
 
     return (
-      <div className={styles.promptsCtx}>
+      <div className={styles.promptsCtx} style={{ width: '100%', height: '100%' }}>
         <Table
           bordered={true}
           columns={columns}
           dataSource={data}
           pagination={{ pageSize: 10 }}
-          scroll={{ x: 800 }}
+          scroll={{
+            x: 1200, // 增加横向滚动宽度，确保能容纳所有列
+            y: 600   // 添加纵向滚动，固定表头
+          }}
         />
       </div>
     );
 };
 
 export default Prompts;
+
+
