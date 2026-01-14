@@ -116,7 +116,7 @@ const Prompts: React.FC = () => {
 
   const scroll = useMemo(() => ({
     x: 1200,
-    y: 600
+    y: 'calc(100vh - 200px)'
   }), []);
 
   const generateMockData = () => {
