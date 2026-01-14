@@ -1,215 +1,188 @@
-import React from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Table, Tag } from '@douyinfe/semi-ui';
 import styles from './prompts.module.scss';
+import { IconDelete, IconEdit  } from '@douyinfe/semi-icons';
 
 const Prompts: React.FC = () => {
-    const columns = [
-        {
-            title: 'ID',
-            dataIndex: 'id',
-            width: 60,
+  const columns = [
+    {
+        title: 'ID',
+        dataIndex: 'id',
+        width: 60, // 固定宽度，内容长度固定
+    },
+    {
+        title: '标题',
+        dataIndex: 'title',
+        minWidth: 150, // 设置最小宽度，内容较长时可伸展
+        maxWidth: 300, // 设置最大宽度，避免过度占用空间
+    },
+    {
+        title: '描述',
+        dataIndex: 'description',
+        minWidth: 200,
+        maxWidth: 400,
+    },
+    {
+        title: '分类',
+        dataIndex: 'category',
+        width: 120, // 固定宽度，分类名称长度有限
+    },
+    {
+        title: '标签',
+        dataIndex: 'tags',
+        minWidth: 150,
+        maxWidth: 300,
+        render: (tags: string) => {
+            return tags.split(',').map(tag => (
+                <Tag key={tag} color="blue" size="small">{tag}</Tag>
+            ));
         },
-        {
-            title: '标题',
-            dataIndex: 'title',
-            width: 200,
+    },
+    {
+        title: '版本',
+        dataIndex: 'version',
+        width: 80, // 固定宽度，版本号长度有限
+    },
+    {
+        title: '状态',
+        dataIndex: 'status',
+        width: 100, // 固定宽度，状态值有限
+        render: (status: string) => {
+            const statusMap: Record<string, string> = {
+                active: 'green',
+                draft: 'yellow',
+                deprecated: 'red',
+                archived: 'grey',
+            };
+            return <Tag color={statusMap[status] || 'default'}>{status}</Tag>;
         },
-        {
-            title: '描述',
-            dataIndex: 'description',
-            width: 250,
-        },
-        {
-            title: '分类',
-            dataIndex: 'category',
-            width: 120,
-        },
-        {
-            title: '标签',
-            dataIndex: 'tags',
-            width: 180,
-            render: (tags: string) => {
-                return tags.split(',').map(tag => (
-                    <Tag key={tag} color="blue" size="small">{tag}</Tag>
-                ));
-            },
-        },
-        {
-            title: '版本',
-            dataIndex: 'version',
-            width: 80,
-        },
-        {
-            title: '状态',
-            dataIndex: 'status',
-            width: 120,
-            render: (status: string) => {
-                const statusMap: Record<string, string> = {
-                    active: 'green',
-                    draft: 'yellow',
-                    deprecated: 'red',
-                    archived: 'grey',
-                };
-                return <Tag color={statusMap[status] || 'default'}>{status}</Tag>;
-            },
-        },
-        {
-          title: '作者ID',
-          dataIndex: 'author_id',
-        },
-        {
-          title: '使用次数',
-          dataIndex: 'usage_count',
-
-        },
-        {
-          title: '是否公开',
-          dataIndex: 'is_public',
-          render: (isPublic: number) => {
+    },
+    {
+        title: '作者ID',
+        dataIndex: 'author_id',
+        width: 80, // 固定宽度，ID长度有限
+    },
+    {
+        title: '使用次数',
+        dataIndex: 'usage_count',
+        width: 100, // 固定宽度，使用次数长度有限
+    },
+    {
+        title: '是否公开',
+        dataIndex: 'is_public',
+        width: 100, // 固定宽度，内容固定为"公开"或"私有"
+        render: (isPublic: number) => {
             return isPublic === 1 ? <Tag color="green">公开</Tag> : <Tag color="red">私有</Tag>;
-          },
         },
-        {
-          title: '来源',
-          dataIndex: 'source',
-        },
-        {
-          title: '角色',
-          dataIndex: 'role',
-          width: 120,
-        },
-        {
-          title: '创建时间',
-          dataIndex: 'created_at',
-          width: 180,
-        },
-        {
-          title: '更新时间',
-          dataIndex: 'updated_at',
-          width: 180,
-          // 不设置宽度，让其自动适应剩余空间
-        },
-    ];
+    },
+    {
+        title: '来源',
+        dataIndex: 'source',
+        width: 120, // 固定宽度，来源信息长度有限
+    },
+    {
+        title: '角色',
+        dataIndex: 'role',
+        width: 100, // 固定宽度，角色名称长度有限
+    },
+    {
+        title: '创建时间',
+        dataIndex: 'created_at',
+        width: 180, // 固定宽度，时间格式统一
+    },
+    {
+        title: '更新时间',
+        dataIndex: 'updated_at',
+        width: 180
+    },
+    {
+      title: '操作列',
+      dataIndex: 'operate',
+      fixed: 'right',
+      width: 100,
+      resize: false,
+      render: () => {
+          return (
+            <div>
+              <IconEdit />
+              <IconDelete />
+            </div>
+          );
+      },
+    },
+  ];
 
-    const data = [
-        {
-            key: '1',
-            id: 1,
-            title: '生成SQL语句',
-            description: '根据需求生成SQL建表和插入语句',
-            content: '请生成建表及插入语句...',
-            tags: 'sql,测试,prompt',
-            version: 1,
-            status: 'active',
-            author_id: 101,
-            category: 'SQL',
-            usage_count: 10,
-            last_used_at: '2023-01-01 12:00:00',
-            is_public: 1,
-            source: '系统生成',
-            remarks: '用于开发测试',
-            role: 'developer',
-            created_at: '2023-01-01 12:00:00',
-            updated_at: '2023-01-01 12:00:00',
-        },
-        {
-            key: '2',
-            id: 2,
-            title: '文本情感分析',
-            description: '分析文本情感的prompt',
-            content: '请分析以下文本的情感倾向...',
-            tags: 'nlp,情感分析,测试',
-            version: 1,
-            status: 'active',
-            author_id: 102,
-            category: 'NLP',
-            usage_count: 25,
-            last_used_at: '2023-01-02 13:30:00',
-            is_public: 1,
-            source: '用户上传',
-            remarks: '',
-            role: 'user',
-            created_at: '2023-01-02 13:30:00',
-            updated_at: '2023-01-02 13:30:00',
-        },
-        {
-            key: '3',
-            id: 3,
-            title: '图像生成示例',
-            description: '生成图片的prompt示例',
-            content: '生成一张未来城市风格的图片...',
-            tags: 'ai,图像生成,prompt',
-            version: 2,
-            status: 'draft',
-            author_id: 103,
-            category: '图像生成',
-            usage_count: 5,
-            last_used_at: '2023-01-03 15:45:00',
-            is_public: 0,
-            source: '系统生成',
-            remarks: '版本2测试',
-            role: 'ai',
-            created_at: '2023-01-03 15:45:00',
-            updated_at: '2023-01-03 15:45:00',
-        },
-        {
-            key: '4',
-            id: 4,
-            title: '对话模型训练',
-            description: '用于训练聊天模型的prompt',
-            content: '假设你是客服机器人，回答用户问题...',
-            tags: 'ai,chatbot,prompt',
-            version: 1,
-            status: 'active',
-            author_id: 101,
-            category: '对话模型',
-            usage_count: 40,
-            last_used_at: '2023-01-04 09:15:00',
-            is_public: 1,
-            source: '用户上传',
-            remarks: '常用训练样例',
-            role: 'developer',
-            created_at: '2023-01-04 09:15:00',
-            updated_at: '2023-01-04 09:15:00',
-        },
-        {
-            key: '5',
-            id: 5,
-            title: 'SQL优化建议',
-            description: '用于SQL优化提示',
-            content: '请给出查询优化建议...',
-            tags: 'sql,优化,提示',
-            version: 3,
-            status: 'deprecated',
-            author_id: 104,
-            category: 'SQL',
-            usage_count: 15,
-            last_used_at: '2023-01-05 11:20:00',
-            is_public: 1,
-            source: '系统生成',
-            remarks: '历史版本',
-            role: 'admin',
-            created_at: '2023-01-05 11:20:00',
-            updated_at: '2023-01-05 11:20:00',
-        },
-    ];
+  const [dataSource, setDataSource] = useState([]);
 
-    return (
-      <div className={styles.promptsCtx} style={{ width: '100%', height: '100%' }}>
-        <Table
-          bordered={true}
-          columns={columns}
-          dataSource={data}
-          pagination={{ pageSize: 10 }}
-          scroll={{
-            x: 1200, // 增加横向滚动宽度，确保能容纳所有列
-            y: 600   // 添加纵向滚动，固定表头
-          }}
-        />
-      </div>
-    );
+  const scroll = useMemo(() => ({
+    x: 1200,
+    y: 600
+  }), []);
+
+  const generateMockData = () => {
+    const data = [];
+    const categories = ['SQL', 'NLP', '图像生成', '对话模型', '代码生成', '数据分析'];
+    const statuses = ['active', 'draft', 'deprecated', 'archived'];
+    const sources = ['系统生成', '用户上传', '第三方导入'];
+    const roles = ['developer', 'user', 'ai', 'admin'];
+
+    for (let i = 1; i <= 50; i++) {
+      // 生成随机标签
+      const tagCount = Math.floor(Math.random() * 3) + 1;
+      const tagsArray = [];
+      for (let j = 0; j < tagCount; j++) {
+        const randomTag = Math.random() > 0.5 ? 'ai' : '测试';
+        tagsArray.push(randomTag + j);
+      }
+
+      data.push({
+        key: '' + i,
+        id: i,
+        title: `Prompt示例${i}`,
+        description: `这是第${i}个prompt的描述信息，用于测试分页功能。`,
+        content: '请生成相关内容...',
+        tags: tagsArray.join(','),
+        version: Math.floor(Math.random() * 3) + 1,
+        status: statuses[Math.floor(Math.random() * statuses.length)],
+        author_id: 100 + Math.floor(Math.random() * 10),
+        category: categories[Math.floor(Math.random() * categories.length)],
+        usage_count: Math.floor(Math.random() * 50),
+        last_used_at: `2023-01-${(Math.floor(Math.random() * 30) + 1).toString().padStart(2, '0')} 12:00:00`,
+        is_public: Math.random() > 0.5 ? 1 : 0,
+        source: sources[Math.floor(Math.random() * sources.length)],
+        remarks: Math.random() > 0.5 ? '测试备注' : '',
+        role: roles[Math.floor(Math.random() * roles.length)],
+        created_at: `2023-01-${(Math.floor(Math.random() * 30) + 1).toString().padStart(2, '0')} 12:00:00`,
+        updated_at: `2023-01-${(Math.floor(Math.random() * 30) + 1).toString().padStart(2, '0')} 12:00:00`,
+      });
+    }
+    return data;
+  };
+
+  useEffect(() => {
+    const data = generateMockData();
+    setDataSource(data);
+  }, []);
+
+  const paginationConfig = useMemo(() => ({
+    pageSize: 10,
+    showSizeChanger: true,
+    pageSizeOptions: ['10', '20', '50', '100'],
+    showTotal: (total, range) => `${range[0]}-${range[1]} 条，共 ${total} 条`,
+    showQuickJumper: true,
+  }), []);
+
+  return (
+    <div className={styles.promptsCtx} style={{ width: '100%', height: '100%' }}>
+      <Table
+        bordered={true}
+        columns={columns}
+        dataSource={dataSource}
+        pagination={paginationConfig}
+        scroll={scroll}
+      />
+    </div>
+  );
 };
 
 export default Prompts;
-
-
