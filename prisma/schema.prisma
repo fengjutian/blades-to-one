@@ -23,6 +23,8 @@ model User {
   updatedAt DateTime @updatedAt @map("updated_at")
   // 多对多关系
   userPermissions UserPermission[]
+  // 与Prompts的关系
+  prompts         Prompts[]
 
   @@map("users")
 }
@@ -52,11 +54,28 @@ model UserPermission {
   @@map("user_permissions")
 }
 
+// Prompt表
+model Prompts {
+  id           Int       @id @default(autoincrement()) @map("id")
+  title        String    @db.VarChar(255) @map("title")
+  description  String?   @db.Text @map("description")
+  content      String    @db.Text @map("content")
+  tags         String?   @db.VarChar(255) @map("tags")
+  version      Int       @default(1) @map("version")
+  status       String    @db.VarChar(50) @default("active") @map("status")
+  author_id    Int?      @map("author_id")
+  category     String?   @db.VarChar(100) @map("category")
+  usage_count  Int       @default(0) @map("usage_count")
+  last_used_at DateTime? @db.Timestamp @map("last_used_at")
+  is_public    Boolean   @default(true) @map("is_public")
+  source       String?   @db.VarChar(255) @map("source")
+  remarks      String?   @db.Text @map("remarks")
+  role         String    @db.VarChar(50) @default("user") @map("role")
+  created_at   DateTime  @default(now()) @db.Timestamp @map("created_at")
+  updated_at   DateTime  @default(now()) @updatedAt @db.Timestamp @map("updated_at")
 
+  // 与User的关系
+  author       User?     @relation(fields: [author_id], references: [id])
 
-
-
-
-
-
-
+  @@map("prompts")
+}
