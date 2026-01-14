@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Table, Tag } from '@douyinfe/semi-ui';
+import { Table, Tag, Space } from '@douyinfe/semi-ui';
 import styles from './prompts.module.scss';
 import { IconDelete, IconEdit  } from '@douyinfe/semi-icons';
 
@@ -99,13 +99,15 @@ const Prompts: React.FC = () => {
       title: '操作列',
       dataIndex: 'operate',
       fixed: 'right',
-      width: 100,
+      width: 80,
       resize: false,
       render: () => {
           return (
             <div>
-              <IconEdit />
-              <IconDelete />
+              <Space>
+                <IconEdit />
+                <IconDelete />
+              </Space>
             </div>
           );
       },
