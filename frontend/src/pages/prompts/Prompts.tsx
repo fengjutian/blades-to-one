@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Table, Tag, Space, SideSheet, RadioGroup, Radio, Button, Form, Input, Select, Switch } from '@douyinfe/semi-ui';
+import { Table, Tag, Space, SideSheet, Button, Form, Select} from '@douyinfe/semi-ui';
 import styles from './prompts.module.scss';
 import { IconDelete, IconEdit  } from '@douyinfe/semi-icons';
 
