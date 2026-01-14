@@ -13,9 +13,122 @@ datasource db {
   provider = "mysql"
 }
 
-// 引入模型文件
 // 用户认证相关模型
-/// <reference path="models/auth-models.prisma" />
+
+/**
+ * 用户表
+ */
+model User {
+  id            Int       @id @default(autoincrement()) @map("id")  // 主键ID，自增
+  username      String    @unique @db.VarChar(50) @map("username")  // 用户名，唯一，最大50字符
+  email         String    @unique @db.VarChar(100) @map("email")    // 邮箱，唯一，最大100字符
+  password      String    @db.VarChar(255) @map("password")         // 密码，加密存储，最大255字符
+  is_active     Boolean   @default(true) @map("is_active")          // 是否激活，默认true
+  is_admin      Boolean   @default(false) @map("is_admin")          // 是否管理员，默认false
+  avatar_url    String?   @db.VarChar(255) @map("avatar_url")       // 头像URL，可选，最大255字符
+  created_at    DateTime  @default(now()) @map("created_at")         // 创建时间
+  updated_at    DateTime  @updatedAt @map("updated_at")              // 更新时间
+  last_login_at DateTime? @map("last_login_at")                     // 最后登录时间，可选
+  phone_number  String?   @db.VarChar(20) @map("phone_number")      // 手机号，可选，最大20字符
+  department    String?   @db.VarChar(100) @map("department")       // 部门，可选，最大100字符
+
+  // 关系定义
+  user_permissions UserPermission[]  // 与用户权限关联表的一对多关系
+  prompts          Prompts[]         // 与Prompts的一对多关系（用户作为作者）
+
+  @@map("users")
+}
+
+/**
+ * 权限表
+ */
+model Permission {
+  id          Int            @id @default(autoincrement()) @map("id")  // 主键ID，自增
+  name        String         @unique @db.VarChar(50) @map("name")      // 权限名称，唯一，最大50字符
+  description String?        @db.VarChar(255) @map("description")     // 权限描述，可选，最大255字符
+  created_at  DateTime       @default(now()) @map("created_at")       // 创建时间
+  updated_at  DateTime       @updatedAt @map("updated_at")            // 更新时间
+
+  // 关系定义
+  user_permissions UserPermission[]  // 与用户权限关联表的一对多关系
+
+  @@map("permissions")
+}
+
+/**
+ * 用户权限关联表
+ */
+model UserPermission {
+  id            Int       @id @default(autoincrement()) @map("id")  // 主键ID，自增
+  user_id       Int       @map("user_id")                            // 用户ID，外键
+  permission_id Int       @map("permission_id")                       // 权限ID，外键
+  created_at    DateTime  @default(now()) @map("created_at")         // 创建时间
+  updated_at    DateTime  @updatedAt @map("updated_at")              // 更新时间
+
+  // 关系定义
+  user       User       @relation(fields: [user_id], references: [id])       // 与用户表的多对一关系
+  permission Permission @relation(fields: [permission_id], references: [id])  // 与权限表的多对一关系
+
+  @@map("user_permissions")
+}
+
+/**
+ * 角色表
+ * 注意：该模型当前只有基本结构，实际使用时需要完善权限体系
+ */
+model Role {
+  id          Int       @id @default(autoincrement()) @map("id")  // 主键ID，自增
+  name        String    @unique @db.VarChar(50) @map("name")      // 角色名称，唯一，最大50字符
+  description String?   @db.VarChar(255) @map("description")     // 角色描述，可选，最大255字符
+  created_at  DateTime  @default(now()) @map("created_at")       // 创建时间
+  updated_at  DateTime  @updatedAt @map("updated_at")            // 更新时间
+
+  @@map("roles")
+}
 
 // Prompt相关模型
-/// <reference path="models/prompt-models.prisma" />
+
+/**
+ * 分类表
+ * 用于对Prompts进行分类管理
+ */
+model Category {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique @map("name")        // 分类名称，唯一
+  createdAt DateTime @default(now()) @map("created_at")  // 创建时间
+  updatedAt DateTime @updatedAt @map("updated_at")        // 更新时间
+
+  // 关系定义
+  prompts   Prompts[]  // 与Prompts的一对多关系
+
+  @@map("categories")
+}
+
+/**
+ * Prompt表
+ * 存储AI提示模板
+ */
+model Prompts {
+  id           Int       @id @default(autoincrement()) @map("id")  // 主键ID，自增
+  title        String    @db.VarChar(255) @map("title")           // 标题，最大255字符
+  description  String?   @db.Text @map("description")             // 描述，可选，文本类型
+  content      String    @db.Text @map("content")                 // 内容，文本类型
+  tags         String?   @db.VarChar(255) @map("tags")            // 标签，可选，最大255字符，用逗号分隔
+  version      Int       @default(1) @map("version")              // 版本号，默认1
+  status       String    @db.VarChar(50) @default("active") @map("status")  // 状态，可选值：active/draft/inactive，默认active
+  author_id    Int?      @map("author_id")                       // 作者ID，外键，可选
+  categoryId   Int?      @map("category_id")                     // 分类ID，外键，可选
+  usage_count  Int       @default(0) @map("usage_count")          // 使用次数，默认0
+  last_used_at DateTime? @db.Timestamp @map("last_used_at")       // 最后使用时间，可选，时间戳类型
+  is_public    Boolean   @default(true) @map("is_public")         // 是否公开，默认true
+  source       String?   @db.VarChar(255) @map("source")          // 来源，可选，最大255字符
+  remarks      String?   @db.Text @map("remarks")                 // 备注，可选，文本类型
+  role         String    @db.VarChar(50) @default("user") @map("role")  // 角色，可选值：user/assistant/system，默认user
+  updated_at   DateTime  @default(now()) @updatedAt @db.Timestamp @map("updated_at")  // 更新时间，默认当前时间，自动更新
+
+  // 关系定义
+  author       User?     @relation(fields: [author_id], references: [id])  // 与User的关系
+  category     Category? @relation(fields: [categoryId], references: [id])  // 与Category的关系
+
+  @@map("prompts")
+}

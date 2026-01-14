@@ -1,48 +1,48 @@
-/**
- * Prompt管理相关模型
- */
+// /**
+//  * Prompt管理相关模型
+//  */
 
-/**
- * 分类表
- * 用于对Prompts进行分类管理
- */
-model Category {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique @map("name")        // 分类名称，唯一
-  createdAt DateTime @default(now()) @map("created_at")  // 创建时间
-  updatedAt DateTime @updatedAt @map("updated_at")        // 更新时间
+// /**
+//  * 分类表
+//  * 用于对Prompts进行分类管理
+//  */
+// model Category {
+//   id        Int      @id @default(autoincrement())
+//   name      String   @unique @map("name")        // 分类名称，唯一
+//   createdAt DateTime @default(now()) @map("created_at")  // 创建时间
+//   updatedAt DateTime @updatedAt @map("updated_at")        // 更新时间
 
-  // 关系定义
-  prompts   Prompts[]  // 与Prompts的一对多关系
+//   // 关系定义
+//   prompts   Prompts[]  // 与Prompts的一对多关系
 
-  @@map("categories")
-}
+//   @@map("categories")
+// }
 
-/**
- * Prompt表
- * 存储AI提示模板
- */
-model Prompts {
-  id           Int       @id @default(autoincrement()) @map("id")  // 主键ID，自增
-  title        String    @db.VarChar(255) @map("title")           // 标题，最大255字符
-  description  String?   @db.Text @map("description")             // 描述，可选，文本类型
-  content      String    @db.Text @map("content")                 // 内容，文本类型
-  tags         String?   @db.VarChar(255) @map("tags")            // 标签，可选，最大255字符，用逗号分隔
-  version      Int       @default(1) @map("version")              // 版本号，默认1
-  status       String    @db.VarChar(50) @default("active") @map("status")  // 状态，可选值：active/draft/inactive，默认active
-  author_id    Int?      @map("author_id")                       // 作者ID，外键，可选
-  categoryId   Int?      @map("category_id")                     // 分类ID，外键，可选
-  usage_count  Int       @default(0) @map("usage_count")          // 使用次数，默认0
-  last_used_at DateTime? @db.Timestamp @map("last_used_at")       // 最后使用时间，可选，时间戳类型
-  is_public    Boolean   @default(true) @map("is_public")         // 是否公开，默认true
-  source       String?   @db.VarChar(255) @map("source")          // 来源，可选，最大255字符
-  remarks      String?   @db.Text @map("remarks")                 // 备注，可选，文本类型
-  role         String    @db.VarChar(50) @default("user") @map("role")  // 角色，可选值：user/assistant/system，默认user
-  updated_at   DateTime  @default(now()) @updatedAt @db.Timestamp @map("updated_at")  // 更新时间，默认当前时间，自动更新
+// /**
+//  * Prompt表
+//  * 存储AI提示模板
+//  */
+// model Prompts {
+//   id           Int       @id @default(autoincrement()) @map("id")  // 主键ID，自增
+//   title        String    @db.VarChar(255) @map("title")           // 标题，最大255字符
+//   description  String?   @db.Text @map("description")             // 描述，可选，文本类型
+//   content      String    @db.Text @map("content")                 // 内容，文本类型
+//   tags         String?   @db.VarChar(255) @map("tags")            // 标签，可选，最大255字符，用逗号分隔
+//   version      Int       @default(1) @map("version")              // 版本号，默认1
+//   status       String    @db.VarChar(50) @default("active") @map("status")  // 状态，可选值：active/draft/inactive，默认active
+//   author_id    Int?      @map("author_id")                       // 作者ID，外键，可选
+//   categoryId   Int?      @map("category_id")                     // 分类ID，外键，可选
+//   usage_count  Int       @default(0) @map("usage_count")          // 使用次数，默认0
+//   last_used_at DateTime? @db.Timestamp @map("last_used_at")       // 最后使用时间，可选，时间戳类型
+//   is_public    Boolean   @default(true) @map("is_public")         // 是否公开，默认true
+//   source       String?   @db.VarChar(255) @map("source")          // 来源，可选，最大255字符
+//   remarks      String?   @db.Text @map("remarks")                 // 备注，可选，文本类型
+//   role         String    @db.VarChar(50) @default("user") @map("role")  // 角色，可选值：user/assistant/system，默认user
+//   updated_at   DateTime  @default(now()) @updatedAt @db.Timestamp @map("updated_at")  // 更新时间，默认当前时间，自动更新
 
-  // 关系定义
-  author       User?     @relation(fields: [author_id], references: [id])  // 与User的关系
-  category     Category? @relation(fields: [categoryId], references: [id])  // 与Category的关系
+//   // 关系定义
+//   author       User?     @relation(fields: [author_id], references: [id])  // 与User的关系
+//   category     Category? @relation(fields: [categoryId], references: [id])  // 与Category的关系
 
-  @@map("prompts")
-}
+//   @@map("prompts")
+// }

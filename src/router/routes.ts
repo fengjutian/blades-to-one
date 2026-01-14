@@ -3,6 +3,7 @@ import { Agent } from '../core/agent';
 import { LLMGatewayImpl } from '../llm-gateway/llm-gateway';
 import { createStatisticsRoutes } from './statistics';
 import { createReactRoutes } from './react';
+import { createPromptsRoutes } from './prompts';
 
 export const createRoutes = (agent: Agent, llmGateway: LLMGatewayImpl) => {
   const router = Router();
@@ -16,6 +17,7 @@ export const createRoutes = (agent: Agent, llmGateway: LLMGatewayImpl) => {
 
   router.use('/llm', createStatisticsRoutes(llmGateway));
   router.use('/react', createReactRoutes(agent));
+  router.use('/prompts', createPromptsRoutes());
 
   return router;
 };
