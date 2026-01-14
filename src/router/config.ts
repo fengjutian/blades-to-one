@@ -1,7 +1,6 @@
 import dotenv from 'dotenv';
 import path from 'path';
 
-// 加载环境变量
 dotenv.config();
 
 export interface ServerConfig {

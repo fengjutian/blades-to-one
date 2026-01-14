@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import styles from './dashboard.module.scss';
 import LLMConfig from '@/pages/LLMConfig/LLMConfig';
-import { Bot, Workflow, BrainCircuit } from 'lucide-react';
+import { Bot, Workflow, BrainCircuit, Drill, FilePenLine } from 'lucide-react';
 import Chat from '@/pages/chat/Chat';
 import WorkflowEle from '@/pages/workflow/Workflow';
 import RAG from '@/pages/rag/RAG';
+import Tools from '@/pages/tools/Tools';
+import Prompts from '@/pages/prompts/Prompts';
 
 const Dashboard: React.FC = () => {
   const [selectedComponent, setSelectedComponent] = useState('chat');
@@ -21,6 +23,10 @@ const Dashboard: React.FC = () => {
         return <RAG />;
       case 'workflow':
         return <WorkflowEle />;
+      case 'tools':
+        return <Tools />;
+      case 'prompts':
+        return <Prompts />;
       default:
         return <Chat />;
     }
@@ -46,6 +52,19 @@ const Dashboard: React.FC = () => {
           className={`cursor-pointer ${selectedComponent === 'workflow' ? styles.selectedIcon : ''} ${styles.iconbox}`}
         >
           <Workflow />
+        </div>
+        <div
+          onClick={() => handleIconClick('tools')}
+          className={`cursor-pointer ${selectedComponent === 'tools' ? styles.selectedIcon : ''} ${styles.iconbox}`}
+        >
+          <Drill />
+        </div>
+
+        <div
+          onClick={() => handleIconClick('prompts')}
+          className={`cursor-pointer ${selectedComponent === 'prompts' ? styles.selectedIcon : ''} ${styles.iconbox}`}
+        >
+          <FilePenLine />
         </div>
       </div>
       <div className={styles.mainPage}>
