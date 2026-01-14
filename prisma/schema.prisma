@@ -54,6 +54,29 @@ model UserPermission {
   @@map("user_permissions")
 }
 
+// 角色表
+model Role {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique @map("name")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("roles")
+}
+
+// 分类表
+model Category {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique @map("name")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // 与Prompts的一对多关系
+  prompts   Prompts[]
+
+  @@map("categories")
+}
+
 // Prompt表
 model Prompts {
   id           Int       @id @default(autoincrement()) @map("id")
@@ -64,7 +87,7 @@ model Prompts {
   version      Int       @default(1) @map("version") // 版本号，默认1
   status       String    @db.VarChar(50) @default("active") @map("status") // 状态，可选值：active/draft/inactive，默认active
   author_id    Int?      @map("author_id") // 作者ID，外键，可选，外键引用User表的id字段
-  category     String?   @db.VarChar(100) @map("category") // 分类，可选，最大100字符
+  categoryId   Int?      @map("category_id") // 分类ID，外键，可选，外键引用Category表的id字段
   usage_count  Int       @default(0) @map("usage_count")   // 使用次数，默认0
   last_used_at DateTime? @db.Timestamp @map("last_used_at") // 最后使用时间，可选，时间戳类型
   is_public    Boolean   @default(true) @map("is_public") // 是否公开，默认true
@@ -75,6 +98,8 @@ model Prompts {
 
   // 与User的关系
   author       User?     @relation(fields: [author_id], references: [id])
+  // 与Category的关系
+  category     Category? @relation(fields: [categoryId], references: [id])
 
   @@map("prompts")
 }
