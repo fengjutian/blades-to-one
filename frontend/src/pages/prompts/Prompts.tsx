@@ -30,25 +30,37 @@ const Prompts: React.FC = () => {
   const handleSave = async () => {
     try {
       // 获取表单值
-      const values = formValues;
+      const values = formValues || {};
 
-      // 准备请求数据
+      // 检查values是否包含必要的字段
+      if (!values) {
+        Toast.error('表单数据无效，请填写表单');
+        return;
+      }
+
+      // 准备请求数据，为所有字段提供默认值
       const promptData = {
-        title: values.title,
-        content: values.content,
-        description: values.description,
-        tags: values.tags,
+        title: values.title || '',
+        content: values.content || '',
+        description: values.description || '',
+        tags: values.tags || '',
         version: parseInt(values.version, 10) || 1,
-        status: values.status,
+        status: values.status || 'draft',
         author_id: values.author_id || 100, // 默认用户ID
         // 使用category字段的值，在演示环境中直接使用字符串作为ID
         categoryId: values.category ? values.category : 1,
         // 设置默认的is_public值，因为表单中没有这个字段
         is_public: selectedRecord?.is_public || 0,
-        source: values.source,
-        remarks: values.remarks,
-        role: values.role
+        source: values.source || '',
+        remarks: values.remarks || '',
+        role: values.role || 'user'
       };
+
+      // 验证必填字段
+      if (!promptData.title || !promptData.content) {
+        Toast.error('标题和内容是必填字段');
+        return;
+      }
 
       let response;
       if (selectedRecord && selectedRecord.id) {
@@ -72,7 +84,7 @@ const Prompts: React.FC = () => {
       }
 
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.error || '保存失败');
       }
 
@@ -275,9 +287,10 @@ const Prompts: React.FC = () => {
           <Form
             layout='horizontal'
             onValueChange={(values) => {
-              // 只取values.values作为表单值
-              console.log(values.values);
-              setFormValues(values.values);
+              // 只取values.values作为表单值，确保它存在
+              const formValues = values.values || {};
+              console.log(formValues);
+              setFormValues(formValues);
             }}
             // 使用initValues而不是initialValues
             initValues={selectedRecord}
@@ -374,6 +387,8 @@ const Prompts: React.FC = () => {
 };
 
 export default Prompts;
+
+
 
 
 
