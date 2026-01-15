@@ -8,7 +8,7 @@ const Prompts: React.FC = () => {
   const [selectedRecord, setSelectedRecord] = useState<any>(null);
   const [sideSheetSize, setSideSheetSize] = useState<'small' | 'medium' | 'large'>('large');
   const [dataSource, setDataSource] = useState([]);
-  // 使用ref来获取表单API
+
   const formRef = useRef<any>(null);
 
   const openSideSheet = (record: any) => {
