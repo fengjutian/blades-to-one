@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styles from './dashboard.module.scss';
 import LLMConfig from '@/pages/LLMConfig/LLMConfig';
-import { Bot, Workflow, BrainCircuit, Drill, FilePenLine } from 'lucide-react';
+import { Bot, Workflow, BrainCircuit, Drill, FilePenLine, Grid3x3 } from 'lucide-react';
 import Chat from '@/pages/chat/Chat';
 import WorkflowEle from '@/pages/workflow/Workflow';
 import RAG from '@/pages/rag/RAG';
 import Tools from '@/pages/tools/Tools';
 import Prompts from '@/pages/prompts/Prompts';
+import Docs from '@/pages/docs/Docs';
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -39,6 +40,8 @@ const Dashboard: React.FC = () => {
         return <Tools />;
       case 'prompts':
         return <Prompts />;
+      case 'docs':
+        return <Docs />;
       default:
         return <Chat />;
     }
@@ -77,6 +80,13 @@ const Dashboard: React.FC = () => {
           className={`cursor-pointer ${selectedComponent === 'prompts' ? styles.selectedIcon : ''} ${styles.iconbox}`}
         >
           <FilePenLine />
+        </div>
+
+        <div
+          onClick={() => handleIconClick('docs')}
+          className={`cursor-pointer ${selectedComponent === 'docs' ? styles.selectedIcon : ''} ${styles.iconbox}`}
+        >
+          <Grid3x3 />
         </div>
       </div>
       <div className={styles.mainPage}>
