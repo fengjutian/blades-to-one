@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Table, Tag, Space, SideSheet, Button, Form, Select, Row, Col, Toast  } from '@douyinfe/semi-ui';
 import styles from './prompts.module.scss';
 import { IconDelete, IconEdit  } from '@douyinfe/semi-icons';
@@ -8,39 +8,29 @@ const Prompts: React.FC = () => {
   const [selectedRecord, setSelectedRecord] = useState<any>(null);
   const [sideSheetSize, setSideSheetSize] = useState<'small' | 'medium' | 'large'>('large');
   const [dataSource, setDataSource] = useState([]);
-
-  const formRef = useRef<any>(null);
+  const [formValues, setFormValues] = useState<any>({});
 
   const openSideSheet = (record: any) => {
     setSelectedRecord(record);
+    setFormValues(record); // 初始化表单值
     setSideSheetVisible(true);
   };
 
   const closeSideSheet = () => {
     setSideSheetVisible(false);
     setSelectedRecord(null);
-    // 重置表单ref
-    formRef.current = null;
+    setFormValues({}); // 清空表单值
   };
 
   const handleSaveClick = () => {
-    if (formRef.current) {
-      handleSave();
-    } else {
-      console.error('表单API未初始化');
-    }
+    handleSave();
   };
 
   // 保存Prompt的处理函数
   const handleSave = async () => {
     try {
-      const formApi = formRef.current;
-      if (!formApi) {
-        throw new Error('表单API未初始化');
-      }
-
       // 获取表单值
-      const values = formApi.getValues();
+      const values = formValues;
 
       // 准备请求数据
       const promptData = {
@@ -284,11 +274,12 @@ const Prompts: React.FC = () => {
         {selectedRecord && (
           <Form
             layout='horizontal'
-            onValueChange={values => console.log(values)}
+            onValueChange={values => {
+              console.log(values);
+              setFormValues(values);
+            }}
             // 使用initValues而不是initialValues
             initValues={selectedRecord}
-            // 使用ref获取表单API
-            ref={formRef}
           >
             {/* 移除未使用的values参数 */}
             {({ formState }) => {
@@ -382,3 +373,5 @@ const Prompts: React.FC = () => {
 };
 
 export default Prompts;
+
+
