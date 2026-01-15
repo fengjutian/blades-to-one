@@ -74,6 +74,15 @@ const ChatBox: React.FC = () => {
     setMessage((message) => [...message, newUserMessage]);
 
     try {
+      // 在发送新请求前，先在聊天记录中添加一个临时的"思考中"消息
+      const thinkingMessage = {
+        role: 'assistant',
+        id: getId(),
+        createAt: Date.now(),
+        content: '正在思考...',
+      };
+      setMessage((prevMessage) => [...prevMessage, thinkingMessage]);
+
       // 调用后端API
       const response = await fetch('/react/run', {
         method: 'POST',
@@ -92,24 +101,34 @@ const ChatBox: React.FC = () => {
 
       const result = await response.json();
 
-      // 添加助手回复到聊天记录
-      const newAssistantMessage = {
-        role: 'assistant',
-        id: getId(),
-        createAt: Date.now(),
-        content: result.result,
-      };
-      setMessage((message) => [...message, newAssistantMessage]);
+      // 更新聊天记录，替换临时消息为真实响应
+      setMessage((prevMessage) => {
+        // 移除临时的"思考中"消息
+        const updatedMessages = prevMessage.slice(0, -1);
+        // 添加新的助手回复
+        const newAssistantMessage = {
+          role: 'assistant',
+          id: getId(),
+          createAt: Date.now(),
+          content: result.result,
+        };
+        return [...updatedMessages, newAssistantMessage];
+      });
     } catch (error) {
       console.error('调用模型失败:', error);
-      // 添加错误消息到聊天记录
-      const errorMessage = {
-        role: 'assistant',
-        id: getId(),
-        createAt: Date.now(),
-        content: '抱歉，处理请求时发生错误，请稍后重试。',
-      };
-      setMessage((message) => [...message, errorMessage]);
+      // 更新聊天记录，替换临时消息为错误信息
+      setMessage((prevMessage) => {
+        // 移除临时的"思考中"消息
+        const updatedMessages = prevMessage.slice(0, -1);
+        // 添加错误消息
+        const errorMessage = {
+          role: 'assistant',
+          id: getId(),
+          createAt: Date.now(),
+          content: '抱歉，处理请求时发生错误，请稍后重试。',
+        };
+        return [...updatedMessages, errorMessage];
+      });
     }
   }, []);
 
@@ -118,19 +137,70 @@ const ChatBox: React.FC = () => {
     setMessage(chats);
   }, []);
 
-  const onMessageReset = useCallback((e: any) => {
-    setTimeout(() => {
-      setMessage((message) => {
-        const lastMessage = message[message.length - 1];
-        const newLastMessage = {
-          ...lastMessage,
-          status: 'complete',
-          content: 'This is a mock reset message.',
+  const onMessageReset = useCallback(async (e: any) => {
+    // 查找最后一条用户消息
+    const lastUserMessage = message.slice().reverse().find(msg => msg.role === 'user');
+
+    if (lastUserMessage) {
+      try {
+        // 在发送新请求前，先在聊天记录中添加一个临时的"思考中"消息
+        const thinkingMessage = {
+          role: 'assistant',
+          id: getId(),
+          createAt: Date.now(),
+          content: '正在重新请求模型...',
         };
-        return [...message.slice(0, -1), newLastMessage];
-      });
-    }, 200);
-  });
+        setMessage((prevMessage) => [...prevMessage, thinkingMessage]);
+
+        // 重新调用后端API
+        const response = await fetch('/react/run', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            query: lastUserMessage.content,
+            userId: 1, // 这里可以根据实际情况获取用户ID
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error('请求失败');
+        }
+
+        const result = await response.json();
+
+        // 更新聊天记录，替换临时消息为真实响应
+        setMessage((prevMessage) => {
+          // 移除临时的"思考中"消息
+          const updatedMessages = prevMessage.slice(0, -1);
+          // 添加新的助手回复
+          const newAssistantMessage = {
+            role: 'assistant',
+            id: getId(),
+            createAt: Date.now(),
+            content: result.result,
+          };
+          return [...updatedMessages, newAssistantMessage];
+        });
+      } catch (error) {
+        console.error('重新调用模型失败:', error);
+        // 更新聊天记录，替换临时消息为错误信息
+        setMessage((prevMessage) => {
+          // 移除临时的"思考中"消息
+          const updatedMessages = prevMessage.slice(0, -1);
+          // 添加错误消息
+          const errorMessage = {
+            role: 'assistant',
+            id: getId(),
+            createAt: Date.now(),
+            content: '抱歉，重新请求模型时发生错误，请稍后重试。',
+          };
+          return [...updatedMessages, errorMessage];
+        });
+      }
+    }
+  }, [message]);
 
   return (
     <Chat
