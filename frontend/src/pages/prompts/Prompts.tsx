@@ -53,7 +53,7 @@ const Prompts: React.FC = () => {
       let response;
       if (selectedRecord && selectedRecord.id) {
         // 更新操作
-        response = await fetch(`/api/prompts/${selectedRecord.id}`, {
+        response = await fetch(`/prompts/${selectedRecord.id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -62,7 +62,7 @@ const Prompts: React.FC = () => {
         });
       } else {
         // 创建操作
-        response = await fetch('/api/prompts', {
+        response = await fetch('/prompts', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -274,9 +274,10 @@ const Prompts: React.FC = () => {
         {selectedRecord && (
           <Form
             layout='horizontal'
-            onValueChange={values => {
-              console.log(values);
-              setFormValues(values);
+            onValueChange={(values) => {
+              // 只取values.values作为表单值
+              console.log(values.values);
+              setFormValues(values.values);
             }}
             // 使用initValues而不是initialValues
             initValues={selectedRecord}
@@ -373,5 +374,6 @@ const Prompts: React.FC = () => {
 };
 
 export default Prompts;
+
 
 
