@@ -58,14 +58,13 @@ const uploadTipProps = { content: '自定义上传按钮提示信息' };
 
 const ChatBox: React.FC = () => {
   const [message, setMessage] = useState(defaultMessage);
-  const [mode, setMode] = useState('bubble');
-  const [align, setAlign] = useState('leftRight');
+  const [mode] = useState('bubble');
+  const [align] = useState('leftRight');
 
   const onMessageSend = useCallback(async (content: string, attachment: any) => {
     console.log('点击发送', content, attachment);
 
     try {
-      // 在发送新请求前，先在聊天记录中添加一个临时的"思考中"消息
       const thinkingMessage = {
         role: 'assistant',
         id: getId(),
