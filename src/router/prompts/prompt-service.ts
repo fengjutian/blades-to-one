@@ -7,13 +7,42 @@ export class PromptService {
    * 创建新的Prompt
    */
   static async createPrompt(data: CreatePromptInput): Promise<Prompts> {
-    return prisma.prompts.create({
-      data,
-      include: {
-        category: true,
-        author: { select: { id: true, username: true, email: true } },
-      },
-    });
+    try {
+      console.log('Received data in createPrompt:', data);
+
+      // 验证必填字段
+      if (!data.title || !data.content) {
+        throw new Error('Title and content are required fields');
+      }
+
+      // 验证字段类型
+      if (typeof data.is_public !== 'undefined' && typeof data.is_public !== 'boolean') {
+        data.is_public = Boolean(data.is_public);
+        console.log('Converted is_public to boolean:', data.is_public);
+      }
+
+      if (data.categoryId && typeof data.categoryId !== 'number') {
+        throw new Error(`categoryId must be a number, got ${typeof data.categoryId}`);
+      }
+
+      const prompt = await prisma.prompts.create({
+        data,
+        include: {
+          category: true,
+          author: { select: { id: true, username: true, email: true } },
+        },
+      });
+
+      console.log('Created prompt successfully:', prompt.id);
+      return prompt;
+    } catch (error) {
+      console.error('Error in createPrompt:', error);
+      if (error instanceof Error) {
+        console.error('Error message:', error.message);
+        console.error('Error stack:', error.stack);
+      }
+      throw error;
+    }
   }
 
   /**
@@ -155,3 +184,4 @@ export class PromptService {
     }
   }
 }
+
