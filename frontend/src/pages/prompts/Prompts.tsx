@@ -23,7 +23,6 @@ const Prompts: React.FC = () => {
     formRef.current = null;
   };
 
-  // 保存按钮的点击事件处理
   const handleSaveClick = () => {
     if (formRef.current) {
       handleSave();
