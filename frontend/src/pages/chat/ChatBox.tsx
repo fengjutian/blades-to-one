@@ -64,15 +64,6 @@ const ChatBox: React.FC = () => {
   const onMessageSend = useCallback(async (content: string, attachment: any) => {
     console.log('点击发送', content, attachment);
 
-    // 添加用户消息到聊天记录
-    const newUserMessage = {
-      role: 'user',
-      id: getId(),
-      createAt: Date.now(),
-      content: content,
-    };
-    setMessage((message) => [...message, newUserMessage]);
-
     try {
       // 在发送新请求前，先在聊天记录中添加一个临时的"思考中"消息
       const thinkingMessage = {
@@ -221,4 +212,5 @@ const ChatBox: React.FC = () => {
 };
 
 export default ChatBox;
+
 
