@@ -71,6 +71,7 @@ const ChatBox: React.FC = () => {
         createAt: Date.now(),
         content: '正在思考...',
       };
+
       setMessage((prevMessage) => [...prevMessage, thinkingMessage]);
 
       // 调用后端API
@@ -80,6 +81,7 @@ const ChatBox: React.FC = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          history: [...message, thinkingMessage],
           query: content,
           userId: 1, // 这里可以根据实际情况获取用户ID
         }),

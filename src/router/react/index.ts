@@ -5,16 +5,16 @@ export const createReactRoutes = (agent: Agent) => {
   const router = Router();
 
   router.post('/run', async (req, res) => {
-    req.log.info('收到查询请求');
+    req.log.info('收到查询请求',res?.body?.query);
     try {
-      const { query, userId } = req.body;
+      const { query, userId, history } = req.body;
 
       if (!query) {
         req.log.warn('查询请求缺少query参数');
         return res.status(400).json({ error: 'missing query parameter' });
       }
 
-      const out = await agent.run(query);
+      const out = await agent.run(query, history);
 
       req.log.info('查询请求处理完成');
       res.json({ result: out.final, history: out.history });
