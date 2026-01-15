@@ -61,20 +61,56 @@ const ChatBox: React.FC = () => {
   const [mode, setMode] = useState('bubble');
   const [align, setAlign] = useState('leftRight');
 
-  const onMessageSend = useCallback((content: string, attachment: any) => {
-
+  const onMessageSend = useCallback(async (content: string, attachment: any) => {
     console.log('点击发送', content, attachment);
 
-
-    const newAssistantMessage = {
-      role: 'assistant',
+    // 添加用户消息到聊天记录
+    const newUserMessage = {
+      role: 'user',
       id: getId(),
       createAt: Date.now(),
-      content: '这是一条 mock 回复信息',
+      content: content,
     };
-    setTimeout(() => {
+    setMessage((message) => [...message, newUserMessage]);
+
+    try {
+      // 调用后端API
+      const response = await fetch('/react/run', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query: content,
+          userId: 1, // 这里可以根据实际情况获取用户ID
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('请求失败');
+      }
+
+      const result = await response.json();
+
+      // 添加助手回复到聊天记录
+      const newAssistantMessage = {
+        role: 'assistant',
+        id: getId(),
+        createAt: Date.now(),
+        content: result.result,
+      };
       setMessage((message) => [...message, newAssistantMessage]);
-    }, 200);
+    } catch (error) {
+      console.error('调用模型失败:', error);
+      // 添加错误消息到聊天记录
+      const errorMessage = {
+        role: 'assistant',
+        id: getId(),
+        createAt: Date.now(),
+        content: '抱歉，处理请求时发生错误，请稍后重试。',
+      };
+      setMessage((message) => [...message, errorMessage]);
+    }
   }, []);
 
   const onChatsChange = useCallback((chats: any) => {
@@ -115,3 +151,4 @@ const ChatBox: React.FC = () => {
 };
 
 export default ChatBox;
+

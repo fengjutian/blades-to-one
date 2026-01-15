@@ -10,6 +10,12 @@ export default defineConfig({
     },
   },
   server: {
-    port: 3001,
+    port: 3000,
+    proxy: {
+      '/react': {
+        target: 'http://localhost:3001',
+        changeOrigin: true,
+      },
+    },
   },
 });
