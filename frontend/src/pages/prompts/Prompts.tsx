@@ -61,8 +61,13 @@ const Prompts: React.FC = () => {
   }, [token]);
 
   const openSideSheet = (record: any) => {
-    setSelectedRecord(record);
-    setFormValues(record); // 初始化表单值
+    // 处理category字段，如果是对象则提取id
+    const processedRecord = {
+      ...record,
+      category: record.category?.id || record.category
+    };
+    setSelectedRecord(processedRecord);
+    setFormValues(processedRecord); // 初始化表单值
     setSideSheetVisible(true);
   };
 
@@ -435,6 +440,9 @@ const Prompts: React.FC = () => {
 };
 
 export default Prompts;
+
+
+
 
 
 

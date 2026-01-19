@@ -33,7 +33,9 @@ $darkBgColor: #0f1011;
 
   .selectedIcon {
     color: #00d992;
-    box-shadow: 0 0 20px rgba(50, 240, 195, 0.2);
+    // box-shadow: 0 0 20px rgba(50, 240, 195, 0.2);
+    border-top: 1px solid #00d992;
+    border-bottom: 1px solid #00d992;
   }
 }
 
