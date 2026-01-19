@@ -29,6 +29,8 @@ $darkBgColor: #0f1011;
     display: flex;
     justify-content: center;
     align-items: center;
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
   }
 
   .selectedIcon {
