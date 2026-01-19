@@ -1,6 +1,8 @@
 import { Router, Request, Response } from 'express';
 import { CategoryService } from './category-service';
 import { PromptService } from './prompt-service';
+import { authMiddleware } from '../auth/auth-middleware';
+import { AuthRequest } from '../auth/types';
 
 export const createPromptsRoutes = () => {
   const router = Router();
@@ -105,9 +107,19 @@ export const createPromptsRoutes = () => {
 
   // ==================== Prompt 接口 ====================
   // 创建Prompt
-  router.post('/', async (req: Request, res: Response) => {
+  router.post('/', authMiddleware, async (req: AuthRequest, res: Response) => {
     try {
-      const prompt = await PromptService.createPrompt(req.body);
+      // 从请求对象中获取用户ID
+      if (!req.user) {
+        return res.status(401).json({ error: '用户未认证' });
+      }
+      
+      // 将用户ID添加到请求体中作为author_id
+      const prompt = await PromptService.createPrompt({
+        ...req.body,
+        author_id: req.user.userId
+      });
+      
       req.log.info(`创建Prompt成功，ID: ${prompt.id}`);
       res.status(201).json(prompt);
     } catch (error) {
@@ -198,4 +210,3 @@ export const createPromptsRoutes = () => {
 
   return router;
 }
-

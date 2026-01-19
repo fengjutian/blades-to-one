@@ -103,9 +103,10 @@ export class AuthService {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // 创建用户
+    const now = new Date();
     const [result] = await pool.execute(
-      'INSERT INTO users (username, password, email) VALUES (?, ?, ?)',
-      [username, hashedPassword, email]
+      'INSERT INTO users (username, password, email, created_at, updated_at) VALUES (?, ?, ?, ?, ?)',
+      [username, hashedPassword, email, now, now]
     );
 
     const newUser = {
@@ -169,6 +170,7 @@ export class AuthService {
 
 // 导出认证服务实例
 export const authService = new AuthService();
+
 
 
 

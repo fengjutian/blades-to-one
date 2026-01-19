@@ -58,13 +58,13 @@ class PrismaConnectionImpl implements PrismaConnection {
     console.log('连接池配置:', poolConfig);
 
     // 创建MariaDB连接池
-    const pool = mariadb.createPool(poolConfig);
+    // const pool = mariadb.createPool(poolConfig);
 
-    // 测试连接池是否能正常工作
-    this.testPoolConnection(pool).catch(error => {
-      console.error('连接池测试失败，应用程序将退出:', error);
-      process.exit(1);
-    });
+    // // 测试连接池是否能正常工作
+    // this.testPoolConnection(pool).catch(error => {
+    //   console.error('连接池测试失败，应用程序将退出:', error);
+    //   process.exit(1);
+    // });
 
     // 创建PrismaMariaDb适配器
     const adapter = new PrismaMariaDb(poolConfig);

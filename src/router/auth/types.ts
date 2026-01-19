@@ -1,4 +1,5 @@
 // 用户认证相关类型定义
+import { Request } from 'express';
 
 /**
  * 用户登录请求
@@ -46,7 +47,7 @@ export type JwtPayload = {
 /**
  * 认证中间件返回的请求扩展
  */
-export type AuthRequest = {
+export type AuthRequest = Request & {
   user?: {
     userId: number;
     username: string;
