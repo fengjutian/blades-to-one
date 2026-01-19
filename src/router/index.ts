@@ -18,7 +18,7 @@ const app = express();
 // 配置CORS，允许来自前端的请求
 app.use(
   cors({
-    origin: 'http://localhost:3001',
+    origin: 'http://localhost:3000',
     credentials: true,
   })
 );
@@ -74,3 +74,4 @@ app.use('/', createRoutes(agent, llmGateway));
 app.listen(serverConfig.port, () => {
   console.log(`Server listening on http://localhost:${serverConfig.port}`);
 });
+

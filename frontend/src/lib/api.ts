@@ -46,7 +46,7 @@ async function apiCall<T>(
   data?: any,
   headers?: Record<string, string>
 ): Promise<T> {
-  const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+  const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
 
   const response = await fetch(`${baseUrl}${url}`, {
     method,
