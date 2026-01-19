@@ -10,9 +10,29 @@ const Prompts: React.FC = () => {
   const [sideSheetSize, setSideSheetSize] = useState<'small' | 'medium' | 'large'>('large');
   const [dataSource, setDataSource] = useState([]);
   const [formValues, setFormValues] = useState<any>({});
+  const [categories, setCategories] = useState<any[]>([]);
 
   // 使用认证Hook获取token
   const { token } = useAuth();
+
+  // 获取Category列表
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch('/prompts/categories');
+        if (response.ok) {
+          const data = await response.json();
+          setCategories(data);
+        } else {
+          console.error('获取Category列表失败:', response.status);
+        }
+      } catch (error) {
+        console.error('获取Category列表时发生错误:', error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   const openSideSheet = (record: any) => {
     setSelectedRecord(record);
@@ -51,7 +71,7 @@ const Prompts: React.FC = () => {
         tags: values.tags || '',
         version: parseInt(values.version, 10) || 1,
         status: values.status || 'draft',
-        author_id: values.author_id || 100, // 默认用户ID
+        // 移除硬编码的author_id，这个应该由后端从认证信息中获取
         // 使用category字段的值，如果没有选择则不传递categoryId
         ...(values.category && { categoryId: values.category }),
         // 设置默认的is_public值，因为表单中没有这个字段
@@ -148,54 +168,50 @@ const Prompts: React.FC = () => {
     {
         title: '标签',
         dataIndex: 'tags',
-        width: 100,
+        width: 150,
         render: (tags: string) => {
-            return tags.split(',').map(tag => (
-                <Tag key={tag} color="blue" size="small">{tag}</Tag>
-            ));
+            return tags ? (
+                <>
+                    {tags.split(',').map((tag, index) => (
+                        <Tag key={index} color="blue" size="small" style={{ marginRight: 4 }}>
+                            {tag}
+                        </Tag>
+                    ))}
+                </>
+            ) : null;
         },
     },
     {
         title: '版本',
         dataIndex: 'version',
-        width: 80, // 固定宽度，版本号长度有限
+        width: 80,
     },
     {
         title: '状态',
         dataIndex: 'status',
-        width: 100, // 固定宽度，状态值有限
+        width: 80,
         render: (status: string) => {
-            const statusMap: Record<string, string> = {
-                active: 'green',
-                draft: 'yellow',
-                deprecated: 'red',
-                archived: 'grey',
-            };
-            return <Tag color={statusMap[status] || 'default'}>{status}</Tag>;
+            let color = 'green';
+            if (status === 'draft') color = 'orange';
+            if (status === 'deprecated') color = 'gray';
+            if (status === 'archived') color = 'red';
+            return <Tag color={color}>{status}</Tag>;
         },
     },
     {
-        title: '是否公开',
-        dataIndex: 'is_public',
-        width: 100, // 固定宽度，内容固定为"公开"或"私有"
-        render: (isPublic: number) => {
-            return isPublic === 1 ? <Tag color="green">公开</Tag> : <Tag color="red">私有</Tag>;
-        },
+        title: '作者',
+        dataIndex: 'author_id',
+        width: 100,
     },
     {
-        title: '来源',
-        dataIndex: 'source',
-        width: 80, // 固定宽度，来源信息长度有限
+        title: '使用次数',
+        dataIndex: 'usage_count',
+        width: 80,
     },
     {
-        title: '角色',
-        dataIndex: 'role',
-        width: 80, // 固定宽度，角色名称长度有限
-    },
-    {
-        title: '创建时间',
-        dataIndex: 'created_at',
-        width: 120, // 固定宽度，时间格式统一
+        title: '最后使用时间',
+        dataIndex: 'last_used_at',
+        width: 120
     },
     {
         title: '更新时间',
@@ -281,7 +297,7 @@ const Prompts: React.FC = () => {
 
   return (
     <div className={styles.promptsCtx} style={{ width: '100%', height: '100%' }}>
-      <Button className="w-30 mb-2" onClick={() => openSideSheet({ id: 0, title: '', description: '', category: '', tags: '', version: 1, status: 'draft', author_id: 100, usage_count: 0, is_public: 0, source: '', role: 'user' })}>新建提示词</Button>
+      <Button className="w-30 mb-2" onClick={() => openSideSheet({ id: 0, title: '', description: '', category: '', tags: '', version: 1, status: 'draft', usage_count: 0, is_public: 0, source: '', role: 'user' })}>新建提示词</Button>
       <Table
         bordered={true}
         columns={columns}
@@ -325,12 +341,12 @@ const Prompts: React.FC = () => {
                     <Row>
                       <Col span={12}>
                         <Form.Select field="category" label="分类" style={{ width: '100%' }}>
-                          <Select.Option value="1">SQL</Select.Option>
-                          <Select.Option value="2">NLP</Select.Option>
-                          <Select.Option value="3">图像生成</Select.Option>
-                          <Select.Option value="4">对话模型</Select.Option>
-                          <Select.Option value="5">代码生成</Select.Option>
-                          <Select.Option value="6">数据分析</Select.Option>
+                          {/* 动态生成Category选项 */}
+                          {categories.map(category => (
+                            <Select.Option key={category.id} value={category.id}>
+                              {category.name}
+                            </Select.Option>
+                          ))}
                         </Form.Select>
                       </Col>
                       <Col span={12}>
@@ -399,13 +415,3 @@ const Prompts: React.FC = () => {
 };
 
 export default Prompts;
-
-
-
-
-
-
-
-
-
-
