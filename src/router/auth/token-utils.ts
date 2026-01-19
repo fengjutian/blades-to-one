@@ -13,7 +13,7 @@ const JWT_EXPIRES_IN = (process.env.JWT_EXPIRES_IN || '7d') as string; // 默认
 export const generateToken = (
   payload: Omit<JwtPayload, 'exp' | 'iat'>
 ): string => {
-  return jwt.sign(payload, JWT_SECRET, {
+  return jwt.sign(payload, JWT_SECRET as string, {
     expiresIn: JWT_EXPIRES_IN,
   });
 };
@@ -31,4 +31,5 @@ export const verifyToken = (token: string): JwtPayload | null => {
     return null;
   }
 };
-
+
+
