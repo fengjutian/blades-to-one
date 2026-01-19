@@ -22,6 +22,9 @@ class PrismaConnectionImpl implements PrismaConnection {
   public client: PrismaClient;
 
   private constructor() {
+    // 打印所有环境变量，用于调试
+    console.log('All environment variables:', process.env);
+
     // 从环境变量获取数据库连接参数
     const username = process.env.MYSQL_USERNAME;
     const password = process.env.MYSQL_PASSWORD;
@@ -49,7 +52,7 @@ class PrismaConnectionImpl implements PrismaConnection {
       user: username,
       password,
       database,
-      connectionLimit: 10,
+      connectionLimit: 100000,
       waitForConnections: true,
       queueLimit: 0,
       connectTimeout: 30000, // 增加连接超时时间
@@ -57,6 +60,8 @@ class PrismaConnectionImpl implements PrismaConnection {
       enableKeepAlive: true,
       keepAliveInitialDelay: 0
     };
+
+    console.log('连接池配置:', poolConfig);
 
     // 创建MariaDB连接池
     const pool = mariadb.createPool(poolConfig);
@@ -136,3 +141,4 @@ class PrismaConnectionImpl implements PrismaConnection {
 // 导出Prisma连接实例和类型
 export const prismaConnection: PrismaConnection = PrismaConnectionImpl.getInstance();
 export const prisma: PrismaClient = prismaConnection.client;
+

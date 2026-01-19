@@ -3,9 +3,13 @@ import { generateToken } from './token-utils';
 import bcrypt from 'bcryptjs';
 import mysql from 'mysql2/promise';
 import dotenv from 'dotenv';
+import path from 'path';
 
-// 加载环境变量
-dotenv.config();
+// 加载环境变量，使用绝对路径确保正确加载
+dotenv.config({
+  path: path.resolve(__dirname, '../../../.env'),
+  debug: true
+});
 
 // 创建数据库连接池
 const pool = mysql.createPool({
@@ -17,7 +21,7 @@ const pool = mysql.createPool({
   connectionLimit: 10,
   waitForConnections: true,
   queueLimit: 0,
-  connectTimeout: 30000,
+  connectTimeout: 300000,
   idleTimeout: 60000,
   enableKeepAlive: true,
   keepAliveInitialDelay: 0
@@ -171,3 +175,4 @@ export class AuthService {
 
 // 导出认证服务实例
 export const authService = new AuthService();
+
