@@ -13,10 +13,8 @@ const Prompts: React.FC = () => {
   const [formValues, setFormValues] = useState<any>({});
   const [categories, setCategories] = useState<any[]>([]);
 
-  // 使用认证Hook获取token
   const { token } = useAuth();
 
-  // 获取Category列表
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -35,7 +33,6 @@ const Prompts: React.FC = () => {
     fetchCategories();
   }, []);
 
-  // 获取Prompt列表
   useEffect(() => {
     if (!token) return;
 
