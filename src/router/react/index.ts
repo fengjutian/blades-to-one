@@ -5,7 +5,7 @@ export const createReactRoutes = (agent: Agent) => {
   const router = Router();
 
   router.post('/run', async (req, res) => {
-    req.log.info('收到查询请求',res?.body?.query);
+    req.log.info('收到查询请求',req?.body?.query);
     try {
       const { query, userId, history } = req.body;
 
@@ -26,3 +26,4 @@ export const createReactRoutes = (agent: Agent) => {
 
   return router;
 };
+

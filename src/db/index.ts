@@ -5,4 +5,5 @@ export {
 } from './prisma-connection';
 
 // 导出类型
-export type { PrismaClient } from '../generated/prisma';
+export type { PrismaClient } from '../generated/prisma/client';
+

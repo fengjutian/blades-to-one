@@ -36,20 +36,18 @@ const Prompts: React.FC = () => {
 
   // 获取Prompt列表
   useEffect(() => {
+    if (!token) return;
+
     const fetchPrompts = async () => {
       try {
-        const headers: Record<string, string> = {};
-        if (token) {
-          headers['Authorization'] = `Bearer ${token}`;
-        }
-
-        const response = await fetch('/prompts', {
-          headers
+        const response = await fetch('http://localhost:8080/prompts', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
         });
-
         if (response.ok) {
           const data = await response.json();
-          setDataSource(data);
+          setDataSource(data.prompts || []);
         } else {
           console.error('获取Prompt列表失败:', response.status);
         }
