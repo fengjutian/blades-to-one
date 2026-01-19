@@ -1,13 +1,8 @@
-import { PrismaClient } from '../generated/prisma/client';
-import { PrismaMariaDb } from '@prisma/adapter-mariadb';
-import mariadb from 'mysql2/promise';
-import dotenv from 'dotenv';
 import path from 'path';
-
-// 加载环境变量，使用绝对路径确保正确加载
-dotenv.config({
-  path: path.resolve(__dirname, '../../.env')
-});
+import mariadb from 'mysql2/promise';
+import { PrismaMariaDb } from '@prisma/adapter-mariadb';
+import { PrismaClient } from '../generated/prisma/client';
+import debug from 'debug';
 
 export interface PrismaConnection {
   client: PrismaClient;
@@ -51,7 +46,7 @@ class PrismaConnectionImpl implements PrismaConnection {
       user: username,
       password,
       database,
-      connectionLimit: 100000,
+      connectionLimit: 10,
       waitForConnections: true,
       queueLimit: 0,
       connectTimeout: 30000, // 增加连接超时时间
@@ -140,5 +135,3 @@ class PrismaConnectionImpl implements PrismaConnection {
 // 导出Prisma连接实例和类型
 export const prismaConnection: PrismaConnection = PrismaConnectionImpl.getInstance();
 export const prisma: PrismaClient = prismaConnection.client;
-
-
