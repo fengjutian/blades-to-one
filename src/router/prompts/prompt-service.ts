@@ -59,7 +59,7 @@ export class PromptService {
         title: data.title,
         content: data.content,
         status: status,
-        author_id: data.author_id,
+        author: { connect: { id: data.author_id } },
         description: data.description,
         tags: data.tags,
         version: data.version,
@@ -73,7 +73,15 @@ export class PromptService {
 
       // 添加分类关联
       if (categoryId) {
-        createData.category = { connect: { id: categoryId } };
+        // 检查分类是否存在
+        const existingCategory = await prisma.category.findUnique({
+          where: { id: categoryId }
+        });
+        if (existingCategory) {
+          createData.category = { connect: { id: categoryId } };
+        } else {
+          throw new Error(`Category with ID ${categoryId} not found`);
+        }
       }
 
       const prompt = await prisma.prompts.create({
@@ -255,6 +263,8 @@ export class PromptService {
     }
   }
 }
+
+
 
 
 

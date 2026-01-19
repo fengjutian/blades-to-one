@@ -113,13 +113,13 @@ export const createPromptsRoutes = () => {
       if (!req.user) {
         return res.status(401).json({ error: '用户未认证' });
       }
-      
+
       // 将用户ID添加到请求体中作为author_id
       const prompt = await PromptService.createPrompt({
         ...req.body,
         author_id: req.user.userId
       });
-      
+
       req.log.info(`创建Prompt成功，ID: ${prompt.id}`);
       res.status(201).json(prompt);
     } catch (error) {
@@ -127,7 +127,7 @@ export const createPromptsRoutes = () => {
       console.error('创建Prompt失败的详细错误:', error);
       req.log.error(`创建Prompt失败: ${error instanceof Error ? error.message : String(error)}`);
       req.log.error(`错误堆栈: ${error instanceof Error ? error.stack : '无堆栈信息'}`);
-      
+
       // 返回更详细的错误信息给客户端
       res.status(500).json({
         error: '创建Prompt失败',
@@ -166,15 +166,30 @@ export const createPromptsRoutes = () => {
   });
 
   // 更新Prompt
-  router.put('/:id', async (req: Request, res: Response) => {
+  router.put('/:id', authMiddleware, async (req: AuthRequest, res: Response) => {
     try {
-      const prompt = await PromptService.updatePrompt(parseInt(req.params.id, 10), req.body);
-      if (!prompt) {
-        req.log.warn(`更新Prompt失败，ID: ${req.params.id} 不存在`);
-        res.status(404).json({ error: 'Prompt不存在' });
-        return;
+      // 从请求对象中获取用户ID
+      if (!req.user) {
+        return res.status(401).json({ error: '用户未认证' });
       }
-      req.log.info(`更新Prompt成功，ID: ${req.params.id}`);
+
+      const promptId = parseInt(req.params.id, 10);
+
+      // 先检查Prompt是否存在以及是否属于当前用户
+      const existingPrompt = await PromptService.getPromptById(promptId);
+      if (!existingPrompt) {
+        req.log.warn(`更新Prompt失败，ID: ${promptId} 不存在`);
+        return res.status(404).json({ error: 'Prompt不存在' });
+      }
+
+      // 检查是否是Prompt的作者
+      if (existingPrompt.author_id !== req.user.userId) {
+        return res.status(403).json({ error: '无权修改该Prompt' });
+      }
+
+      const prompt = await PromptService.updatePrompt(promptId, req.body);
+
+      req.log.info(`更新Prompt成功，ID: ${promptId}`);
       res.status(200).json(prompt);
     } catch (error) {
       req.log.error(`更新Prompt失败，ID: ${req.params.id}: ${error instanceof Error ? error.message : String(error)}`);
@@ -183,15 +198,30 @@ export const createPromptsRoutes = () => {
   });
 
   // 删除Prompt
-  router.delete('/:id', async (req: Request, res: Response) => {
+  router.delete('/:id', authMiddleware, async (req: AuthRequest, res: Response) => {
     try {
-      const deleted = await PromptService.deletePrompt(parseInt(req.params.id, 10));
-      if (!deleted) {
-        req.log.warn(`删除Prompt失败，ID: ${req.params.id} 不存在`);
-        res.status(404).json({ error: 'Prompt不存在' });
-        return;
+      // 从请求对象中获取用户ID
+      if (!req.user) {
+        return res.status(401).json({ error: '用户未认证' });
       }
-      req.log.info(`删除Prompt成功，ID: ${req.params.id}`);
+
+      const promptId = parseInt(req.params.id, 10);
+
+      // 先检查Prompt是否存在以及是否属于当前用户
+      const existingPrompt = await PromptService.getPromptById(promptId);
+      if (!existingPrompt) {
+        req.log.warn(`删除Prompt失败，ID: ${promptId} 不存在`);
+        return res.status(404).json({ error: 'Prompt不存在' });
+      }
+
+      // 检查是否是Prompt的作者
+      if (existingPrompt.author_id !== req.user.userId) {
+        return res.status(403).json({ error: '无权删除该Prompt' });
+      }
+
+      const deleted = await PromptService.deletePrompt(promptId);
+
+      req.log.info(`删除Prompt成功，ID: ${promptId}`);
       res.status(204).end();
     } catch (error) {
       req.log.error(`删除Prompt失败，ID: ${req.params.id}: ${error instanceof Error ? error.message : String(error)}`);
