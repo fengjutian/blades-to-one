@@ -34,6 +34,33 @@ const Prompts: React.FC = () => {
     fetchCategories();
   }, []);
 
+  // 获取Prompt列表
+  useEffect(() => {
+    const fetchPrompts = async () => {
+      try {
+        const headers: Record<string, string> = {};
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
+
+        const response = await fetch('/prompts', {
+          headers
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setDataSource(data);
+        } else {
+          console.error('获取Prompt列表失败:', response.status);
+        }
+      } catch (error) {
+        console.error('获取Prompt列表时发生错误:', error);
+      }
+    };
+
+    fetchPrompts();
+  }, [token]);
+
   const openSideSheet = (record: any) => {
     setSelectedRecord(record);
     setFormValues(record); // 初始化表单值
@@ -237,55 +264,11 @@ const Prompts: React.FC = () => {
     },
   ];
 
-  const generateMockData = () => {
-    const data = [];
-    const categories = ['SQL', 'NLP', '图像生成', '对话模型', '代码生成', '数据分析'];
-    const statuses = ['active', 'draft', 'deprecated', 'archived'];
-    const sources = ['系统生成', '用户上传', '第三方导入'];
-    const roles = ['developer', 'user', 'ai', 'admin'];
-
-    for (let i = 1; i <= 50; i++) {
-      const tagCount = Math.floor(Math.random() * 3) + 1;
-      const tagsArray = [];
-      for (let j = 0; j < tagCount; j++) {
-        const randomTag = Math.random() > 0.5 ? 'ai' : '测试';
-        tagsArray.push(randomTag + j);
-      }
-
-      data.push({
-        key: '' + i,
-        id: i,
-        title: `Prompt示例${i}`,
-        description: `这是第${i}个prompt的描述信息，用于测试分页功能。`,
-        content: '请生成相关内容...',
-        tags: tagsArray.join(','),
-        version: Math.floor(Math.random() * 3) + 1,
-        status: statuses[Math.floor(Math.random() * statuses.length)],
-        author_id: 100 + Math.floor(Math.random() * 10),
-        category: categories[Math.floor(Math.random() * categories.length)],
-        usage_count: Math.floor(Math.random() * 50),
-        last_used_at: `2023-01-${(Math.floor(Math.random() * 30) + 1).toString().padStart(2, '0')} 12:00:00`,
-        is_public: Math.random() > 0.5 ? 1 : 0,
-        source: sources[Math.floor(Math.random() * sources.length)],
-        remarks: Math.random() > 0.5 ? '测试备注' : '',
-        role: roles[Math.floor(Math.random() * roles.length)],
-        created_at: `2023-01-${(Math.floor(Math.random() * 30) + 1).toString().padStart(2, '0')} 12:00:00`,
-        updated_at: `2023-01-${(Math.floor(Math.random() * 30) + 1).toString().padStart(2, '0')} 12:00:00`,
-      });
-    }
-    return data;
-  };
-
   // 定义scroll变量
   const scroll = useMemo(() => ({
     x: 1200,
     y: 'calc(100vh - 240px)'
   }), []);
-
-  useEffect(() => {
-    const data = generateMockData();
-    setDataSource(data);
-  }, []);
 
   const paginationConfig = useMemo(() => ({
     pageSize: 10,
