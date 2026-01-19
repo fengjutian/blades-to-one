@@ -1,7 +1,11 @@
 import dotenv from 'dotenv';
 import path from 'path';
 
-dotenv.config();
+// 加载环境变量，使用绝对路径确保正确加载
+dotenv.config({
+  path: path.resolve(__dirname, '../../.env'),
+  debug: true
+});
 
 export interface ServerConfig {
   port: number;
@@ -52,3 +56,4 @@ export const getLLMClientConfig = (clientType: string): LLMClientConfig => {
 export const getPublicPath = (): string => {
   return path.join(__dirname, '../../public');
 };
+

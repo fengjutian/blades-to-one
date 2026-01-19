@@ -2,10 +2,11 @@ import { PrismaClient } from '../generated/prisma/client';
 import { PrismaMariaDb } from '@prisma/adapter-mariadb';
 import mariadb from 'mysql2/promise';
 import dotenv from 'dotenv';
+import path from 'path';
 
-// 加载环境变量，指定.env文件路径确保正确加载
+// 加载环境变量，使用绝对路径确保正确加载
 dotenv.config({
-  path: './.env',
+  path: path.resolve(__dirname, '../../.env'),
   debug: true
 });
 
@@ -28,9 +29,17 @@ class PrismaConnectionImpl implements PrismaConnection {
     const port = Number(process.env.MYSQL_PORT);
     const database = process.env.MYSQL_DATABASE;
 
+    console.log('数据库连接参数:', {
+      username,
+      host,
+      port,
+      database,
+      password: password ? '******' : '未设置'
+    });
+
     // 验证必要的连接参数
     if (!username || !password || !host || !port || !database) {
-      throw new Error('Missing required database connection parameters');
+      throw new Error('缺少必要的数据库连接参数');
     }
 
     // 创建连接池配置
@@ -53,7 +62,10 @@ class PrismaConnectionImpl implements PrismaConnection {
     const pool = mariadb.createPool(poolConfig);
 
     // 测试连接池是否能正常工作
-    this.testPoolConnection(pool);
+    this.testPoolConnection(pool).catch(error => {
+      console.error('连接池测试失败，应用程序将退出:', error);
+      process.exit(1);
+    });
 
     // 创建PrismaMariaDb适配器
     const adapter = new PrismaMariaDb(pool);
@@ -69,12 +81,13 @@ class PrismaConnectionImpl implements PrismaConnection {
   private async testPoolConnection(pool: mariadb.Pool) {
     try {
       const connection = await pool.getConnection();
-      console.log('Successfully obtained connection from pool');
+      console.log('成功从连接池获取连接');
       await connection.release();
-      console.log('Successfully released connection back to pool');
+      console.log('成功将连接释放回连接池');
+      return true;
     } catch (error) {
-      console.error('Failed to test connection pool:', error);
-      // 不要抛出错误，让应用程序继续运行
+      console.error('连接池测试失败:', error);
+      throw error;
     }
   }
 
@@ -90,9 +103,9 @@ class PrismaConnectionImpl implements PrismaConnection {
   public async connect(): Promise<void> {
     try {
       await this.client.$connect();
-      console.log('Prisma client connected to the database');
+      console.log('Prisma client已连接到数据库');
     } catch (error) {
-      console.error('Failed to connect to the database:', error);
+      console.error('连接数据库失败:', error);
       throw error;
     }
   }
@@ -101,9 +114,9 @@ class PrismaConnectionImpl implements PrismaConnection {
   public async disconnect(): Promise<void> {
     try {
       await this.client.$disconnect();
-      console.log('Prisma client disconnected from the database');
+      console.log('Prisma client已断开数据库连接');
     } catch (error) {
-      console.error('Failed to disconnect from the database:', error);
+      console.error('断开数据库连接失败:', error);
       throw error;
     }
   }
@@ -114,7 +127,7 @@ class PrismaConnectionImpl implements PrismaConnection {
       await this.client.$queryRaw`SELECT 1`;
       return true;
     } catch (error) {
-      console.error('Database connection test failed:', error);
+      console.error('数据库连接测试失败:', error);
       return false;
     }
   }
