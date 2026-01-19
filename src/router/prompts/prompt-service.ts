@@ -21,8 +21,16 @@ export class PromptService {
         console.log('Converted is_public to boolean:', data.is_public);
       }
 
-      if (data.categoryId && typeof data.categoryId !== 'number') {
-        throw new Error(`categoryId must be a number, got ${typeof data.categoryId}`);
+      if (data.categoryId) {
+        if (typeof data.categoryId !== 'number') {
+          // 尝试将字符串转换为数字
+          const parsedCategoryId = parseInt(data.categoryId as string, 10);
+          if (isNaN(parsedCategoryId)) {
+            throw new Error(`categoryId must be a valid number, got ${data.categoryId}`);
+          }
+          data.categoryId = parsedCategoryId;
+          console.log('Converted categoryId to number:', data.categoryId);
+        }
       }
 
       const prompt = await prisma.prompts.create({
@@ -127,6 +135,26 @@ export class PromptService {
    */
   static async updatePrompt(id: number, data: UpdatePromptInput): Promise<Prompts | null> {
     try {
+      console.log('Received data in updatePrompt:', data);
+
+      // 验证字段类型
+      if (typeof data.is_public !== 'undefined' && typeof data.is_public !== 'boolean') {
+        data.is_public = Boolean(data.is_public);
+        console.log('Converted is_public to boolean:', data.is_public);
+      }
+
+      if (data.categoryId) {
+        if (typeof data.categoryId !== 'number') {
+          // 尝试将字符串转换为数字
+          const parsedCategoryId = parseInt(data.categoryId as string, 10);
+          if (isNaN(parsedCategoryId)) {
+            throw new Error(`categoryId must be a valid number, got ${data.categoryId}`);
+          }
+          data.categoryId = parsedCategoryId;
+          console.log('Converted categoryId to number:', data.categoryId);
+        }
+      }
+
       return prisma.prompts.update({
         where: { id },
         data,
@@ -184,4 +212,6 @@ export class PromptService {
     }
   }
 }
+
+
 
