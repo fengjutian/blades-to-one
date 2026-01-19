@@ -7,8 +7,7 @@ import path from 'path';
 
 // 加载环境变量，使用绝对路径确保正确加载
 dotenv.config({
-  path: path.resolve(__dirname, '../../../.env'),
-  debug: true
+  path: path.resolve(__dirname, '../../../.env')
 });
 
 // 创建数据库连接池
@@ -175,4 +174,5 @@ export class AuthService {
 
 // 导出认证服务实例
 export const authService = new AuthService();
+
 

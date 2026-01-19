@@ -6,8 +6,7 @@ import path from 'path';
 
 // 加载环境变量，使用绝对路径确保正确加载
 dotenv.config({
-  path: path.resolve(__dirname, '../../.env'),
-  debug: true
+  path: path.resolve(__dirname, '../../.env')
 });
 
 export interface PrismaConnection {
@@ -141,4 +140,5 @@ class PrismaConnectionImpl implements PrismaConnection {
 // 导出Prisma连接实例和类型
 export const prismaConnection: PrismaConnection = PrismaConnectionImpl.getInstance();
 export const prisma: PrismaClient = prismaConnection.client;
+
 
