@@ -1,0 +1,33 @@
+.docsPage {
+  padding: 20px;
+}
+
+.operationBar {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.searchBox {
+  width: 300px;
+}
+
+.formSection {
+  margin-bottom: 20px;
+}
+
+.tableContainer {
+  margin-top: 20px;
+}
+
+.modalContent {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.modalFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}

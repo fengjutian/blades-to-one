@@ -1,208 +1,101 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Card, Form, Button, Table, SideSheet, Upload, Tag, Modal, Toast, Empty, Spin } from '@douyinfe/semi-ui';
-import { IconSearch, IconPlus, IconEdit, IconDelete, IconUpload } from '@douyinfe/semi-icons';
+import { Table, Tag, Button, Popconfirm, Toast, SideSheet, Form, Input, Select, Row, Col } from '@douyinfe/semi-ui';
+import styles from './docs.module.scss';
+import { IconDelete, IconEdit, IconPlus } from '@douyinfe/semi-icons';
+import { useAuth } from '../../hooks/useAuth';
+import { BASE_URL } from '../../lib/api';
 
-// 定义文件类型枚举
-type FileType = 'PDF' | 'Word' | 'Excel';
+// 定义文档类型
+type FileType = 'PDF' | 'Word' | 'Excel' | 'PPT' | 'Text' | 'Image';
 
-// 文件实体数据模型
-export interface FileEntity {
-  id: string;
+// 定义文档实体
+type FileEntity = {
+  id: number;
   name: string;
   description: string;
   type: FileType;
-  fileUrl: string;
   createdAt: string;
   updatedAt: string;
-  openid: string;
-}
-
-// 文件表单数据类型
-interface FileFormData {
-  name: string;
-  description: string;
-  type: FileType;
-  file: any;
-}
+  authorId: number;
+  filePath?: string;
+  fileSize?: number;
+  isPublic: boolean;
+  status: string;
+};
 
 const Docs: React.FC = () => {
-  // 状态管理
-  const [files, setFiles] = useState<FileEntity[]>([]);
+  const [dataSource, setDataSource] = useState<FileEntity[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [searchKeyword, setSearchKeyword] = useState<string>('');
-  const [drawerVisible, setDrawerVisible] = useState<boolean>(false);
-  const [formData, setFormData] = useState<FileFormData>({
-    name: '',
-    description: '',
-    type: 'PDF',
-    file: null
-  });
-  const [editingFile, setEditingFile] = useState<FileEntity | null>(null);
-  const [deleteConfirmVisible, setDeleteConfirmVisible] = useState<boolean>(false);
-  const [fileToDelete, setFileToDelete] = useState<string | null>(null);
+  const [sideSheetVisible, setSideSheetVisible] = useState(false);
+  const [selectedRecord, setSelectedRecord] = useState<FileEntity | null>(null);
+  const [formValues, setFormValues] = useState<any>({});
+  const { token, user } = useAuth();
 
-  // 模拟数据
-  const mockFiles: FileEntity[] = [
-    {
-      id: '1',
-      name: '项目计划文档',
-      description: '2026年项目实施计划',
-      type: 'PDF',
-      fileUrl: 'https://example.com/file1.pdf',
-      createdAt: '2026-01-01T10:00:00Z',
-      updatedAt: '2026-01-01T10:00:00Z',
-      openid: 'user123'
-    },
-    {
-      id: '2',
-      name: '月度财务报表',
-      description: '2025年12月财务数据',
-      type: 'Excel',
-      fileUrl: 'https://example.com/file2.xlsx',
-      createdAt: '2025-12-31T15:30:00Z',
-      updatedAt: '2025-12-31T15:30:00Z',
-      openid: 'user123'
-    },
-    {
-      id: '3',
-      name: '会议纪要',
-      description: '产品评审会议记录',
-      type: 'Word',
-      fileUrl: 'https://example.com/file3.docx',
-      createdAt: '2025-12-25T09:15:00Z',
-      updatedAt: '2025-12-25T09:15:00Z',
-      openid: 'user123'
-    }
-  ];
-
-  // 页面加载时初始化数据
-  useEffect(() => {
-    fetchFiles();
-  }, []);
-
-  // 获取文件列表
-  const fetchFiles = () => {
-    setLoading(true);
-    // 模拟API请求
-    setTimeout(() => {
-      setFiles(mockFiles);
-      setLoading(false);
-    }, 800);
-  };
-
-  // 搜索文件
-  const handleSearch = () => {
-    setLoading(true);
-    // 模拟搜索逻辑
-    setTimeout(() => {
-      const filteredFiles = mockFiles.filter(file =>
-        file.name.includes(searchKeyword)
-      );
-      setFiles(filteredFiles);
-      setLoading(false);
-    }, 800);
-  };
-
-  // 重置搜索
-  const handleReset = () => {
-    setSearchKeyword('');
-    fetchFiles();
-  };
-
-  // 打开新增文件抽屉
-  const handleAddFile = () => {
-    setEditingFile(null);
-    setFormData({
-      name: '',
-      description: '',
-      type: 'PDF',
-      file: null
-    });
-    setDrawerVisible(true);
-  };
-
-  // 打开编辑文件抽屉
-  const handleEditFile = (file: FileEntity) => {
-    setEditingFile(file);
-    setFormData({
-      name: file.name,
-      description: file.description,
-      type: file.type,
-      file: null
-    });
-    setDrawerVisible(true);
-  };
-
-  // 打开删除确认对话框
-  const handleDeleteFile = (id: string) => {
-    setFileToDelete(id);
-    setDeleteConfirmVisible(true);
-  };
-
-  // 确认删除文件
-  const confirmDeleteFile = () => {
-    if (!fileToDelete) return;
-
-    setLoading(true);
-    // 模拟删除API请求
-    setTimeout(() => {
-      const updatedFiles = files.filter(file => file.id !== fileToDelete);
-      setFiles(updatedFiles);
-      setDeleteConfirmVisible(false);
-      setLoading(false);
-      Toast.success('文件删除成功');
-    }, 800);
-  };
-
-  // 提交文件表单
-  const handleFormSubmit = () => {
-    // 表单验证
-    if (!formData.name.trim()) {
-      Toast.warning('请输入文件名称');
-      return;
-    }
-
-    if (!formData.file && !editingFile) {
-      Toast.warning('请上传文件');
-      return;
-    }
-
-    setLoading(true);
-    // 模拟提交API请求
-    setTimeout(() => {
-      const newFile: FileEntity = {
-        id: editingFile ? editingFile.id : `file-${Date.now()}`,
-        name: formData.name,
-        description: formData.description,
-        type: formData.type,
-        fileUrl: editingFile ? editingFile.fileUrl : 'https://example.com/uploaded-file.pdf',
-        createdAt: editingFile ? editingFile.createdAt : new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        openid: 'user123'
-      };
-
-      if (editingFile) {
-        // 更新现有文件
-        const updatedFiles = files.map(file =>
-          file.id === editingFile.id ? newFile : file
-        );
-        setFiles(updatedFiles);
-        Toast.success('文件更新成功');
+  // 获取文档列表
+  const fetchDocs = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(`${BASE_URL}/docs`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setDataSource(data);
       } else {
-        // 添加新文件
-        setFiles([...files, newFile]);
-        Toast.success('文件添加成功');
+        console.error('获取文档列表失败:', response.status);
+        Toast.error('获取文档列表失败');
       }
-
-      setDrawerVisible(false);
+    } catch (error) {
+      console.error('获取文档列表时发生错误:', error);
+      Toast.error('获取文档列表时发生错误');
+    } finally {
       setLoading(false);
-    }, 1500);
+    }
   };
 
-  // 处理文件上传
-  const handleFileUpload = (file: any) => {
-    setFormData(prev => ({ ...prev, file }));
-    return false; // 阻止自动上传，由表单提交时处理
+  // 组件挂载时获取文档列表
+  useEffect(() => {
+    if (token) {
+      fetchDocs();
+    }
+  }, [token]);
+
+  // 打开侧边栏
+  const handleEditFile = (record: FileEntity) => {
+    setSelectedRecord(record);
+    setFormValues(record);
+    setSideSheetVisible(true);
+  };
+
+  // 关闭侧边栏
+  const closeSideSheet = () => {
+    setSideSheetVisible(false);
+    setSelectedRecord(null);
+    setFormValues({});
+  };
+
+  // 删除文档
+  const handleDeleteFile = async (id: number) => {
+    try {
+      const response = await fetch(`${BASE_URL}/docs/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (response.ok) {
+        setDataSource(prev => prev.filter(item => item.id !== id));
+        Toast.success('文档删除成功');
+      } else {
+        console.error('删除文档失败:', response.status);
+        Toast.error('删除文档失败');
+      }
+    } catch (error) {
+      console.error('删除文档时发生错误:', error);
+      Toast.error('删除文档时发生错误');
+    }
   };
 
   // 表格列配置
@@ -267,148 +160,160 @@ const Docs: React.FC = () => {
     }
   ];
 
+  // 保存文档
+  const handleSave = async () => {
+    try {
+      const values = formValues || {};
+
+      // 验证必填字段
+      if (!values.name || !values.type) {
+        Toast.error('名称和类型是必填字段');
+        return;
+      }
+
+      const data = {
+        name: values.name,
+        description: values.description,
+        type: values.type,
+        isPublic: values.isPublic || true,
+        status: values.status || 'active'
+      };
+
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      };
+
+      let response;
+      if (selectedRecord && selectedRecord.id) {
+        // 更新文档
+        response = await fetch(`${BASE_URL}/docs/${selectedRecord.id}`, {
+          method: 'PUT',
+          headers,
+          body: JSON.stringify(data)
+        });
+      } else {
+        // 创建文档
+        response = await fetch(`${BASE_URL}/docs`, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify(data)
+        });
+      }
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || '保存失败');
+      }
+
+      const savedDoc = await response.json();
+
+      if (selectedRecord && selectedRecord.id) {
+        setDataSource(prev => prev.map(item => item.id === selectedRecord.id ? savedDoc : item));
+        Toast.success('文档更新成功');
+      } else {
+        setDataSource(prev => [...prev, savedDoc]);
+        Toast.success('文档创建成功');
+      }
+
+      closeSideSheet();
+    } catch (error) {
+      console.error('保存文档失败:', error);
+      Toast.error(error instanceof Error ? error.message : '保存文档失败');
+    }
+  };
+
+  // 新建文档
+  const handleCreate = () => {
+    setSelectedRecord(null);
+    setFormValues({});
+    setSideSheetVisible(true);
+  };
+
   return (
-    <Layout style={{padding: 20, minHeight: '100vh' }}>
-        {/* 查询区域 */}
-        <Form layout="horizontal" style={{ marginBottom: 16, display: 'flex', alignItems: 'flex-end' }}>
-            <Form.Input
-            field="name"
-            initValue={searchKeyword}
-            onChange={(value: string) => setSearchKeyword(value)}
-            placeholder="文件名称"
-            style={{ width: 300, marginRight: 12 }}
-            prefix={<IconSearch />}
-            />
-            <Button type="primary" onClick={handleSearch} style={{ marginRight: 8 }}>
-            查询
-            </Button>
-            <Button onClick={handleReset}>
-            重置
-            </Button>
-        </Form>
-
-        {/* 操作区 */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 16 }}>
-            <Button
-            icon={<IconPlus />}
-            type="primary"
-            onClick={handleAddFile}
-            >
-            新增文件
-            </Button>
-        </div>
-
-        {/* 列表区 */}
-        {loading ? (
-            <div style={{ display: 'flex', justifyContent: 'center', padding: 60 }}>
-            <Spin size="large" />
-            </div>
-        ) : files.length === 0 ? (
-            <Empty
-            title="暂无文件"
-            description="点击'新增文件'按钮添加文件"
-            style={{ padding: 60 }}
-            />
-        ) : (
-            <Table
-            columns={tableColumns}
-            dataSource={files}
-            rowKey="id"
-            pagination={{ pageSize: 10 }}
-            bordered
-            />
-        )}
-
-      {/* 新增/编辑文件抽屉 */}
-      <SideSheet
-        title={editingFile ? '编辑文件' : '新增文件'}
-        placement="right"
-        size="large"
-        visible={drawerVisible}
-        onCancel={() => setDrawerVisible(false)}
-        footer={
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12 }}>
-            <Button onClick={() => setDrawerVisible(false)}>
-              取消
-            </Button>
-            <Button type="primary" onClick={handleFormSubmit} loading={loading}>
-              {editingFile ? '更新' : '提交'}
-            </Button>
-          </div>
-        }
+    <div className={styles.docsCtx} style={{ width: '100%', height: '100%' }}>
+      <Button
+        icon={<IconPlus />}
+        type="primary"
+        onClick={handleCreate}
+        style={{ marginBottom: 20 }}
       >
-        <Form layout="vertical" style={{ marginTop: 24 }}>
-          <Form.Input
-            field="name"
-            label="文件名称"
-            initValue={formData.name}
-            onChange={(value: string | number | any[] | Record<string, any>) => setFormData(prev => ({ ...prev, name: value as string }))}
-            placeholder="请输入文件名称"
-            required
-          />
+        新建文档
+      </Button>
 
-          <Form.TextArea
-            field="description"
-            label="文件描述"
-            initValue={formData.description}
-            onChange={(value: string | number | any[] | Record<string, any>) => setFormData(prev => ({ ...prev, description: value as string }))}
-            placeholder="请输入文件描述"
-            rows={4}
-          />
+      <Table
+        bordered={true}
+        columns={tableColumns}
+        dataSource={dataSource}
+        loading={loading}
+        pagination={{
+          pageSize: 10,
+          showSizeChanger: true,
+          pageSizeOptions: ['10', '20', '50', '100'],
+          showTotal: true,
+          showQuickJumper: true
+        }}
+        scroll={{ x: 1000 }}
+      />
 
-          <Form.Select
-            field="type"
-            label="文件类型"
-            initValue={formData.type}
-            onChange={(value: string | number | any[] | Record<string, any>) => setFormData(prev => ({ ...prev, type: value as FileType }))}
-          >
-            <Form.Select.Option value="PDF">PDF</Form.Select.Option>
-            <Form.Select.Option value="Word">Word</Form.Select.Option>
-            <Form.Select.Option value="Excel">Excel</Form.Select.Option>
-          </Form.Select>
+      <SideSheet
+        title={selectedRecord ? "编辑文档" : "新建文档"}
+        visible={sideSheetVisible}
+        onCancel={closeSideSheet}
+        size="large"
+      >
+        <Form
+          layout="horizontal"
+          onValueChange={(values) => setFormValues(values)}
+          initValues={selectedRecord}
+        >
+          {({ formState }) => (
+            <>
+              <div className="grid w-full">
+                <Row>
+                  <Col span={12}>
+                    <Form.Input field="name" label="名称" style={{ width: '100%' }} placeholder="请输入文档名称" />
+                  </Col>
+                  <Col span={12}>
+                    <Form.Select field="type" label="类型" style={{ width: '100%' }}>
+                      <Select.Option value="PDF">PDF</Select.Option>
+                      <Select.Option value="Word">Word</Select.Option>
+                      <Select.Option value="Excel">Excel</Select.Option>
+                      <Select.Option value="PPT">PPT</Select.Option>
+                      <Select.Option value="Text">Text</Select.Option>
+                      <Select.Option value="Image">Image</Select.Option>
+                    </Form.Select>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col span={24}>
+                    <Form.TextArea field="description" label="描述" style={{ width: '100%' }} placeholder="请输入文档描述" rows={4} />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col span={12}>
+                    <Form.Select field="status" label="状态" style={{ width: '100%' }}>
+                      <Select.Option value="active">活跃</Select.Option>
+                      <Select.Option value="inactive">停用</Select.Option>
+                      <Select.Option value="archived">归档</Select.Option>
+                    </Form.Select>
+                  </Col>
+                  <Col span={12}>
+                    <Form.Switch field="isPublic" label="是否公开" />
+                  </Col>
+                </Row>
 
-          <Form.Slot label="文件上传">
-            <Upload
-              fileList={formData.file ? [formData.file] : []}
-              beforeUpload={handleFileUpload}
-              multiple={false}
-              action="#"
-            >
-              <div style={{ padding: 24, border: '1px dashed #d9d9d9', borderRadius: 4, textAlign: 'center' }}>
-                <IconUpload style={{ fontSize: 48, color: '#1890ff', marginBottom: 16 }} />
-                <p>点击或拖拽文件到此处上传</p>
-                <p style={{ color: '#999', marginTop: 8 }}>支持 PDF、Word、Excel 文件</p>
+                <div style={{ marginTop: 20, display: 'flex', justifyContent: 'flex-end' }}>
+                  <Button onClick={closeSideSheet} style={{ marginRight: 8 }}>取消</Button>
+                  <Button type="primary" onClick={handleSave}>保存</Button>
+                </div>
               </div>
-            </Upload>
-          </Form.Slot>
+            </>
+          )}
         </Form>
       </SideSheet>
-
-      {/* 删除确认对话框 */}
-      <Modal
-        title="确认删除"
-        visible={deleteConfirmVisible}
-        onOk={confirmDeleteFile}
-        onCancel={() => setDeleteConfirmVisible(false)}
-        okText="确认"
-        cancelText="取消"
-        confirmLoading={loading}
-      >
-        <p>确定要删除此文件吗？此操作不可恢复。</p>
-      </Modal>
-    </Layout>
+    </div>
   );
 };
 
 export default Docs;
-
-
-
-
-
-
-
-
-
-
-

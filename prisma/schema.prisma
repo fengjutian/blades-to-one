@@ -35,6 +35,7 @@ model User {
   // 关系定义
   user_permissions UserPermission[]  // 与用户权限关联表的一对多关系
   prompts          Prompts[]         // 与Prompts的一对多关系（用户作为作者）
+  docs             Docs[]            // 与Docs的一对多关系（用户作为作者）
 
   @@map("users")
 }
@@ -133,4 +134,27 @@ model Prompts {
   @@map("prompts")
 }
 
-
+// 文档相关模型
+
+/**
+ * 文档表
+ * 存储各类文档信息
+ */
+model Docs {
+  id          Int       @id @default(autoincrement()) @map("id")  // 主键ID，自增
+  name        String    @unique @db.VarChar(255) @map("name")     // 名称，唯一，最大255字符
+  description String?   @db.Text @map("description")             // 描述，可选，文本类型
+  type        String    @db.VarChar(50) @map("type")             // 类型，可选值：PDF/Word/Excel等
+  createdAt   DateTime  @default(now()) @map("created_at")        // 创建时间
+  updatedAt   DateTime  @updatedAt @map("updated_at")            // 更新时间
+  authorId    Int?      @map("author_id")                       // 作者ID，外键，可选
+  filePath    String?   @db.VarChar(255) @map("file_path")       // 文件路径，可选，最大255字符
+  fileSize    Int?      @map("file_size")                       // 文件大小，可选，单位字节
+  isPublic    Boolean   @default(true) @map("is_public")         // 是否公开，默认true
+  status      String    @db.VarChar(50) @default("active") @map("status")  // 状态，默认active
+
+  // 关系定义
+  author      User?     @relation(fields: [authorId], references: [id])  // 与User的关系
+
+  @@map("docs")
+}
