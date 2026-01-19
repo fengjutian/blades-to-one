@@ -313,7 +313,7 @@ const Prompts: React.FC = () => {
     pageSize: 10,
     showSizeChanger: true,
     pageSizeOptions: ['10', '20', '50', '100'],
-    showTotal: (total, range) => `${range[0]}-${range[1]} 条，共 ${total} 条`,
+    showTotal: true, // 将函数改为布尔值
     showQuickJumper: true,
   }), []);
 
@@ -437,6 +437,7 @@ const Prompts: React.FC = () => {
 };
 
 export default Prompts;
+
 
 
 
