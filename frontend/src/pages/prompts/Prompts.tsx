@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Table, Tag, Space, SideSheet, Button, Form, Select, Row, Col, Toast  } from '@douyinfe/semi-ui';
 import styles from './prompts.module.scss';
 import { IconDelete, IconEdit  } from '@douyinfe/semi-icons';
+import { useAuth } from '../../hooks/useAuth';
 
 const Prompts: React.FC = () => {
   const [sideSheetVisible, setSideSheetVisible] = useState(false);
@@ -9,6 +10,9 @@ const Prompts: React.FC = () => {
   const [sideSheetSize, setSideSheetSize] = useState<'small' | 'medium' | 'large'>('large');
   const [dataSource, setDataSource] = useState([]);
   const [formValues, setFormValues] = useState<any>({});
+
+  // 使用认证Hook获取token
+  const { token } = useAuth();
 
   const openSideSheet = (record: any) => {
     setSelectedRecord(record);
@@ -66,23 +70,28 @@ const Prompts: React.FC = () => {
         return;
       }
 
+      // 设置请求头，包含认证token
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+      };
+
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
       let response;
       if (selectedRecord && selectedRecord.id) {
         // 更新操作
         response = await fetch(`/prompts/${selectedRecord.id}`, {
           method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: headers,
           body: JSON.stringify(promptData),
         });
       } else {
         // 创建操作
         response = await fetch('/prompts', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: headers,
           body: JSON.stringify(promptData),
         });
       }
@@ -390,6 +399,8 @@ const Prompts: React.FC = () => {
 };
 
 export default Prompts;
+
+
 
 
 
