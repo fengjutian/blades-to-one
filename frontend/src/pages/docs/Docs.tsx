@@ -268,58 +268,56 @@ const Docs: React.FC = () => {
   ];
 
   return (
-    <Layout style={{ padding: 24, minHeight: '100vh' }}>
-      <Card title="文件管理" style={{ marginBottom: 24 }}>
+    <Layout style={{padding: 20, minHeight: '100vh' }}>
         {/* 查询区域 */}
         <Form layout="horizontal" style={{ marginBottom: 16, display: 'flex', alignItems: 'flex-end' }}>
-          <Form.Input
+            <Form.Input
             field="name"
             initValue={searchKeyword}
             onChange={(value: string) => setSearchKeyword(value)}
             placeholder="文件名称"
             style={{ width: 300, marginRight: 12 }}
             prefix={<IconSearch />}
-          />
-          <Button type="primary" onClick={handleSearch} style={{ marginRight: 8 }}>
+            />
+            <Button type="primary" onClick={handleSearch} style={{ marginRight: 8 }}>
             查询
-          </Button>
-          <Button onClick={handleReset}>
+            </Button>
+            <Button onClick={handleReset}>
             重置
-          </Button>
+            </Button>
         </Form>
 
         {/* 操作区 */}
         <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 16 }}>
-          <Button
+            <Button
             icon={<IconPlus />}
             type="primary"
             onClick={handleAddFile}
-          >
+            >
             新增文件
-          </Button>
+            </Button>
         </div>
 
         {/* 列表区 */}
         {loading ? (
-          <div style={{ display: 'flex', justifyContent: 'center', padding: 60 }}>
+            <div style={{ display: 'flex', justifyContent: 'center', padding: 60 }}>
             <Spin size="large" />
-          </div>
+            </div>
         ) : files.length === 0 ? (
-          <Empty
+            <Empty
             title="暂无文件"
             description="点击'新增文件'按钮添加文件"
             style={{ padding: 60 }}
-          />
+            />
         ) : (
-          <Table
+            <Table
             columns={tableColumns}
             dataSource={files}
             rowKey="id"
             pagination={{ pageSize: 10 }}
             bordered
-          />
+            />
         )}
-      </Card>
 
       {/* 新增/编辑文件抽屉 */}
       <SideSheet
