@@ -31,6 +31,7 @@ const Prompts: React.FC = () => {
     try {
       // 获取表单值
       const values = formValues || {};
+      console.log('表单值:', values);
 
       // 检查values是否包含必要的字段
       if (!values) {
@@ -56,8 +57,11 @@ const Prompts: React.FC = () => {
         role: values.role || 'user'
       };
 
+      console.log('请求数据:', promptData);
+
       // 验证必填字段
       if (!promptData.title || !promptData.content) {
+        console.log('验证失败，title或content为空:', { title: promptData.title, content: promptData.content });
         Toast.error('标题和内容是必填字段');
         return;
       }
@@ -287,10 +291,9 @@ const Prompts: React.FC = () => {
           <Form
             layout='horizontal'
             onValueChange={(values) => {
-              // 只取values.values作为表单值，确保它存在
-              const formValues = values.values || {};
-              console.log(formValues);
-              setFormValues(formValues);
+              // 直接使用values参数更新formValues
+              console.log('Form值变化:', values);
+              setFormValues(values);
             }}
             // 使用initValues而不是initialValues
             initValues={selectedRecord}
@@ -387,6 +390,8 @@ const Prompts: React.FC = () => {
 };
 
 export default Prompts;
+
+
 
 
 
