@@ -21,6 +21,7 @@ export class PromptService {
         console.log('Converted is_public to boolean:', data.is_public);
       }
 
+      let categoryId: number | undefined;
       if (data.categoryId) {
         if (typeof data.categoryId !== 'number') {
           // 尝试将字符串转换为数字
@@ -28,13 +29,55 @@ export class PromptService {
           if (isNaN(parsedCategoryId)) {
             throw new Error(`categoryId must be a valid number, got ${data.categoryId}`);
           }
-          data.categoryId = parsedCategoryId;
-          console.log('Converted categoryId to number:', data.categoryId);
+          categoryId = parsedCategoryId;
+          console.log('Converted categoryId to number:', categoryId);
+        } else {
+          categoryId = data.categoryId;
         }
       }
 
+      // 处理status字段，确保它是字符串类型
+      let status: string = 'active'; // 默认值
+      if (data.status) {
+        if (typeof data.status === 'number') {
+          // 数字类型的status映射到对应的字符串
+          const statusMap: Record<number, string> = {
+            1: 'active',
+            0: 'inactive',
+            2: 'draft'
+          };
+          status = statusMap[data.status] || 'active';
+          console.log('Mapped numeric status to string:', status);
+        } else {
+          // 确保是字符串类型
+          status = String(data.status);
+        }
+      }
+
+      // 构建Prisma创建数据
+      const createData: Prisma.PromptsCreateInput = {
+        title: data.title,
+        content: data.content,
+        status: status,
+        author_id: data.author_id,
+        description: data.description,
+        tags: data.tags,
+        version: data.version,
+        usage_count: 0,
+        last_used_at: null,
+        is_public: data.is_public,
+        source: data.source,
+        remarks: data.remarks,
+        role: data.role,
+      };
+
+      // 添加分类关联
+      if (categoryId) {
+        createData.category = { connect: { id: categoryId } };
+      }
+
       const prompt = await prisma.prompts.create({
-        data,
+        data: createData,
         include: {
           category: true,
           author: { select: { id: true, username: true, email: true } },
@@ -212,6 +255,8 @@ export class PromptService {
     }
   }
 }
+
+
 
 
 

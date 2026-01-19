@@ -123,8 +123,16 @@ export const createPromptsRoutes = () => {
       req.log.info(`创建Prompt成功，ID: ${prompt.id}`);
       res.status(201).json(prompt);
     } catch (error) {
+      // 记录详细的错误信息
+      console.error('创建Prompt失败的详细错误:', error);
       req.log.error(`创建Prompt失败: ${error instanceof Error ? error.message : String(error)}`);
-      res.status(500).json({ error: '创建Prompt失败' });
+      req.log.error(`错误堆栈: ${error instanceof Error ? error.stack : '无堆栈信息'}`);
+      
+      // 返回更详细的错误信息给客户端
+      res.status(500).json({
+        error: '创建Prompt失败',
+        details: error instanceof Error ? error.message : String(error)
+      });
     }
   });
 
