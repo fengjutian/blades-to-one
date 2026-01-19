@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Table, Tag, Space, SideSheet, Button, Form, Select, Row, Col, Toast  } from '@douyinfe/semi-ui';
+import { Table, Tag, Space, SideSheet, Button, Form, Select, Row, Col, Toast, Popconfirm  } from '@douyinfe/semi-ui';
 import styles from './prompts.module.scss';
 import { IconDelete, IconEdit  } from '@douyinfe/semi-icons';
 import { useAuth } from '../../hooks/useAuth';
+import { BASE_URL } from '@/config/base';
 
 const Prompts: React.FC = () => {
   const [sideSheetVisible, setSideSheetVisible] = useState(false);
@@ -40,7 +41,7 @@ const Prompts: React.FC = () => {
 
     const fetchPrompts = async () => {
       try {
-        const response = await fetch('http://localhost:3001/prompts', {
+        const response = await fetch(`${BASE_URL}/prompts`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -69,6 +70,36 @@ const Prompts: React.FC = () => {
     setSideSheetVisible(false);
     setSelectedRecord(null);
     setFormValues({}); // 清空表单值
+  };
+
+  // 删除Prompt的处理函数
+  const onConfirm = async (record: any) => {
+    try {
+      const response = await fetch(`${BASE_URL}/prompts/${record.id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        // 更新数据源，移除删除的记录
+        setDataSource(prev => prev.filter(item => item.id !== record.id));
+        Toast.success('Prompt删除成功');
+      } else {
+        console.error('删除Prompt失败:', response.status);
+        Toast.error('删除Prompt失败');
+      }
+    } catch (error) {
+      console.error('删除Prompt时发生错误:', error);
+      Toast.error('删除Prompt时发生错误');
+    }
+  };
+
+  // 取消删除的处理函数
+  const onCancel = () => {
+    // 可以在这里添加取消删除的逻辑，如果需要的话
+    console.log('取消删除操作');
   };
 
   const handleSaveClick = () => {
@@ -254,7 +285,15 @@ const Prompts: React.FC = () => {
             <div>
               <Space>
                 <IconEdit onClick={() => openSideSheet(record)} style={{ cursor: 'pointer' }} />
-                <IconDelete />
+                <Popconfirm
+                  title="确定是否要删除此提示词？"
+                  content="此删除操作将不可逆"
+                  position='left'
+                  onConfirm={() => onConfirm(record)}
+                  onCancel={onCancel}
+                >
+                  <IconDelete />
+                </Popconfirm>
               </Space>
             </div>
           );
@@ -396,3 +435,9 @@ const Prompts: React.FC = () => {
 };
 
 export default Prompts;
+
+
+
+
+
+
