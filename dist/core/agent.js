@@ -27,10 +27,10 @@ class Agent {
      * @param userQuery 用户的查询/输入
      * @returns 包含最终答案和完整历史记录的对象
      */
-    async run(userQuery) {
+    async run(userQuery, history = []) {
         // 为新查询重置历史记录
-        this.history = [];
-        this.textHistory = [];
+        this.history = history;
+        this.textHistory = history.map((item) => `${item.role}: ${item.content}`);
         // 通过多个推理步骤处理查询（标准ReAct流程）
         for (let step = 0; step < this.maxSteps; step++) {
             // 获取这一步的LLM思考过程

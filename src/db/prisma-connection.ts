@@ -67,7 +67,7 @@ class PrismaConnectionImpl implements PrismaConnection {
     });
 
     // 创建PrismaMariaDb适配器
-    const adapter = new PrismaMariaDb(pool);
+    const adapter = new PrismaMariaDb(poolConfig);
 
     // 使用适配器创建PrismaClient实例
     this.client = new PrismaClient({
@@ -135,3 +135,5 @@ class PrismaConnectionImpl implements PrismaConnection {
 // 导出Prisma连接实例和类型
 export const prismaConnection: PrismaConnection = PrismaConnectionImpl.getInstance();
 export const prisma: PrismaClient = prismaConnection.client;
+
+

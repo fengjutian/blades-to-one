@@ -21,7 +21,7 @@ export declare class Agent {
      * @param userQuery 用户的查询/输入
      * @returns 包含最终答案和完整历史记录的对象
      */
-    run(userQuery: string): Promise<{
+    run(userQuery: string, history?: HistoryItem[]): Promise<{
         final: string;
         history: HistoryItem[];
     }>;
