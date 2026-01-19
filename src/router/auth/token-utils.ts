@@ -1,9 +1,9 @@
-import jwt from 'jsonwebtoken';
+import jwt, { SignOptions } from 'jsonwebtoken';
 import { JwtPayload } from './types';
 
 // JWT密钥，从环境变量获取或使用默认值
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
-const JWT_EXPIRES_IN = (process.env.JWT_EXPIRES_IN || '7d') as string; // 默认7天过期
+const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
 
 /**
  * 生成JWT token
@@ -13,9 +13,11 @@ const JWT_EXPIRES_IN = (process.env.JWT_EXPIRES_IN || '7d') as string; // 默认
 export const generateToken = (
   payload: Omit<JwtPayload, 'exp' | 'iat'>
 ): string => {
-  return jwt.sign(payload, JWT_SECRET as string, {
-    expiresIn: JWT_EXPIRES_IN,
-  });
+  const options: SignOptions = {
+    expiresIn: JWT_EXPIRES_IN as any // 使用any类型断言解决类型问题
+  };
+  
+  return jwt.sign(payload, JWT_SECRET as string, options);
 };
 
 /**
@@ -33,3 +35,5 @@ export const verifyToken = (token: string): JwtPayload | null => {
 };
 
 
+
+

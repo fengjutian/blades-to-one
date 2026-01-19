@@ -40,7 +40,7 @@ const Prompts: React.FC = () => {
 
     const fetchPrompts = async () => {
       try {
-        const response = await fetch('http://localhost:8080/prompts', {
+        const response = await fetch('http://localhost:3001/prompts', {
           headers: {
             'Authorization': `Bearer ${token}`
           }
