@@ -1,7 +1,7 @@
 // API调用工具函数
 
 // API基础URL
-export const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3002';
+export const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 /**
  * 登录请求参数

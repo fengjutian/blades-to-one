@@ -13,18 +13,18 @@ export default defineConfig({
     port: 3000,
     proxy: {
       '/react': {
-        target: 'http://localhost:3002',
+        target: 'http://localhost:3001',
         changeOrigin: true,
       },
       '/prompts': {
-        target: 'http://localhost:3002',
+        target: 'http://localhost:3001',
         changeOrigin: true,
       },
       '/docs': {
-        target: 'http://localhost:3002',
+        target: 'http://localhost:3001',
         changeOrigin: true,
       },
     },
   },
 });
-
+

@@ -15,7 +15,7 @@ export interface LLMClientConfig {
 }
 
 export const getServerConfig = (): ServerConfig => ({
-  port: parseInt(process.env.PORT || '3002', 10),
+  port: parseInt(process.env.PORT || '3001', 10),
   llmTokensPerSecond: parseInt(process.env.LLM_TOKENS_PER_SECOND || '1000', 10),
   llmMaxBurstTokens: parseInt(process.env.LLM_MAX_BURST_TOKENS || '5000', 10),
 });
@@ -53,4 +53,4 @@ export const getPublicPath = (): string => {
 
 
 
-
+
