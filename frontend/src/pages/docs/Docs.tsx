@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Card, Form, Input, Button, Table, Drawer, Upload, Tag, Modal, Toast, Empty, Spin } from '@douyinfe/semi-ui';
-import { Search, Plus, Edit, Delete, UploadOutlined } from '@douyinfe/semi-icons';
+import { Layout, Card, Form, Button, Table, SideSheet, Upload, Tag, Modal, Toast, Empty, Spin } from '@douyinfe/semi-ui';
+import { IconSearch, IconPlus, IconEdit, IconDelete, IconUpload } from '@douyinfe/semi-icons';
 
 // 定义文件类型枚举
 type FileType = 'PDF' | 'Word' | 'Excel';
@@ -245,8 +245,8 @@ const Docs: React.FC = () => {
       render: (_: any, record: FileEntity) => (
         <>
           <Button
-            icon={<Edit />}
-            type="link"
+            icon={<IconEdit />}
+            type="tertiary"
             size="small"
             onClick={() => handleEditFile(record)}
             style={{ marginRight: 8 }}
@@ -254,8 +254,8 @@ const Docs: React.FC = () => {
             编辑
           </Button>
           <Button
-            icon={<Delete />}
-            type="link"
+            icon={<IconDelete />}
+            type="tertiary"
             size="small"
             onClick={() => handleDeleteFile(record.id)}
             danger
@@ -267,35 +267,18 @@ const Docs: React.FC = () => {
     }
   ];
 
-  // 渲染文件类型选择器
-  const renderFileTypeSelect = () => {
-    return (
-      <div style={{ display: 'flex', gap: 12 }}>
-        {(['PDF', 'Word', 'Excel'] as FileType[]).map(type => (
-          <Button
-            key={type}
-            type={formData.type === type ? 'primary' : 'tertiary'}
-            onClick={() => setFormData(prev => ({ ...prev, type }))}
-          >
-            {type}
-          </Button>
-        ))}
-      </div>
-    );
-  };
-
   return (
     <Layout style={{ padding: 24, minHeight: '100vh' }}>
       <Card title="文件管理" style={{ marginBottom: 24 }}>
         {/* 查询区域 */}
-        <Form layout="inline" style={{ marginBottom: 16 }}>
+        <Form layout="horizontal" style={{ marginBottom: 16, display: 'flex', alignItems: 'flex-end' }}>
           <Form.Input
             field="name"
-            value={searchKeyword}
-            onChange={setSearchKeyword}
+            initValue={searchKeyword}
+            onChange={(value: string) => setSearchKeyword(value)}
             placeholder="文件名称"
             style={{ width: 300, marginRight: 12 }}
-            prefix={<Search />}
+            prefix={<IconSearch />}
           />
           <Button type="primary" onClick={handleSearch} style={{ marginRight: 8 }}>
             查询
@@ -308,7 +291,7 @@ const Docs: React.FC = () => {
         {/* 操作区 */}
         <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 16 }}>
           <Button
-            icon={<Plus />}
+            icon={<IconPlus />}
             type="primary"
             onClick={handleAddFile}
           >
@@ -339,12 +322,12 @@ const Docs: React.FC = () => {
       </Card>
 
       {/* 新增/编辑文件抽屉 */}
-      <Drawer
+      <SideSheet
         title={editingFile ? '编辑文件' : '新增文件'}
         placement="right"
         size="large"
         visible={drawerVisible}
-        onClose={() => setDrawerVisible(false)}
+        onCancel={() => setDrawerVisible(false)}
         footer={
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12 }}>
             <Button onClick={() => setDrawerVisible(false)}>
@@ -360,17 +343,17 @@ const Docs: React.FC = () => {
           <Form.Input
             field="name"
             label="文件名称"
-            value={formData.name}
-            onChange={(value) => setFormData(prev => ({ ...prev, name: value }))}
+            initValue={formData.name}
+            onChange={(value: string | number | any[] | Record<string, any>) => setFormData(prev => ({ ...prev, name: value as string }))}
             placeholder="请输入文件名称"
             required
           />
 
-          <Form.Textarea
+          <Form.TextArea
             field="description"
             label="文件描述"
-            value={formData.description}
-            onChange={(value) => setFormData(prev => ({ ...prev, description: value }))}
+            initValue={formData.description}
+            onChange={(value: string | number | any[] | Record<string, any>) => setFormData(prev => ({ ...prev, description: value as string }))}
             placeholder="请输入文件描述"
             rows={4}
           />
@@ -378,16 +361,15 @@ const Docs: React.FC = () => {
           <Form.Select
             field="type"
             label="文件类型"
-            value={formData.type}
-            onChange={(value) => setFormData(prev => ({ ...prev, type: value as FileType }))}
-            required
+            initValue={formData.type}
+            onChange={(value: string | number | any[] | Record<string, any>) => setFormData(prev => ({ ...prev, type: value as FileType }))}
           >
             <Form.Select.Option value="PDF">PDF</Form.Select.Option>
             <Form.Select.Option value="Word">Word</Form.Select.Option>
             <Form.Select.Option value="Excel">Excel</Form.Select.Option>
           </Form.Select>
 
-          <Form.Slot field="file" label="文件上传">
+          <Form.Slot label="文件上传">
             <Upload
               fileList={formData.file ? [formData.file] : []}
               beforeUpload={handleFileUpload}
@@ -395,14 +377,14 @@ const Docs: React.FC = () => {
               action="#"
             >
               <div style={{ padding: 24, border: '1px dashed #d9d9d9', borderRadius: 4, textAlign: 'center' }}>
-                <UploadOutlined style={{ fontSize: 48, color: '#1890ff', marginBottom: 16 }} />
+                <IconUpload style={{ fontSize: 48, color: '#1890ff', marginBottom: 16 }} />
                 <p>点击或拖拽文件到此处上传</p>
                 <p style={{ color: '#999', marginTop: 8 }}>支持 PDF、Word、Excel 文件</p>
               </div>
             </Upload>
           </Form.Slot>
         </Form>
-      </Drawer>
+      </SideSheet>
 
       {/* 删除确认对话框 */}
       <Modal
@@ -421,6 +403,14 @@ const Docs: React.FC = () => {
 };
 
 export default Docs;
+
+
+
+
+
+
+
+
 
 
 
