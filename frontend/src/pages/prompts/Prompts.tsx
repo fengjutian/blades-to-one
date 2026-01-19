@@ -44,7 +44,7 @@ const Prompts: React.FC = () => {
       }
 
       // 准备请求数据，为所有字段提供默认值
-      const promptData = {
+      const promptData: any = {
         title: values.title || '',
         content: values.content || '',
         description: values.description || '',
@@ -52,8 +52,8 @@ const Prompts: React.FC = () => {
         version: parseInt(values.version, 10) || 1,
         status: values.status || 'draft',
         author_id: values.author_id || 100, // 默认用户ID
-        // 使用category字段的值，在演示环境中直接使用字符串作为ID
-        categoryId: values.category ? values.category : 1,
+        // 使用category字段的值，如果没有选择则不传递categoryId
+        ...(values.category && { categoryId: values.category }),
         // 设置默认的is_public值，因为表单中没有这个字段
         is_public: selectedRecord?.is_public || 0,
         source: values.source || '',
@@ -399,6 +399,7 @@ const Prompts: React.FC = () => {
 };
 
 export default Prompts;
+
 
 
 
