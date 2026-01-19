@@ -19,12 +19,12 @@ class PrismaConnectionImpl implements PrismaConnection {
     // 打印所有环境变量，用于调试
     console.log('All environment variables:', process.env);
 
-    // 从环境变量获取数据库连接参数
-    const username = process.env.MYSQL_USERNAME;
-    const password = process.env.MYSQL_PASSWORD;
-    const host = process.env.MYSQL_HOST;
-    const port = Number(process.env.MYSQL_PORT);
-    const database = process.env.MYSQL_DATABASE;
+    // 从环境变量获取数据库连接参数，提供默认值作为回退
+    const username = process.env.MYSQL_USERNAME || 'root';
+    const password = process.env.MYSQL_PASSWORD || 'fjt911008';
+    const host = process.env.MYSQL_HOST || 'localhost';
+    const port = Number(process.env.MYSQL_PORT || '3306');
+    const database = process.env.MYSQL_DATABASE || 'blades_to_one_database';
 
     console.log('数据库连接参数:', {
       username,
