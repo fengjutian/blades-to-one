@@ -316,12 +316,12 @@ const Prompts: React.FC = () => {
                     <Row>
                       <Col span={12}>
                         <Form.Select field="category" label="分类" style={{ width: '100%' }}>
-                          <Select.Option value="SQL">SQL</Select.Option>
-                          <Select.Option value="NLP">NLP</Select.Option>
-                          <Select.Option value="图像生成">图像生成</Select.Option>
-                          <Select.Option value="对话模型">对话模型</Select.Option>
-                          <Select.Option value="代码生成">代码生成</Select.Option>
-                          <Select.Option value="数据分析">数据分析</Select.Option>
+                          <Select.Option value="1">SQL</Select.Option>
+                          <Select.Option value="2">NLP</Select.Option>
+                          <Select.Option value="3">图像生成</Select.Option>
+                          <Select.Option value="4">对话模型</Select.Option>
+                          <Select.Option value="5">代码生成</Select.Option>
+                          <Select.Option value="6">数据分析</Select.Option>
                         </Form.Select>
                       </Col>
                       <Col span={12}>
