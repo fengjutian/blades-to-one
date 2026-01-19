@@ -2,7 +2,6 @@ import path from 'path';
 import mariadb from 'mysql2/promise';
 import { PrismaMariaDb } from '@prisma/adapter-mariadb';
 import { PrismaClient } from '../generated/prisma/client';
-import debug from 'debug';
 
 export interface PrismaConnection {
   client: PrismaClient;
@@ -56,15 +55,6 @@ class PrismaConnectionImpl implements PrismaConnection {
     };
 
     console.log('连接池配置:', poolConfig);
-
-    // 创建MariaDB连接池
-    // const pool = mariadb.createPool(poolConfig);
-
-    // // 测试连接池是否能正常工作
-    // this.testPoolConnection(pool).catch(error => {
-    //   console.error('连接池测试失败，应用程序将退出:', error);
-    //   process.exit(1);
-    // });
 
     // 创建PrismaMariaDb适配器
     const adapter = new PrismaMariaDb(poolConfig);
@@ -135,5 +125,3 @@ class PrismaConnectionImpl implements PrismaConnection {
 // 导出Prisma连接实例和类型
 export const prismaConnection: PrismaConnection = PrismaConnectionImpl.getInstance();
 export const prisma: PrismaClient = prismaConnection.client;
-
-
