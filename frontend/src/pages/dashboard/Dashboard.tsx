@@ -2,18 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styles from './dashboard.module.scss';
 import LLMConfig from '@/pages/LLMConfig/LLMConfig';
-import { Bot, Workflow, BrainCircuit, Drill, FilePenLine, Grid3x3 } from 'lucide-react';
+import { Bot, Workflow, BrainCircuit, Drill, FilePenLine, Grid3x3, CircleUser } from 'lucide-react';
 import Chat from '@/pages/chat/Chat';
 import WorkflowEle from '@/pages/workflow/Workflow';
 import RAG from '@/pages/rag/RAG';
 import Tools from '@/pages/tools/Tools';
 import Prompts from '@/pages/prompts/Prompts';
 import Docs from '@/pages/docs/Docs';
+import { useAuth } from '@/hooks/useAuth';
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [selectedComponent, setSelectedComponent] = useState('chat');
+  const { logout } = useAuth();
 
   useEffect(() => {
     const path = location.pathname;
@@ -26,6 +28,10 @@ const Dashboard: React.FC = () => {
   const handleIconClick = (componentName: string) => {
     setSelectedComponent(componentName);
     navigate(`/dashboard/${componentName}`);
+  };
+
+  const handleLogout = () => {
+    logout();
   };
 
   const renderSelectedComponent = () => {
@@ -91,6 +97,7 @@ const Dashboard: React.FC = () => {
       </div>
       <div className={styles.mainPage}>
         <div className={styles.mainHeader}>
+          <CircleUser onClick={handleLogout} style={{ cursor: 'pointer' }} />
           <LLMConfig />
         </div>
         <div className={styles.mainContent}>{renderSelectedComponent()}</div>
