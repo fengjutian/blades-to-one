@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import styles from "./tools.module.css";
 
 // 定义工具类型
-type ToolType = "function" | "api" | "local" | "mcp" | "skill";
+type ToolType = "function" | "api" | "local" | "mcp" | "skill" | "agent";
 
 // 定义工具接口
 interface Tool {
@@ -87,6 +87,20 @@ const toolsData: Tool[] = [
     description: "分析和理解图像内容",
     type: "skill",
     usage: "用于图像识别、目标检测等CV任务"
+  },
+  {
+    id: "agent-1",
+    name: "代码助手",
+    description: "自主编写、调试和优化代码",
+    type: "agent",
+    usage: "用于开发任务自动化"
+  },
+  {
+    id: "agent-2",
+    name: "数据分析助手",
+    description: "自主分析数据、生成报告",
+    type: "agent",
+    usage: "用于数据处理和洞察生成"
   }
 ];
 
@@ -96,7 +110,8 @@ const toolTypesConfig = [
   { type: "api", label: "API工具", description: "通过API调用的外部工具" },
   { type: "local", label: "本地工具", description: "本地环境可用的工具" },
   { type: "mcp", label: "MCP工具", description: "多组件协作工具" },
-  { type: "skill", label: "Skill", description: "特定技能领域的工具" }
+  { type: "skill", label: "Skill", description: "特定技能领域的工具" },
+  { type: "agent", label: "智能体工具", description: "具备自主决策能力的智能体" }
 ];
 
 const Tools: React.FC = () => {
@@ -142,6 +157,9 @@ const Tools: React.FC = () => {
 };
 
 export default Tools;
+
+
+
 
 
 

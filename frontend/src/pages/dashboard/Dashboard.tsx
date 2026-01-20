@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styles from './dashboard.module.scss';
 import LLMConfig from '@/pages/LLMConfig/LLMConfig';
-import { Bot, Workflow, BrainCircuit, Drill, FilePenLine, Grid3x3, CircleUser } from 'lucide-react';
+import { Bot, Workflow, BrainCircuit, Drill, FilePenLine, Grid3x3, CircleUser, Activity  } from 'lucide-react';
 import Chat from '@/pages/chat/Chat';
 import WorkflowEle from '@/pages/workflow/Workflow';
 import RAG from '@/pages/rag/RAG';
 import Tools from '@/pages/tools/Tools';
 import Prompts from '@/pages/prompts/Prompts';
 import Docs from '@/pages/docs/Docs';
+import Monitor from '@/pages/monitor/Monitor';
 import { useAuth } from '@/hooks/useAuth';
 
 const Dashboard: React.FC = () => {
@@ -48,6 +49,8 @@ const Dashboard: React.FC = () => {
         return <Prompts />;
       case 'docs':
         return <Docs />;
+      case 'monitor':
+        return <Monitor />;
       default:
         return <Chat />;
     }
@@ -93,6 +96,12 @@ const Dashboard: React.FC = () => {
           className={`cursor-pointer ${selectedComponent === 'docs' ? styles.selectedIcon : ''} ${styles.iconbox}`}
         >
           <Grid3x3 />
+        </div>
+        <div
+          onClick={() => handleIconClick('monitor')}
+          className={`cursor-pointer ${selectedComponent === 'monitor' ? styles.selectedIcon : ''} ${styles.iconbox}`}
+        >
+          <Activity  />
         </div>
       </div>
       <div className={styles.mainPage}>
