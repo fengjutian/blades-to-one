@@ -64,17 +64,26 @@ export class DocsService {
   }
 
   /**
-   * 获取所有文档
+   * 获取所有文档（支持分页）
    */
-  static async getDocs(): Promise<Docs[]> {
+  static async getDocs(page: number = 1, pageSize: number = 10): Promise<{ total: number; data: Docs[] }> {
     try {
+      // 获取总记录数
+      const total = await prisma.docs.count();
+      
+      // 计算偏移量
+      const skip = (page - 1) * pageSize;
+      
       const docs = await prisma.docs.findMany({
         include: {
           author: { select: { id: true, username: true, email: true } },
         },
         orderBy: { createdAt: 'desc' },
+        skip,
+        take: pageSize,
       });
-      return docs;
+      
+      return { total, data: docs };
     } catch (error) {
       console.error('Error in getDocs:', error);
       throw error;
@@ -165,3 +174,4 @@ export class DocsService {
     }
   }
 }
+

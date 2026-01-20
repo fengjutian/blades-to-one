@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Tag, Button, Popconfirm, Toast, SideSheet, Form, Input, Select, Row, Col, Upload } from '@douyinfe/semi-ui';
+import { Table, Tag, Button, Toast, SideSheet, Form, Select, Row, Col } from '@douyinfe/semi-ui';
 import styles from './docs.module.scss';
 import { IconDelete, IconEdit, IconPlus, IconUpload } from '@douyinfe/semi-icons';
 import { useAuth } from '../../hooks/useAuth';
@@ -29,20 +29,28 @@ const Docs: React.FC = () => {
   const [sideSheetVisible, setSideSheetVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<FileEntity | null>(null);
   const [formValues, setFormValues] = useState<any>({});
-  const { token, user } = useAuth();
+  const { token } = useAuth();
+
+  // 分页状态管理
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(10);
+  const [total, setTotal] = useState<number>(0);
 
   // 获取文档列表
-  const fetchDocs = async () => {
+  const fetchDocs = async (page: number = 1, size: number = 10) => {
     try {
       setLoading(true);
-      const response = await fetch(`${BASE_URL}/docs`, {
+      const response = await fetch(`${BASE_URL}/docs?page=${page}&pageSize=${size}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
       if (response.ok) {
-        const data = await response.json();
-        setDataSource(data);
+        const result = await response.json();
+        setDataSource(result.data);
+        setTotal(result.total);
+        setCurrentPage(page);
+        setPageSize(size);
       } else {
         console.error('获取文档列表失败:', response.status);
         Toast.error('获取文档列表失败');
@@ -120,8 +128,7 @@ const Docs: React.FC = () => {
       key: 'type',
       width: 100,
       render: (type: FileType) => {
-        const color = type === 'PDF' ? 'blue' : type === 'Word' ? 'green' : 'orange';
-        return <Tag color={color}>{type}</Tag>;
+        return <Tag color={type === 'PDF' ? 'blue' : type === 'Word' ? 'green' : 'orange'}>{type}</Tag>;
       }
     },
     {
@@ -256,6 +263,11 @@ const Docs: React.FC = () => {
     setSideSheetVisible(true);
   };
 
+  // 分页变化处理函数
+  const handlePageChange = (page: number, pageSize: number) => {
+    fetchDocs(page, pageSize);
+  };
+
   return (
     <div className={styles.docsCtx} style={{ width: '100%', height: '100%' }}>
       <Button
@@ -273,11 +285,13 @@ const Docs: React.FC = () => {
         dataSource={dataSource}
         loading={loading}
         pagination={{
-          pageSize: 10,
+          pageSize: pageSize,
+          currentPage: currentPage,
+          total: total,
           showSizeChanger: true,
-          pageSizeOptions: ['10', '20', '50', '100'],
           showTotal: true,
-          showQuickJumper: true
+          showQuickJumper: true,
+          onChange: handlePageChange
         }}
         scroll={{ x: 1000 }}
       />
@@ -291,9 +305,9 @@ const Docs: React.FC = () => {
         <Form
           layout="horizontal"
           onValueChange={(values) => setFormValues(values)}
-          initValues={selectedRecord}
+          initValues={selectedRecord || undefined}
         >
-          {({ formState }) => (
+          {() => (
             <>
               <div className="grid w-full">
                 <Row>
@@ -327,7 +341,7 @@ const Docs: React.FC = () => {
                       accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.jpg,.jpeg,.png,.gif"
                       beforeUpload={(file) => {
                         // 在这里可以添加文件验证逻辑
-                        setFormValues(prev => ({ ...prev, file }));
+                        setFormValues((prev: any) => ({ ...prev, file }));
                         return false; // 阻止自动上传，我们将在保存时手动上传
                       }}
                     >
@@ -355,3 +369,6 @@ const Docs: React.FC = () => {
 };
 
 export default Docs;
+
+
+

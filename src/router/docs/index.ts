@@ -94,7 +94,11 @@ export const createDocsRoutes = () => {
   router.get('/', authMiddleware, async (req: AuthRequest, res: Response) => {
     req.log.info('收到获取所有文档请求');
     try {
-      const docs = await DocsService.getDocs();
+      // 从查询参数获取分页信息
+      const page = parseInt(req.query.page as string) || 1;
+      const pageSize = parseInt(req.query.pageSize as string) || 10;
+      
+      const docs = await DocsService.getDocs(page, pageSize);
       res.json(docs);
     } catch (error) {
       req.log.error(`获取文档列表失败: ${error instanceof Error ? error.message : String(error)}`);

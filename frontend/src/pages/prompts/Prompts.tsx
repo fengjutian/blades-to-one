@@ -1,15 +1,36 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Table, Tag, Space, SideSheet, Button, Form, Select, Row, Col, Toast, Popconfirm  } from '@douyinfe/semi-ui';
+import { Button, Space, Table, Tag, Toast, Popconfirm, Form, Row, Select, SideSheet, Col } from '@douyinfe/semi-ui';
+import { IconPlus, IconEdit, IconDelete } from '@douyinfe/semi-icons';
+import { ColumnProps } from '@douyinfe/semi-ui/lib/es/table/interface';
 import styles from './prompts.module.scss';
-import { IconDelete, IconEdit  } from '@douyinfe/semi-icons';
 import { useAuth } from '../../hooks/useAuth';
 import { BASE_URL } from '@/config/base';
 
+// 定义Prompt接口
+export interface Prompt {
+  id: number;
+  title: string;
+  content: string;
+  description: string;
+  tags: string;
+  version: number;
+  status: 'active' | 'draft' | 'deprecated' | 'archived';
+  author_id: number;
+  usage_count: number;
+  last_used_at?: string;
+  updated_at: string;
+  category: string | number;
+  is_public: number;
+  source: string;
+  remarks: string;
+  role: string;
+}
+
 const Prompts: React.FC = () => {
   const [sideSheetVisible, setSideSheetVisible] = useState(false);
-  const [selectedRecord, setSelectedRecord] = useState<any>(null);
-  const [sideSheetSize, setSideSheetSize] = useState<'small' | 'medium' | 'large'>('large');
-  const [dataSource, setDataSource] = useState([]);
+  const [selectedRecord, setSelectedRecord] = useState<Prompt | null>(null);
+  const [sideSheetSize] = useState<'small' | 'medium' | 'large'>('large');
+  const [dataSource, setDataSource] = useState<Prompt[]>([]);
   const [formValues, setFormValues] = useState<any>({});
   const [categories, setCategories] = useState<any[]>([]);
 
@@ -86,7 +107,7 @@ const Prompts: React.FC = () => {
 
       if (response.ok) {
         // 更新数据源，移除删除的记录
-        setDataSource(prev => prev.filter(item => item.id !== record.id));
+        setDataSource(prev => prev.filter((item:any) => item?.id !== record.id));
         Toast.success('Prompt删除成功');
       } else {
         console.error('删除Prompt失败:', response.status);
@@ -184,13 +205,13 @@ const Prompts: React.FC = () => {
       // 更新数据源
       if (selectedRecord && selectedRecord.id) {
         // 更新现有记录
-        setDataSource(prev => prev.map(item =>
+        setDataSource((prev: any[]) => prev.map((item: any) =>
           item.id === selectedRecord.id ? savedPrompt : item
         ));
         Toast.success('Prompt更新成功');
       } else {
         // 添加新记录
-        setDataSource(prev => [...prev, savedPrompt]);
+        setDataSource((prev: any[]) => [...prev, savedPrompt]);
         Toast.success('Prompt创建成功');
       }
 
@@ -202,7 +223,7 @@ const Prompts: React.FC = () => {
     }
   };
 
-  const columns = [
+  const columns: ColumnProps<Prompt>[] = [
     {
         title: 'ID',
         dataIndex: 'id',
@@ -249,9 +270,9 @@ const Prompts: React.FC = () => {
         dataIndex: 'status',
         width: 80,
         render: (status: string) => {
-            let color = 'green';
+            let color: 'green' | 'orange' | 'grey' | 'red' = 'green';
             if (status === 'draft') color = 'orange';
-            if (status === 'deprecated') color = 'gray';
+            if (status === 'deprecated') color = 'grey'; // 使用'grey'而不是'gray'以匹配TagColor类型
             if (status === 'archived') color = 'red';
             return <Tag color={color}>{status}</Tag>;
         },
@@ -282,7 +303,7 @@ const Prompts: React.FC = () => {
       fixed: 'right',
       width: 80,
       resize: false,
-      render: (_: any, record: any) => {
+      render: (_: any, record: Prompt) => { // 将record类型从any改为Prompt
           return (
             <div>
               <Space>
@@ -437,6 +458,10 @@ const Prompts: React.FC = () => {
 };
 
 export default Prompts;
+
+
+
+
 
 
 

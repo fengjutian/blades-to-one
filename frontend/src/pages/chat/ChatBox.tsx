@@ -45,7 +45,7 @@ const roleInfo = {
 const commonOuterStyle = {
   border: '1px solid var(--semi-color-border)',
   height: '100%',
-  overflowY: 'auto',
+  // overflowY: 'auto',
 };
 
 let id = 0;
@@ -129,7 +129,7 @@ const ChatBox: React.FC = () => {
     setMessage(chats);
   }, []);
 
-  const onMessageReset = useCallback(async (e: any) => {
+  const onMessageReset = useCallback(async () => {
     // 查找最后一条用户消息
     const lastUserMessage = message.slice().reverse().find(msg => msg.role === 'user');
 
