@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Button, Space, Table, Tag, Toast, Popconfirm, Form, Row, Select, SideSheet, Col } from '@douyinfe/semi-ui';
-import { IconPlus, IconEdit, IconDelete } from '@douyinfe/semi-icons';
+import {  IconEdit, IconDelete } from '@douyinfe/semi-icons';
 import { ColumnProps } from '@douyinfe/semi-ui/lib/es/table/interface';
 import styles from './prompts.module.scss';
 import { useAuth } from '../../hooks/useAuth';
