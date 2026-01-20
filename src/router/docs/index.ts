@@ -2,6 +2,47 @@ import { Router, Request, Response } from 'express';
 import { DocsService } from './docs-service';
 import { authMiddleware } from '../auth/auth-middleware';
 import { AuthRequest } from '../auth/types';
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
+
+// 创建上传目录（如果不存在）
+const uploadDir = path.join(__dirname, '../../../../uploads');
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+// 配置multer存储
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, uploadDir);
+  },
+  filename: (req, file, cb) => {
+    // 使用当前时间戳和原始文件名来生成唯一的文件名
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+// 创建multer实例
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 50 * 1024 * 1024 // 50MB
+  },
+  fileFilter: (req, file, cb) => {
+    // 允许的文件类型
+    const allowedTypes = /jpeg|jpg|png|gif|pdf|doc|docx|txt|md/;
+    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+    const mimetype = allowedTypes.test(file.mimetype);
+
+    if (mimetype && extname) {
+      return cb(null, true);
+    } else {
+      cb(new Error('只允许上传图片、文档和文本文件！'));
+    }
+  }
+});
 
 export const createDocsRoutes = () => {
   const router = Router();
@@ -20,6 +61,31 @@ export const createDocsRoutes = () => {
       req.log.error(`创建文档失败: ${error instanceof Error ? error.message : String(error)}`);
       res.status(400).json({
         message: error instanceof Error ? error.message : '创建文档失败',
+      });
+    }
+  });
+
+  // 文件上传
+  router.post('/upload', authMiddleware, upload.single('file'), async (req: AuthRequest, res: Response) => {
+    req.log.info('收到文件上传请求');
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: '未选择文件' });
+      }
+
+      const fileData = {
+        originalname: req.file.originalname,
+        filename: req.file.filename,
+        filePath: `/uploads/${req.file.filename}`, // 返回相对路径，前端可以通过BASE_URL访问
+        fileSize: req.file.size,
+        mimetype: req.file.mimetype
+      };
+
+      res.status(200).json(fileData);
+    } catch (error) {
+      req.log.error(`文件上传失败: ${error instanceof Error ? error.message : String(error)}`);
+      res.status(400).json({
+        message: error instanceof Error ? error.message : '文件上传失败',
       });
     }
   });

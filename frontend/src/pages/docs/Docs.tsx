@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Tag, Button, Popconfirm, Toast, SideSheet, Form, Input, Select, Row, Col } from '@douyinfe/semi-ui';
+import { Table, Tag, Button, Popconfirm, Toast, SideSheet, Form, Input, Select, Row, Col, Upload } from '@douyinfe/semi-ui';
 import styles from './docs.module.scss';
-import { IconDelete, IconEdit, IconPlus } from '@douyinfe/semi-icons';
+import { IconDelete, IconEdit, IconPlus, IconUpload } from '@douyinfe/semi-icons';
 import { useAuth } from '../../hooks/useAuth';
 import { BASE_URL } from '../../lib/api';
 
@@ -171,10 +171,34 @@ const Docs: React.FC = () => {
         return;
       }
 
+      // 如果有选择文件，先上传文件
+      let filePath = values.filePath;
+      if (values.file) {
+        setLoading(true);
+        const formData = new FormData();
+        formData.append('file', values.file);
+
+        const uploadResponse = await fetch(`${BASE_URL}/docs/upload`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+          body: formData
+        });
+
+        if (!uploadResponse.ok) {
+          throw new Error('文件上传失败');
+        }
+
+        const uploadResult = await uploadResponse.json();
+        filePath = uploadResult.filePath;
+      }
+
       const data = {
         name: values.name,
         description: values.description,
         type: values.type,
+        filePath: filePath,
         isPublic: values.isPublic || true,
         status: values.status || 'active'
       };
@@ -220,6 +244,8 @@ const Docs: React.FC = () => {
     } catch (error) {
       console.error('保存文档失败:', error);
       Toast.error(error instanceof Error ? error.message : '保存文档失败');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -291,15 +317,37 @@ const Docs: React.FC = () => {
                   </Col>
                 </Row>
                 <Row>
-                  <Col span={12}>
-                    <Form.Select field="status" label="状态" style={{ width: '100%' }}>
-                      <Select.Option value="active">活跃</Select.Option>
-                      <Select.Option value="inactive">停用</Select.Option>
-                      <Select.Option value="archived">归档</Select.Option>
-                    </Form.Select>
-                  </Col>
-                  <Col span={12}>
-                    <Form.Switch field="isPublic" label="是否公开" />
+                  <Col span={24}>
+                    <Form.Input field="file" label="上传文件" style={{ width: '100%' }}>
+                      <Upload
+                        action={`${BASE_URL}/docs/upload`}
+                        headers={{ 'Authorization': `Bearer ${token}` }}
+                        method="POST"
+                        accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.jpg,.jpeg,.png,.gif"
+                        beforeUpload={(file) => {
+                          // 在这里可以添加文件验证逻辑
+                          setFormValues(prev => ({ ...prev, file }));
+                          return false; // 阻止自动上传，我们将在保存时手动上传
+                        }}
+                        onSuccess={(response) => {
+                          if (response && response.filePath) {
+                            setFormValues(prev => ({ ...prev, filePath: response.filePath }));
+                          }
+                          Toast.success('文件上传成功');
+                        }}
+                        onError={(error) => {
+                          Toast.error('文件上传失败');
+                          console.error('文件上传失败:', error);
+                        }}
+                      >
+                        <Button icon={<IconUpload />}>选择文件</Button>
+                      </Upload>
+                      {formValues.file && (
+                        <div style={{ marginTop: 8, color: '#666' }}>
+                          已选择: {formValues.file.name}
+                        </div>
+                      )}
+                    </Form.Input>
                   </Col>
                 </Row>
 
