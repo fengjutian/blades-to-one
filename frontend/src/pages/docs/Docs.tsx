@@ -318,17 +318,21 @@ const Docs: React.FC = () => {
                 </Row>
                 <Row>
                   <Col span={24}>
-                    <Form.Input field="file" label="上传文件" style={{ width: '100%' }}>
+                    <Form.Upload
+                      field="file"
+                      label="上传文件"
+                      style={{ width: '100%' }}
+                      action="#" // 添加action属性以解决TypeScript类型错误
+                      beforeUpload={(file) => {
+                        // 在这里可以添加文件验证逻辑
+                        setFormValues(prev => ({ ...prev, file }));
+                        return false; // 阻止自动上传，我们将在保存时手动上传
+                      }}
+                    >
                       <Upload
                         action={`${BASE_URL}/docs/upload`}
                         headers={{ 'Authorization': `Bearer ${token}` }}
-                        method="POST"
                         accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.jpg,.jpeg,.png,.gif"
-                        beforeUpload={(file) => {
-                          // 在这里可以添加文件验证逻辑
-                          setFormValues(prev => ({ ...prev, file }));
-                          return false; // 阻止自动上传，我们将在保存时手动上传
-                        }}
                         onSuccess={(response) => {
                           if (response && response.filePath) {
                             setFormValues(prev => ({ ...prev, filePath: response.filePath }));
@@ -347,7 +351,7 @@ const Docs: React.FC = () => {
                           已选择: {formValues.file.name}
                         </div>
                       )}
-                    </Form.Input>
+                    </Form.Upload>
                   </Col>
                 </Row>
 
