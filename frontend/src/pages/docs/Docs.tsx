@@ -322,30 +322,16 @@ const Docs: React.FC = () => {
                       field="file"
                       label="上传文件"
                       style={{ width: '100%' }}
-                      action="#" // 添加action属性以解决TypeScript类型错误
+                      action={`${BASE_URL}/docs/upload`}
+                      headers={{ 'Authorization': `Bearer ${token}` }}
+                      accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.jpg,.jpeg,.png,.gif"
                       beforeUpload={(file) => {
                         // 在这里可以添加文件验证逻辑
                         setFormValues(prev => ({ ...prev, file }));
                         return false; // 阻止自动上传，我们将在保存时手动上传
                       }}
                     >
-                      <Upload
-                        action={`${BASE_URL}/docs/upload`}
-                        headers={{ 'Authorization': `Bearer ${token}` }}
-                        accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.jpg,.jpeg,.png,.gif"
-                        onSuccess={(response) => {
-                          if (response && response.filePath) {
-                            setFormValues(prev => ({ ...prev, filePath: response.filePath }));
-                          }
-                          Toast.success('文件上传成功');
-                        }}
-                        onError={(error) => {
-                          Toast.error('文件上传失败');
-                          console.error('文件上传失败:', error);
-                        }}
-                      >
-                        <Button icon={<IconUpload />}>选择文件</Button>
-                      </Upload>
+                      <Button icon={<IconUpload />}>选择文件</Button>
                       {formValues.file && (
                         <div style={{ marginTop: 8, color: '#666' }}>
                           已选择: {formValues.file.name}
