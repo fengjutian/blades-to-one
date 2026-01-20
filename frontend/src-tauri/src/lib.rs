@@ -11,7 +11,8 @@ pub fn run() {
         )?;
 
         // 获取主窗口并打开开发者工具
-        let main_window = app.get_window("frontend").expect("找不到主窗口");
+        // Tauri 2.x版本中，get_window已更名为get_webview_window
+        let main_window = app.get_webview_window("frontend").expect("找不到主窗口");
 
         // 自动打开开发者工具
         main_window.open_devtools()?;
@@ -21,5 +22,6 @@ pub fn run() {
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
 }
+
 
 
