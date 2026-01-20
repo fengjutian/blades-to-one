@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import styles from "./tools.module.css";
 
 // 定义工具类型
 type ToolType = "function" | "api" | "local" | "mcp" | "skill";
@@ -95,7 +96,7 @@ const toolTypesConfig = [
   { type: "api", label: "API工具", description: "通过API调用的外部工具" },
   { type: "local", label: "本地工具", description: "本地环境可用的工具" },
   { type: "mcp", label: "MCP工具", description: "多组件协作工具" },
-  { type: "skill", label: "技能工具", description: "特定技能领域的工具" }
+  { type: "skill", label: "Skill", description: "特定技能领域的工具" }
 ];
 
 const Tools: React.FC = () => {
@@ -104,8 +105,7 @@ const Tools: React.FC = () => {
   }, []);
 
   return (
-    <div className="container">
-      <h1 className="text-3xl font-bold mb-8">工具中心</h1>
+    <div className={styles["tools-wrap"]}>
 
       {toolTypesConfig.map((config) => {
         // 获取当前类型的工具
