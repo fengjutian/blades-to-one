@@ -11,7 +11,7 @@ pub fn run() {
             .level(log::LevelFilter::Debug) // 将日志级别从Info调整为Debug
             .build(),
         )?;
-        
+
         // 获取主窗口并打开开发者工具
         // Tauri 2.x版本中，窗口默认标识符是"main"，frontend是窗口标题
         if let Some(main_window) = app.get_webview_window("main") {
