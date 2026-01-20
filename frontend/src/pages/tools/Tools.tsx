@@ -3,7 +3,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Button } from "@/components/ui/button";
 
 // 定义工具类型
-type ToolType = "function" | "api" | "local";
+type ToolType = "function" | "api" | "local" | "mcp" | "skill";
 
 // 定义工具接口
 interface Tool {
@@ -58,6 +58,34 @@ const toolsData: Tool[] = [
     description: "监控系统资源使用情况",
     type: "local",
     usage: "用于查看系统状态"
+  },
+  {
+    id: "mcp-1",
+    name: "多组件协调器",
+    description: "协调多个组件之间的交互",
+    type: "mcp",
+    usage: "用于复杂业务流程的组件协作"
+  },
+  {
+    id: "mcp-2",
+    name: "分布式任务调度",
+    description: "在多个节点上调度和执行任务",
+    type: "mcp",
+    usage: "用于大规模分布式系统的任务管理"
+  },
+  {
+    id: "skill-1",
+    name: "自然语言处理",
+    description: "处理和分析自然语言文本",
+    type: "skill",
+    usage: "用于文本分类、情感分析等NLP任务"
+  },
+  {
+    id: "skill-2",
+    name: "计算机视觉",
+    description: "分析和理解图像内容",
+    type: "skill",
+    usage: "用于图像识别、目标检测等CV任务"
   }
 ];
 
@@ -65,7 +93,9 @@ const toolsData: Tool[] = [
 const toolTypesConfig = [
   { type: "function", label: "函数工具", description: "可直接调用的函数工具" },
   { type: "api", label: "API工具", description: "通过API调用的外部工具" },
-  { type: "local", label: "本地工具", description: "本地环境可用的工具" }
+  { type: "local", label: "本地工具", description: "本地环境可用的工具" },
+  { type: "mcp", label: "MCP工具", description: "多组件协作工具" },
+  { type: "skill", label: "技能工具", description: "特定技能领域的工具" }
 ];
 
 const Tools: React.FC = () => {
@@ -74,7 +104,7 @@ const Tools: React.FC = () => {
   }, []);
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container">
       <h1 className="text-3xl font-bold mb-8">工具中心</h1>
 
       {toolTypesConfig.map((config) => {
@@ -112,3 +142,6 @@ const Tools: React.FC = () => {
 };
 
 export default Tools;
+
+
+
