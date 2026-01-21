@@ -6,7 +6,6 @@ import styles from './prompts.module.scss';
 import { useAuth } from '../../hooks/useAuth';
 import { BASE_URL } from '@/config/base';
 
-// 定义Prompt接口
 export interface Prompt {
   id: number;
   title: string;
