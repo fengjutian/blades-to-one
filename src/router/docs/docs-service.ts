@@ -70,10 +70,10 @@ export class DocsService {
     try {
       // 获取总记录数
       const total = await prisma.docs.count();
-      
+
       // 计算偏移量
       const skip = (page - 1) * pageSize;
-      
+
       const docs = await prisma.docs.findMany({
         include: {
           author: { select: { id: true, username: true, email: true } },
@@ -82,7 +82,7 @@ export class DocsService {
         skip,
         take: pageSize,
       });
-      
+
       return { total, data: docs };
     } catch (error) {
       console.error('Error in getDocs:', error);
@@ -115,7 +115,7 @@ export class DocsService {
     try {
       // 构建Prisma更新数据
       const updateData: Prisma.DocsUpdateInput = {};
-      
+
       if (data.name !== undefined) updateData.name = data.name;
       if (data.description !== undefined) updateData.description = data.description;
       if (data.type !== undefined) updateData.type = data.type;
@@ -174,4 +174,4 @@ export class DocsService {
     }
   }
 }
-
+
