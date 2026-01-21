@@ -7,7 +7,7 @@ import path from 'path';
 import fs from 'fs';
 
 // 创建上传目录（如果不存在）
-const uploadDir = path.join(__dirname, '../../../../uploads');
+const uploadDir = path.join(__dirname, '../../../../public/uploads');
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }

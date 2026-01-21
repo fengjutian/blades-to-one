@@ -43,7 +43,7 @@ app.use(
 // 静态文件服务
 app.use(express.static(getPublicPath()));
 // 提供上传文件的静态访问
-app.use('/uploads', express.static(path.join(__dirname, '../../uploads')));
+app.use('/uploads', express.static(path.join(__dirname, '../../public/uploads')));
 
 // 注册认证路由
 app.use('/api/auth', authRoutes);
@@ -77,6 +77,7 @@ app.use('/', createRoutes(agent, llmGateway));
 app.listen(serverConfig.port, () => {
   console.log(`Server listening on http://localhost:${serverConfig.port}`);
 });
+
 
 
 
