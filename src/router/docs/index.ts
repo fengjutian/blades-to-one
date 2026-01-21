@@ -66,19 +66,22 @@ export const createDocsRoutes = () => {
   });
 
   // 文件上传
-  router.post('/upload', authMiddleware, upload.single('file'), async (req: AuthRequest, res: Response) => {
+  router.post('/upload', authMiddleware, upload.any(), async (req: AuthRequest, res: Response) => {
     req.log.info('收到文件上传请求');
     try {
-      if (!req.file) {
+      if (!req.files || (req.files as any[]).length === 0) {
+        // 打印所有收到的字段，查看实际的字段名称
+        req.log.info('未找到文件字段，收到的所有字段:', Object.keys(req.body));
         return res.status(400).json({ message: '未选择文件' });
       }
 
+      const file = (req.files as any[])[0];
       const fileData = {
-        originalname: req.file.originalname,
-        filename: req.file.filename,
-        filePath: `/uploads/${req.file.filename}`, // 返回相对路径，前端可以通过BASE_URL访问
-        fileSize: req.file.size,
-        mimetype: req.file.mimetype
+        originalname: file.originalname,
+        filename: file.filename,
+        filePath: `/uploads/${file.filename}`, // 返回相对路径，前端可以通过BASE_URL访问
+        fileSize: file.size,
+        mimetype: file.mimetype
       };
 
       res.status(200).json(fileData);

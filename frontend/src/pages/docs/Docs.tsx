@@ -178,28 +178,8 @@ const Docs: React.FC = () => {
         return;
       }
 
-      // 如果有选择文件，先上传文件
-      let filePath = values.filePath;
-      if (values.file) {
-        setLoading(true);
-        const formData = new FormData();
-        formData.append('file', values.file);
-
-        const uploadResponse = await fetch(`${BASE_URL}/docs/upload`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`
-          },
-          body: formData
-        });
-
-        if (!uploadResponse.ok) {
-          throw new Error('文件上传失败');
-        }
-
-        const uploadResult = await uploadResponse.json();
-        filePath = uploadResult.filePath;
-      }
+      // 使用自动上传后的值
+      const filePath = values.filePath;
 
       const data = {
         name: values.name,
@@ -339,18 +319,22 @@ const Docs: React.FC = () => {
                       action={`${BASE_URL}/docs/upload`}
                       headers={{ 'Authorization': `Bearer ${token}` }}
                       accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.jpg,.jpeg,.png,.gif"
-                      beforeUpload={(file) => {
-                        // 在这里可以添加文件验证逻辑
-                        setFormValues((prev: any) => ({ ...prev, file }));
-                        return false; // 阻止自动上传，我们将在保存时手动上传
+                      onSuccess={(response) => {
+                        // 上传成功后，更新表单值中的文件路径
+                        setFormValues((prev: any) => ({
+                          ...prev,
+                          filePath: response.filePath
+                        }));
+                        Toast.success('文件上传成功');
                       }}
+                      onError={(error) => {
+                        // 上传失败时显示错误信息
+                        console.error('文件上传失败:', error);
+                        Toast.error('文件上传失败');
+                      }}
+                      fileList={formValues.file ? [{ name: formValues.file.name }] : []}
                     >
                       <Button icon={<IconUpload />}>选择文件</Button>
-                      {formValues.file && (
-                        <div style={{ marginTop: 8, color: '#666' }}>
-                          已选择: {formValues.file.name}
-                        </div>
-                      )}
                     </Form.Upload>
                   </Col>
                 </Row>
@@ -369,6 +353,8 @@ const Docs: React.FC = () => {
 };
 
 export default Docs;
+
+
 
 
 
