@@ -2,7 +2,7 @@ import { Router, type Request, type Response } from 'express';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
-import { authenticateToken } from '../../auth/middleware';
+import { authMiddleware } from '../auth/auth-middleware';
 
 const router = Router();
 
@@ -51,7 +51,7 @@ const upload = multer({
  * 上传文件接口
  * POST /docs/upload
  */
-router.post('/upload', authenticateToken, upload.single('file'), (req: Request, res: Response) => {
+router.post('/upload', authMiddleware, upload.single('file'), (req: Request, res: Response) => {
   try {
     if (!req.file) {
       return res.status(400).json({ message: '没有文件被上传' });
@@ -77,7 +77,7 @@ router.post('/upload', authenticateToken, upload.single('file'), (req: Request, 
  * 删除文件接口
  * DELETE /docs/upload
  */
-router.delete('/upload', authenticateToken, (req: Request, res: Response) => {
+router.delete('/upload', authMiddleware, (req: Request, res: Response) => {
   try {
     const { filePath } = req.body;
 
@@ -103,3 +103,6 @@ router.delete('/upload', authenticateToken, (req: Request, res: Response) => {
 });
 
 export default router;
+
+
+

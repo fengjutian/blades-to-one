@@ -5,6 +5,7 @@ import { createStatisticsRoutes } from './statistics';
 import { createReactRoutes } from './react';
 import { createPromptsRoutes } from './prompts';
 import { createDocsRoutes } from './docs';
+import uploadRouter from './universal/upload';
 
 export const createRoutes = (agent: Agent, llmGateway: LLMGatewayImpl) => {
   const router = Router();
@@ -20,7 +21,7 @@ export const createRoutes = (agent: Agent, llmGateway: LLMGatewayImpl) => {
   router.use('/react', createReactRoutes(agent));
   router.use('/prompts', createPromptsRoutes());
   router.use('/docs', createDocsRoutes());
+  router.use('/docs', uploadRouter);
 
   return router;
 };
-
