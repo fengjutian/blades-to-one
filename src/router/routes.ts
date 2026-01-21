@@ -21,7 +21,8 @@ export const createRoutes = (agent: Agent, llmGateway: LLMGatewayImpl) => {
   router.use('/react', createReactRoutes(agent));
   router.use('/prompts', createPromptsRoutes());
   router.use('/docs', createDocsRoutes());
-  router.use('/docs', uploadRouter);
+  router.use('/upload', uploadRouter);
 
   return router;
 };
+

@@ -316,7 +316,7 @@ const Docs: React.FC = () => {
                       field="file"
                       label="上传文件"
                       style={{ width: '100%' }}
-                      action={`${BASE_URL}/docs/upload`}
+                      action={`${BASE_URL}/upload`}
                       headers={{ 'Authorization': `Bearer ${token}` }}
                       accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.jpg,.jpeg,.png,.gif"
                       onSuccess={(response) => {
@@ -353,6 +353,7 @@ const Docs: React.FC = () => {
 };
 
 export default Docs;
+
 
 
 
