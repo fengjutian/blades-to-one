@@ -55,10 +55,20 @@ ReAct框架将智能体的行为分为两个主要阶段：
 
 ### 1. 安装依赖
 
+首先安装后端依赖：
+
 ```bash
 npm install
 # 或
 pnpm install
+```
+
+然后安装前端依赖：
+
+```bash
+cd frontend
+npm install
+cd ..
 ```
 
 ### 2. 配置环境变量
@@ -69,7 +79,7 @@ pnpm install
 cp .env.example .env
 ```
 
-编辑`.env`文件，添加你的API密钥：
+编辑`.env`文件，添加你的API密钥和数据库配置：
 
 ```env
 PORT=3000
@@ -77,19 +87,71 @@ PORT=3000
 KIMI_API_KEY=your_actual_kimi_api_key_here
 # 或使用OpenAI API
 # OPENAI_API_KEY=your_actual_openai_api_key_here
+
+# MySQL数据库配置
+MYSQL_USERNAME=root
+MYSQL_PASSWORD=your_mysql_password
+MYSQL_HOST=localhost
+MYSQL_PORT=3306
+MYSQL_DATABASE=blades_to_one_database
 ```
 
-### 3. 启动开发服务器
+### 3. 数据库设置
+
+确保MySQL服务正在运行，然后创建数据库并运行迁移：
 
 ```bash
-npm run dev
-# 或
-pnpm dev
+# 创建数据库（如果MySQL命令行不可用，可以使用Node.js脚本）
+node -e "
+const mysql = require('mysql2/promise');
+async function createDB() {
+  try {
+    const conn = await mysql.createConnection({
+      host: 'localhost',
+      port: 3306,
+      user: 'root',
+      password: process.env.MYSQL_PASSWORD || ''
+    });
+    await conn.execute('CREATE DATABASE IF NOT EXISTS blades_to_one_database');
+    console.log('数据库创建成功');
+    await conn.end();
+  } catch (error) {
+    console.error('数据库创建失败:', error.message);
+  }
+}
+createDB();
+"
+
+# 运行Prisma迁移
+npx prisma migrate dev --name init
+
+# 生成Prisma客户端
+npx prisma generate
 ```
 
-服务器将在`http://localhost:3000`上启动。
+### 4. 启动开发服务器
 
-### 4. 测试API
+启动前后端开发服务器：
+
+```bash
+# 同时启动前端和后端
+npm run dev:all
+
+# 或者单独启动
+# 后端：
+npm run dev
+
+# 前端（需要新开终端）：
+cd frontend && npm run dev
+```
+
+应用将在`http://localhost:3000`上启动。
+
+### 5. 访问应用
+
+打开浏览器访问：`http://localhost:3000`
+
+### 6. 测试API
 
 使用curl或其他HTTP客户端测试API：
 
@@ -98,6 +160,19 @@ curl -X POST http://localhost:3000/react/run \
   -H "Content-Type: application/json" \
   -d '{"query": "上海的天气如何？"}'
 ```
+
+## 常见问题解决
+
+### 端口冲突
+如果遇到端口3000被占用，可以修改`.env`文件中的`PORT`变量为其他端口（如3001），并相应更新前端`vite.config.ts`中的代理配置。
+
+### 数据库连接失败
+- 确保MySQL服务正在运行
+- 检查`.env`文件中的数据库配置是否正确
+- 确认数据库`blades_to_one_database`已创建
+
+### 前端代理错误
+如果前端无法连接到后端API，检查`frontend/vite.config.ts`中的代理配置是否指向正确的后端端口。
 
 ## 配置
 
